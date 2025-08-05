@@ -103,13 +103,99 @@ export async function getProductById(id: string): Promise<ActionResponse> {
   }
 }
 
-export async function getProductPreview() {
-  //this function will return product preview max 10 products
+export async function getProductPreview(params?: {
+  search?: string;
+  discount?: boolean;
+  promotion?: boolean;
+  sale?: boolean;
+}): Promise<ActionResponse> {
+  try {
+    const where: any = { isActive: true };
+
+    if (params?.search) {
+      where.name = { contains: params.search, mode: "insensitive" };
+    }
+    if (params?.discount) {
+      where.discount = { gt: 0 };
+    }
+    if (params?.promotion) {
+      where.promotion = true;
+    }
+    if (params?.sale) {
+      where.sale = true;
+    }
+
+    const products = await prisma.product.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      take: 10,
+      include: {
+        brand: { select: { name: true } },
+        category: { select: { name: true } },
+      },
+    });
+
+    return { success: true, data: products } as ActionResponse;
+  } catch (error) {
+    console.error("Error fetching product preview:", error);
+    return {
+      success: false,
+      error: "Failed to fetch product preview",
+    } as ActionResponse;
+  }
 }
 
-export async function getProductByBrands() {}
+export async function getProductByBrands(
+  brandIds: string[]
+): Promise<ActionResponse> {
+  try {
+    const products = await prisma.product.findMany({
+      where: {
+        isActive: true,
+        brandId: { in: brandIds },
+      },
+      orderBy: { name: "asc" },
+      include: {
+        brand: { select: { name: true } },
+        category: { select: { name: true } },
+      },
+    });
 
-export async function getProductByCategory() {}
+    return { success: true, data: products } as ActionResponse;
+  } catch (error) {
+    console.error("Error fetching products by brands:", error);
+    return {
+      success: false,
+      error: "Failed to fetch products by brands",
+    } as ActionResponse;
+  }
+}
+
+export async function getProductByCategory(
+  categoryIds: string[]
+): Promise<ActionResponse> {
+  try {
+    const products = await prisma.product.findMany({
+      where: {
+        isActive: true,
+        categoryId: { in: categoryIds },
+      },
+      orderBy: { name: "asc" },
+      include: {
+        brand: { select: { name: true } },
+        category: { select: { name: true } },
+      },
+    });
+
+    return { success: true, data: products } as ActionResponse;
+  } catch (error) {
+    console.error("Error fetching products by categories:", error);
+    return {
+      success: false,
+      error: "Failed to fetch products by categories",
+    } as ActionResponse;
+  }
+}
 
 export async function updateProduct(
   id: string,
@@ -156,7 +242,40 @@ export async function updateProduct(
   }
 }
 
-export async function deleteProduct() {}
+export async function deleteSoftProduct(id: string): Promise<ActionResponse> {
+  try {
+    const product = await prisma.product.update({
+      where: { id },
+      data: { isActive: false },
+    });
+
+    revalidateProductPath();
+    return { success: true, data: product } as ActionResponse;
+  } catch (error) {
+    console.error("Error soft deleting product:", error);
+    return {
+      success: false,
+      error: "Failed to soft delete product",
+    } as ActionResponse;
+  }
+}
+
+export async function deleteProduct(id: string): Promise<ActionResponse> {
+  try {
+    await prisma.product.delete({
+      where: { id },
+    });
+
+    revalidateProductPath();
+    return { success: true } as ActionResponse;
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    return {
+      success: false,
+      error: "Failed to delete product",
+    } as ActionResponse;
+  }
+}
 
 export async function revalidateProductPath() {
   revalidatePath("/products");
