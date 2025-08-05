@@ -14,8 +14,8 @@ const PreviewGrid = () => {
         <span>pagination</span>
       </hgroup>
       <div className="flex justify-between gap-4">
-        {testItemsArray.map(() => {
-          return <ProductCard />;
+        {testItemsArray.map((e, index: number) => {
+          return <ProductCard key={index} />;
         })}
       </div>
 

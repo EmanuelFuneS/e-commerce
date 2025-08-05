@@ -1,4 +1,4 @@
-"use client";
+/* "use client";
 import { LoginForm } from "@/components/login-form";
 import { GalleryVerticalEnd } from "lucide-react";
 import { auth0 } from "../../../lib/auth0";
@@ -20,3 +20,4 @@ export default async function LoginPage() {
     </div>
   );
 }
+ */

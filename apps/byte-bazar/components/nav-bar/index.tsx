@@ -1,3 +1,5 @@
+"use client";
+import { useUser } from "@auth0/nextjs-auth0";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -5,8 +7,12 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
 } from "@workspace/ui/components/navigation-menu";
 import Link from "next/link";
+import { useEffect } from "react";
+import { toast } from "sonner";
+import { syncUser } from "../../lib/actions/auth/syncUser";
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -47,6 +53,28 @@ const components: { title: string; href: string; description: string }[] = [
 ];
 
 const NavBar = () => {
+  const { user, isLoading } = useUser();
+
+  console.log(`User: ${JSON.stringify(user)},  loading:${isLoading}`);
+
+  useEffect(() => {
+    if (user?.email && user?.sub && user?.name) {
+      const runSync = async () => {
+        const result = await syncUser(user.email!, user.sub!);
+        if (result.success) {
+          toast("Sync success", {
+            description: result.message,
+          });
+        } else {
+          toast("Sync failed", {
+            description: result.message,
+          });
+        }
+      };
+      runSync();
+    }
+  }, [user]);
+
   return (
     <>
       <nav className="hidden md:block w-full mx-auto max-w-fit m-4 px-4">
@@ -79,7 +107,21 @@ const NavBar = () => {
               <NavigationMenuLink>Home</NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <NavigationMenuLink>Home</NavigationMenuLink>
+              {user ? (
+                <NavigationMenuLink
+                  asChild
+                  className={navigationMenuTriggerStyle()}
+                >
+                  <Link href={"/auth/logout"}>Logout</Link>
+                </NavigationMenuLink>
+              ) : (
+                <NavigationMenuLink
+                  asChild
+                  className={navigationMenuTriggerStyle()}
+                >
+                  <Link href="/auth/login">Login</Link>
+                </NavigationMenuLink>
+              )}
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>

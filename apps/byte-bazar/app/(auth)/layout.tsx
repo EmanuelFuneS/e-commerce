@@ -1,4 +1,4 @@
-import { Geist, Geist_Mono } from "next/font/google";
+/* import { Geist, Geist_Mono } from "next/font/google";
 import React from "react";
 import { Providers } from "../../components/providers";
 
@@ -21,3 +21,4 @@ export default function AuthLayout({
     </div>
   );
 }
+ */
