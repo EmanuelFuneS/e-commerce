@@ -12,16 +12,12 @@ const fontMono = Geist_Mono({
   variable: "--font-mono",
 });
 
-export default function RootLayout({
+export default function AuthLayout({
   children,
-}: {
-  children: React.ReactNode;
-}) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="es">
-      <body>
-        <Providers>{children}</Providers>
-      </body>
-    </html>
+    <div className="max-w-7xl mx-auto">
+      <Providers>{children}</Providers>
+    </div>
   );
 }

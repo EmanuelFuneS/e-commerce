@@ -14,8 +14,253 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model UserRole {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+
+  users User[]
+  
+  @@map("user_roles")
+}
+
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  isActive  Boolean   @default(true)
+  roleId    String
+  lastLogin DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  
+
+  role   UserRole @relation(fields: [roleId], references: [id])
+  orders Order[]
+  
+  @@map("users")
+}
+
+
+model Category {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  slug        String   @unique
+  parentId    String?
+  imageUrl    String?
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+
+  parent   Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryHierarchy")
+  products Product[]
+  
+  @@map("categories")
+}
+
+model Brand {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  logo      String?
+  website   String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+
+  products Product[]
+  
+  @@map("brands")
+}
+
+model Product {
+  id            String   @id @default(uuid())
+  name          String
+  description   String
+  sku           String   @unique
+  price         Decimal  @db.Decimal(10, 2)
+  comparePrice  Decimal? @db.Decimal(10, 2) 
+  stock         Int      @default(0)
+  minStock      Int      @default(5)
+  categoryId    String
+  brandId       String
+  imageUrl      String?
+  images        String[] 
+  tags          String[] 
+  specifications Json?   
+  
+
+  discountPercentage Int?     @default(0) // 0-100
+  discountStartDate  DateTime?
+  discountEndDate    DateTime?
+  
+
+  isActive    Boolean @default(true)
+  isFeatured  Boolean @default(false)
+  weight      Float?  
+  dimensions  Json?  
+  
+
+  slug        String   @unique
+  views       Int      @default(0)
+  metaTitle   String?
+  metaDescription String?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+
+  category     Category    @relation(fields: [categoryId], references: [id])
+  brand        Brand       @relation(fields: [brandId], references: [id])
+  orderItems   OrderItem[]
+  stockMovements StockMovement[]
+  
+  @@map("products")
+}
+
+
+model StockMovement {
+  id        String              @id @default(uuid())
+  productId String
+  type      StockMovementType
+  quantity  Int                
+  reason    String?             
+  reference String?             
+  userId    String?            
+  createdAt DateTime            @default(now())
+  
+
+  product Product @relation(fields: [productId], references: [id])
+  
+  @@map("stock_movements")
+}
+
+enum StockMovementType {
+  IN     
+  OUT    
+  ADJUST  
+}
+
+
+model Order {
+  id            String      @id @default(uuid())
+  orderNumber   String      @unique 
+  userId        String?     
+  
+  customerName  String
+  customerEmail String
+  customerPhone String?
+  
+  shippingAddress Json 
+  billingAddress  Json? 
+  
+  subtotal       Decimal @db.Decimal(10, 2)
+  shippingCost   Decimal @db.Decimal(10, 2) @default(0)
+  taxAmount      Decimal @db.Decimal(10, 2) @default(0)
+  discountAmount Decimal @db.Decimal(10, 2) @default(0)
+  totalAmount    Decimal @db.Decimal(10, 2)
+  
+  status         OrderStatus @default(PENDING)
+  paymentMethod  String?     
+  paymentId      String?     
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  shippedAt   DateTime?
+  deliveredAt DateTime?
+  
+
+  user       User?       @relation(fields: [userId], references: [id])
+  orderItems OrderItem[]
+  
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String  @id @default(uuid())
+  orderId   String
+  productId String
+  quantity  Int
+  unitPrice Decimal @db.Decimal(10, 2)
+  
+ 
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+  
+  @@unique([orderId, productId]) 
+  @@map("order_items")
+}
+
+enum OrderStatus {
+  PENDING     // Pendiente de pago
+  PAID        // Pagado
+  PROCESSING  // En preparación
+  SHIPPED     // Enviado
+  DELIVERED   // Entregado
+  CANCELLED   // Cancelado
+  REFUNDED    // Reembolsado
+}
+
+
+model Coupon {
+  id               String     @id @default(uuid())
+  code             String     @unique
+  name             String
+  description      String?
+  type             CouponType
+  value            Decimal    @db.Decimal(10, 2) 
+  minOrderAmount   Decimal?   @db.Decimal(10, 2)
+  maxDiscount      Decimal?   @db.Decimal(10, 2)
+  usageLimit       Int?       
+  usageCount       Int        @default(0)
+  userUsageLimit   Int?       @default(1) 
+  
+  isActive    Boolean   @default(true)
+  startDate   DateTime
+  endDate     DateTime
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  // Relaciones
+  couponUsages CouponUsage[]
+  
+  @@map("coupons")
+}
+
+model CouponUsage {
+  id       String @id @default(uuid())
+  couponId String
+  userId   String?
+  orderId  String
+  usedAt   DateTime @default(now())
+  
+  // Relaciones
+  coupon Coupon @relation(fields: [couponId], references: [id])
+  
+  @@map("coupon_usages")
+}
+
+enum CouponType {
+  PERCENTAGE 
+  FIXED      
+  SHIPPING   
+}
+
+
+model Setting {
+  id    String @id @default(uuid())
+  key   String @unique
+  value String
+  type  String @default("string") 
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("settings")
 }
