@@ -38,6 +38,7 @@ export async function getBrands(
 
     return {
       success: true,
+      data: brands,
       pagination: {
         page,
         pageSize,

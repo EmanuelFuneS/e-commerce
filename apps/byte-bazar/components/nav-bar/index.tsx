@@ -55,7 +55,7 @@ const components: { title: string; href: string; description: string }[] = [
 const NavBar = () => {
   const { user, isLoading } = useUser();
 
-  console.log(`User: ${JSON.stringify(user)},  loading:${isLoading}`);
+  /* console.log(`User: ${JSON.stringify(user)},  loading:${isLoading}`); */
 
   useEffect(() => {
     if (user?.email && user?.sub && user?.name) {

@@ -1,14 +1,35 @@
+import { OrderItem } from "./orders";
+import { StockMovement } from "./stockMovement";
+
 interface Product {
   id: string;
   name: string;
   description: string;
+  comparePrice: number;
   price: number;
-  category: string;
-  brand: string;
+  stock: number;
+  minStock: number;
+  categoryId: string;
+  brandId: string;
   imageUrl: string;
-
-  stock: number; // Stock quantity available for the product
+  images: string[];
+  tags: string[];
+  specification: object;
+  discountPercentage: number;
+  discountStartDate: Date;
+  discountEndDate: Date;
+  isActive: boolean;
+  isFeatured: boolean;
+  weight: number;
+  dimension: number;
+  slug: string;
+  views: number;
+  metaTitle?: string;
+  metaDescription?: string;
+  createdAt: Date;
+  updateAt: Date;
+  orderItems: OrderItem;
+  stockMovements: StockMovement;
 }
 
 export type { Product };
-export type ProductCategory = Product["category"];

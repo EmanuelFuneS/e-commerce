@@ -1,18 +1,43 @@
 interface Order {
   id: string;
+  orderNumber: string;
   userId: string;
-  items: OrderItem[];
-  totalAmount: number;
-  status: "pending" | "completed" | "cancelled";
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  shippingAddress: object;
+  billingAddress: object;
+  subtotal: number;
+  shippingCost: number;
+  taxAmount: number;
+  discountAmount: number;
+  status: OrderStatus;
+  paymentMethod: string;
+  paymentId: string;
+  orderItems: OrderItem[];
+
   createdAt: Date;
   updatedAt: Date;
-  paymentMethod?: "credit_card" | "paypal" | "bank_transfer"; // Optional field for payment method
+  shippedAt: Date;
+  deliverAt: Date;
 }
 
-interface OrderItem {
+export enum OrderStatus {
+  PENDING,
+  PAID,
+  PROCESSING,
+  SHIPPED,
+  DELIVERED,
+  CANCELLED,
+  REFUNDED,
+}
+export type paymentMethod = "credit_card" | "paypal" | "bank_transfer";
+export interface OrderItem {
+  id: string;
+  orderId: string;
   productId: string;
   quantity: number;
+  unitPrice: number;
 }
 
 export type { Order };
-export type OrderStatus = Order["status"];

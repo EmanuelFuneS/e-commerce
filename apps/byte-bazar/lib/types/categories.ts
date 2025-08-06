@@ -1,6 +1,17 @@
+import { Product } from "./products";
+
 interface Category {
   id: string;
   name: string;
-  description?: string; // Optional field for category description
-  parentId?: string; // Optional field for parent category ID, useful for subcategories
+  description?: string;
+  slug: string;
+  parentId?: string;
+  imageUrl: string;
+  isActive: boolean;
+  sortOrder: number;
+  createAt: Date;
+  updateAt: Date;
+  products: Product[];
 }
+
+export type { Category };

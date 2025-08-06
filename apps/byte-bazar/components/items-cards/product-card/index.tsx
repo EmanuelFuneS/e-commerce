@@ -1,3 +1,5 @@
+"use client";
+import Image from "next/image";
 import {
   Card,
   CardContent,
@@ -5,16 +7,31 @@ import {
   CardHeader,
 } from "../../../../../packages/ui/src/components/card";
 import { Label } from "../../../../../packages/ui/src/components/label";
+import { Product } from "../../../lib/types/products";
 
-const ProductCard = () => {
+interface ProductCardProps {
+  data: Product;
+}
+
+const ProductCard = ({ data }: ProductCardProps) => {
+  console.log(data);
+  const image = data.images[0];
   return (
     <Card>
-      <CardHeader>discount, save favorite</CardHeader>
-      <CardContent>image</CardContent>
+      <CardHeader>{data.discountPercentage}</CardHeader>
+      <CardContent>
+        <Image
+          src={image || ""}
+          alt={data.name}
+          width={40}
+          height={40}
+          priority
+        />
+      </CardContent>
       <CardFooter>
-        <Label>Name</Label>
-        <Label>Price</Label>
-        <Label>stars</Label>
+        <Label>{data.name}</Label>
+        <Label>{data.price}</Label>
+        <Label>{data.stock}</Label>
       </CardFooter>
     </Card>
   );
