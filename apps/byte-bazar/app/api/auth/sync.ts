@@ -28,8 +28,6 @@ export default async function handle(req: NextRequest) {
       },
     });
 
-    console.log("User created: ", user);
-
     return NextResponse.json(
       {
         message: "User synced successfully",

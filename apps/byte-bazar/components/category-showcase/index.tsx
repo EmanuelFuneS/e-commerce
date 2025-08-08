@@ -1,26 +1,77 @@
+"use client";
 import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@workspace/ui/components/resizable";
+  Card,
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  Label,
+} from "@workspace/ui/components/";
+
+import Autoplay from "embla-carousel-autoplay";
+import Image from "next/image";
+import Link from "next/link";
+import React from "react";
+import useCategories from "../../lib/hooks/useCategories";
+import { Category } from "../../lib/types/categories";
 const CategoryShowcase = () => {
+  const plugin = React.useRef(
+    Autoplay({ delay: 4000, stopOnInteraction: true })
+  );
+
+  const { categories } = useCategories();
+  console.log("Categories: ", categories);
   return (
-    <ResizablePanelGroup
-      direction="horizontal"
-      className="w-full rounded-lg border md:min-w-[450px]"
-    >
-      <ResizablePanel minSize={30}>
-        <div className="flex h-[400px] items-center justify-center p-6">
-          <span>Categories list</span>
-        </div>
-      </ResizablePanel>
-      <ResizableHandle />
-      <ResizablePanel defaultSize={60} minSize={70}>
-        <div className="flex h-full items-center justify-center p-6">
-          <span>Banners Carousel</span>
-        </div>
-      </ResizablePanel>
-    </ResizablePanelGroup>
+    <section className="flex flex-col md:flex-row h-[400px] my-10 ">
+      {/* Categories section */}
+      <div className="w-full md:w-2/7">
+        <Card className="flex h-full p-4">
+          <ul className=" flex flex-wrap justify-center md:flex-col gap-2">
+            {categories.map((cat: Category, index) => (
+              <li>
+                <Link href={`/products/${cat.slug}`} className="p-1 flex gap-1">
+                  <Image
+                    src={cat.imageUrl}
+                    alt={cat.name}
+                    width={20}
+                    height={20}
+                    className="w-4 h-4 dark:invert dark:brightness-0 dark:contrast-100"
+                  />
+                  <Label>{cat.name}</Label>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      </div>
+
+      {/* Carousel section */}
+      <Card className="w-full md:w-4/5">
+        <Carousel
+          className="w-full h-full" // Cambiar de max-w-xs a w-full h-full
+          plugins={[plugin.current]}
+          onMouseEnter={plugin.current.stop}
+          onMouseLeave={plugin.current.reset}
+        >
+          <CarouselContent className="h-full">
+            <CarouselItem className="h-full">
+              <div className="h-[310px] md:h-[400px] flex justify-center items-center">
+                <span className="text-4xl font-semibold">A</span>
+              </div>
+            </CarouselItem>
+            <CarouselItem className="h-full">
+              <div className="h-[310px] md:h-[400px] flex justify-center items-center">
+                <span className="text-4xl font-semibold">B</span>
+              </div>
+            </CarouselItem>
+            <CarouselItem className="h-full">
+              <div className="h-[310px] md:h-[400px] flex justify-center items-center">
+                <span className="text-4xl font-semibold">C</span>
+              </div>
+            </CarouselItem>
+          </CarouselContent>
+        </Carousel>
+      </Card>
+    </section>
   );
 };
 

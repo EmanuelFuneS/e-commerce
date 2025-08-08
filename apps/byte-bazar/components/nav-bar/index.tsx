@@ -1,5 +1,5 @@
 "use client";
-import { useUser } from "@auth0/nextjs-auth0";
+
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -7,12 +7,13 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
 } from "@workspace/ui/components/navigation-menu";
+import { Menu } from "@workspace/ui/lib";
 import Link from "next/link";
-import { useEffect } from "react";
-import { toast } from "sonner";
-import { syncUser } from "../../lib/actions/auth/syncUser";
+
+import ProfileAuth from "../profile/profile-auth";
+import ProfilePicture from "../profile/profile-picture";
+import ThemeToggle from "../theme-toggle";
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -53,27 +54,7 @@ const components: { title: string; href: string; description: string }[] = [
 ];
 
 const NavBar = () => {
-  const { user, isLoading } = useUser();
-
   /* console.log(`User: ${JSON.stringify(user)},  loading:${isLoading}`); */
-
-  useEffect(() => {
-    if (user?.email && user?.sub && user?.name) {
-      const runSync = async () => {
-        const result = await syncUser(user.email!, user.sub!);
-        if (result.success) {
-          toast("Sync success", {
-            description: result.message,
-          });
-        } else {
-          toast("Sync failed", {
-            description: result.message,
-          });
-        }
-      };
-      runSync();
-    }
-  }, [user]);
 
   return (
     <>
@@ -106,31 +87,27 @@ const NavBar = () => {
             <NavigationMenuItem>
               <NavigationMenuLink>Home</NavigationMenuLink>
             </NavigationMenuItem>
+          </NavigationMenuList>
+          <NavigationMenuList className="pl-40">
             <NavigationMenuItem>
-              {user ? (
-                <NavigationMenuLink
-                  asChild
-                  className={navigationMenuTriggerStyle()}
-                >
-                  <Link href={"/auth/logout"}>Logout</Link>
-                </NavigationMenuLink>
-              ) : (
-                <NavigationMenuLink
-                  asChild
-                  className={navigationMenuTriggerStyle()}
-                >
-                  <Link href="/auth/login">Login</Link>
-                </NavigationMenuLink>
-              )}
+              <ProfilePicture />
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <ProfileAuth />
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <ThemeToggle />
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
       </nav>
-      <nav className="block md:hidden w-full m-4 px-4">
+      <nav className="block md:hidden m-4 px-4">
         <NavigationMenu>
           <NavigationMenuList>
             <NavigationMenuItem>
-              <NavigationMenuTrigger>Burguer</NavigationMenuTrigger>
+              <NavigationMenuTrigger>
+                <Menu />
+              </NavigationMenuTrigger>
               <NavigationMenuContent>
                 <ul className="grid w-[300px] gap-4">
                   <li>
@@ -158,6 +135,14 @@ const NavBar = () => {
                         </div>
                       </Link>
                     </NavigationMenuLink>
+                  </li>
+                  <li className="flex w-full justify-around">
+                    <NavigationMenuItem>
+                      <ThemeToggle />
+                    </NavigationMenuItem>
+                    <NavigationMenuItem>
+                      <ProfilePicture />
+                    </NavigationMenuItem>
                   </li>
                 </ul>
               </NavigationMenuContent>

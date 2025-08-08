@@ -25,7 +25,6 @@ export async function syncUser(email: string, sub: string) {
       },
     });
 
-    console.log("User created: ", user);
     return { success: true, message: "User Synchronized" };
   } catch (error) {
     console.error("Error in the synchronization", error);

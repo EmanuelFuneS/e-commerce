@@ -1,50 +1,49 @@
-import { Button } from "../../../../packages/ui/src/components/button";
-import { Label } from "../../../../packages/ui/src/components/label";
+import { Button, Label } from "@workspace/ui/components/";
+import Link from "next/link";
 import { Brand } from "../../lib/types/brands";
-import { Category } from "../../lib/types/categories";
 import { Product } from "../../lib/types/products";
 import BrandCard from "../items-cards/brand-card";
 import ProductCard from "../items-cards/product-card";
 
 interface PreviewGridProps {
-  dataType: "brand" | "category" | "product";
+  dataType: "brands" | "products";
   brands?: Brand[];
   products?: Product[];
-  categories?: Category[];
 }
 
 const PreviewGrid = ({
   dataType,
-  brands,
-  categories,
-  products,
+  brands = [],
+  products = [],
 }: PreviewGridProps) => {
   const testItemsArray = new Array(5).fill("");
   return (
-    <section className="flex flex-col items-center gap-3 bg-orange-50 w-full">
-      <hgroup className="w-full flex items-center justify-between h-20">
-        <div>
-          <Label>Label</Label>
-          <h2>title</h2>
-        </div>
-        <span>pagination</span>
-      </hgroup>
-      <div className="flex justify-between gap-4">
-        {dataType === "product" &&
-          products!.map((e, index: number) => {
-            return <ProductCard key={index} data={e} />;
-          })}
-        {dataType === "brand" &&
-          brands!.map((e, index: number) => {
-            return <BrandCard key={index} data={e} />;
-          })}
-        {dataType === "category" &&
-          categories!.map((e, index: number) => {
-            return <></>;
-          })}
+    <section className=" flex flex-col items-center  w-full">
+      <div className="w-full h-8 flex justify-start items-center">
+        <Label className="capitalize">{dataType}</Label>
       </div>
-
-      <Button>view All Products</Button>
+      <div className="w-full max-w-6xl mx-auto">
+        <div className="px-4 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 w-full">
+          {products!.map((e, index: number) => (
+            <ProductCard key={index} data={e} />
+          ))}
+          {dataType === "brands" &&
+            brands!.map((e, index: number) => (
+              <BrandCard key={index} data={e} />
+            ))}
+        </div>
+      </div>
+      <div className="mt-4">
+        {dataType === "products" ? (
+          <Link href={"/products"}>
+            <Button>View All Products</Button>
+          </Link>
+        ) : (
+          <Link href={"/brands"}>
+            <Button>View All Brands</Button>
+          </Link>
+        )}
+      </div>
     </section>
   );
 };

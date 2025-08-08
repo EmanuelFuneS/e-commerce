@@ -10,7 +10,7 @@ export async function getCategories() {}
 
 export async function getCategoryPreview(): Promise<ActionResponse> {
   try {
-    const brands = await prisma.brand.findMany({
+    const brands = await prisma.category.findMany({
       where: { isActive: true },
       orderBy: { name: "asc" },
       take: 10,
