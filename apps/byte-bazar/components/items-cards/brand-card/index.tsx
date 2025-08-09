@@ -1,4 +1,3 @@
-"use client";
 import { Card, CardContent } from "@workspace/ui/components";
 import Image from "next/image";
 import { Brand } from "../../../lib/types/brands";
@@ -8,7 +7,7 @@ interface BrandCardProps {
 
 const BrandCard = ({ data }: BrandCardProps) => {
   return (
-    <Card className="bg-white p-1 rounded-lg relative w-40 h-40">
+    <Card className="bg-white p-1 rounded-lg relative">
       <CardContent className="w-40 h-40">
         <Image
           src={data.logo}

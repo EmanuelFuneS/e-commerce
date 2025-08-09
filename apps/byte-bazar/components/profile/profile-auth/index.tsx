@@ -4,6 +4,7 @@ import {
   NavigationMenuLink,
   navigationMenuTriggerStyle,
 } from "@workspace/ui/components/navigation-menu";
+import { Login, Logout } from "@workspace/ui/lib";
 import Link from "next/link";
 import { useEffect } from "react";
 import { toast } from "sonner";
@@ -34,11 +35,17 @@ const ProfileAuth = (props: Props) => {
     <>
       {user ? (
         <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-          <Link href={"/auth/logout"}>Logout</Link>
+          <Link href={"/auth/logout"} className="flex-row items-center gap-2">
+            <Logout />
+            Logout
+          </Link>
         </NavigationMenuLink>
       ) : (
         <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-          <Link href="/auth/login">Login</Link>
+          <Link href="/auth/login" className="flex-row items-center gap-2">
+            <Login />
+            Login
+          </Link>
         </NavigationMenuLink>
       )}
     </>

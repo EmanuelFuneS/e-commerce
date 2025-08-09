@@ -1,5 +1,6 @@
 "use client";
 
+import { useUser } from "@auth0/nextjs-auth0";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -8,81 +9,57 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@workspace/ui/components/navigation-menu";
-import { Menu } from "@workspace/ui/lib";
+import {
+  Cart,
+  Cog,
+  Heart,
+  InboxArchive,
+  Menu,
+  User,
+  XCircle,
+} from "@workspace/ui/lib";
+import NextImage from "next/image";
 import Link from "next/link";
-
+import useCategories from "../../lib/hooks/useCategories";
+import { Category } from "../../lib/types/categories";
 import ProfileAuth from "../profile/profile-auth";
 import ProfilePicture from "../profile/profile-picture";
 import ThemeToggle from "../theme-toggle";
 
-const components: { title: string; href: string; description: string }[] = [
-  {
-    title: "Alert Dialog",
-    href: "/docs/primitives/alert-dialog",
-    description:
-      "A modal dialog that interrupts the user with important content and expects a response.",
-  },
-  {
-    title: "Hover Card",
-    href: "/docs/primitives/hover-card",
-    description:
-      "For sighted users to preview content available behind a link.",
-  },
-  {
-    title: "Progress",
-    href: "/docs/primitives/progress",
-    description:
-      "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.",
-  },
-  {
-    title: "Scroll-area",
-    href: "/docs/primitives/scroll-area",
-    description: "Visually or semantically separates content.",
-  },
-  {
-    title: "Tabs",
-    href: "/docs/primitives/tabs",
-    description:
-      "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
-  },
-  {
-    title: "Tooltip",
-    href: "/docs/primitives/tooltip",
-    description:
-      "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
-  },
-];
-
 const NavBar = () => {
-  /* console.log(`User: ${JSON.stringify(user)},  loading:${isLoading}`); */
-
+  const { user, isLoading } = useUser();
+  const { categories } = useCategories();
   return (
     <>
       <nav className="hidden md:block w-full mx-auto max-w-fit m-4 px-4">
-        <NavigationMenu className="">
+        <NavigationMenu viewport={false}>
           <NavigationMenuList>
             <NavigationMenuItem>
               <NavigationMenuTrigger>Products</NavigationMenuTrigger>
 
               <NavigationMenuContent>
                 <ul className="grid w-[400px] gap-2 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                  {components.map((component) => (
+                  {categories.map((cat: Category, index: number) => (
                     <ListItem
-                      key={component.title}
-                      title={component.title}
-                      href={component.href}
+                      key={cat.id}
+                      title={cat.name}
+                      href={`/products/${cat.slug}`}
+                      imageAlt={cat.name}
+                      imageUrl={cat.imageUrl}
                     >
-                      {component.description}
+                      {cat.description || "Default Description"}
                     </ListItem>
                   ))}
                 </ul>
               </NavigationMenuContent>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <NavigationMenuLink>Brands</NavigationMenuLink>
+              <NavigationMenuLink href="/brands">Brands</NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <NavigationMenuLink>Promotions</NavigationMenuLink>
+              <NavigationMenuLink href="/promotions">
+                Promotions
+              </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
               <NavigationMenuLink>Home</NavigationMenuLink>
@@ -90,14 +67,72 @@ const NavBar = () => {
           </NavigationMenuList>
           <NavigationMenuList className="pl-40">
             <NavigationMenuItem>
-              <ProfilePicture />
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <ProfileAuth />
-            </NavigationMenuItem>
-            <NavigationMenuItem>
               <ThemeToggle />
             </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild href="/Wishlist">
+                <Heart size={37} />
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild href="/cart">
+                <Cart size={37} />
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuTrigger>
+                <ProfilePicture />
+              </NavigationMenuTrigger>
+              <NavigationMenuContent className="relative z-10">
+                <ul className="grid w-[200px] gap-4">
+                  <li>
+                    <NavigationMenuLink asChild>
+                      <Link
+                        href="/settings/account"
+                        className="flex-row items-center gap-2"
+                      >
+                        <User />
+                        Manage My Account
+                      </Link>
+                    </NavigationMenuLink>
+                    <NavigationMenuLink asChild>
+                      <Link
+                        href="/settings/order"
+                        className="flex-row items-center gap-2"
+                      >
+                        <InboxArchive />
+                        My Orders
+                      </Link>
+                    </NavigationMenuLink>
+                    <NavigationMenuLink asChild>
+                      <Link
+                        href="/settings/order/canceled"
+                        className="flex-row items-center gap-2"
+                      >
+                        <XCircle />
+                        My Cancellations
+                      </Link>
+                    </NavigationMenuLink>
+                    <NavigationMenuLink asChild>
+                      <Link
+                        href="/settings"
+                        className="flex-row items-center gap-2"
+                      >
+                        <Cog />
+                        Settings
+                      </Link>
+                    </NavigationMenuLink>
+                    {user && <ProfileAuth />}
+                  </li>
+                </ul>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+
+            {!user && (
+              <NavigationMenuItem>
+                <ProfileAuth />
+              </NavigationMenuItem>
+            )}
           </NavigationMenuList>
         </NavigationMenu>
       </nav>
@@ -158,12 +193,25 @@ function ListItem({
   title,
   children,
   href,
+  imageUrl,
+  imageAlt,
   ...props
-}: React.ComponentPropsWithoutRef<"li"> & { href: string }) {
+}: React.ComponentPropsWithoutRef<"li"> & {
+  href: string;
+  imageUrl: string;
+  imageAlt: string;
+}) {
   return (
     <li {...props}>
       <NavigationMenuLink asChild>
         <Link href={href}>
+          <NextImage
+            src={imageUrl}
+            alt={imageAlt}
+            width={20}
+            height={20}
+            className="w-6 h-6 dark:invert dark:brightness-0 dark:contrast-100"
+          />
           <div className="text-sm leading-none font-medium">{title}</div>
           <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">
             {children}

@@ -16,14 +16,13 @@ const PreviewGrid = ({
   brands = [],
   products = [],
 }: PreviewGridProps) => {
-  const testItemsArray = new Array(5).fill("");
   return (
     <section className=" flex flex-col items-center  w-full">
       <div className="w-full h-8 flex justify-start items-center">
-        <Label className="capitalize">{dataType}</Label>
+        <Label className="capitalize text-3xl">{dataType}</Label>
       </div>
-      <div className="w-full max-w-6xl mx-auto">
-        <div className="px-4 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 w-full">
+      <div className="w-full max-w-6xl my-4 mx-auto">
+        <div className="px-4 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 w-full">
           {products!.map((e, index: number) => (
             <ProductCard key={index} data={e} />
           ))}

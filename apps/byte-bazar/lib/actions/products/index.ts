@@ -8,6 +8,7 @@ import productsSchema, {
   ProductsSchema,
 } from "../../schemas/products/products.schema";
 import { ActionResponse } from "../../types/common";
+import { serializeDecimals } from "../../utils";
 
 export async function createProduct(
   data: ProductsSchema
@@ -53,9 +54,11 @@ export async function getProducts(
       take: pageSize,
     });
 
+    const serializedData = serializeDecimals(products);
+
     return {
       success: true,
-      data: products,
+      data: serializedData,
       pagination: {
         page,
         pageSize,

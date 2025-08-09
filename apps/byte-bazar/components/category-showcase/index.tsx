@@ -19,24 +19,26 @@ const CategoryShowcase = () => {
   );
 
   const { categories } = useCategories();
-  console.log("Categories: ", categories);
   return (
-    <section className="flex flex-col md:flex-row h-[400px] my-10 ">
+    <section className="flex flex-col md:flex-row h-[400px] my-10 space-x-4 ">
       {/* Categories section */}
       <div className="w-full md:w-2/7">
         <Card className="flex h-full p-4">
           <ul className=" flex flex-wrap justify-center md:flex-col gap-2">
             {categories.map((cat: Category, index) => (
-              <li>
-                <Link href={`/products/${cat.slug}`} className="p-1 flex gap-1">
+              <li key={index}>
+                <Link
+                  href={`/products/${cat.slug}`}
+                  className="p-1 flex space-x-2 hover:text-slate-400 "
+                >
                   <Image
                     src={cat.imageUrl}
                     alt={cat.name}
                     width={20}
                     height={20}
-                    className="w-4 h-4 dark:invert dark:brightness-0 dark:contrast-100"
+                    className="w-6 h-6 dark:invert dark:brightness-0 dark:contrast-100"
                   />
-                  <Label>{cat.name}</Label>
+                  <Label className="text-md">{cat.name}</Label>
                 </Link>
               </li>
             ))}
