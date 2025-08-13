@@ -28,8 +28,8 @@ interface Product {
   metaDescription?: string;
   createdAt: Date;
   updateAt: Date;
-  orderItems: OrderItem;
-  stockMovements: StockMovement;
+  orderItems?: OrderItem;
+  stockMovements?: StockMovement;
 }
 
 export type { Product };

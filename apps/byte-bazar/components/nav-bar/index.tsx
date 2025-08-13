@@ -62,7 +62,7 @@ const NavBar = () => {
               </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <NavigationMenuLink>Home</NavigationMenuLink>
+              <NavigationMenuLink href="/">Home</NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
           <NavigationMenuList className="pl-40">

@@ -18,9 +18,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="">
       <body
-        className={`${fontSans.variable} ${fontMono.variable} scroll-smooth font-sans antialiased `}
+        className={`${fontSans.variable} ${fontMono.variable} scroll-smooth font-sans antialiased flex flex-col min-h-screen`}
       >
         <Providers>{children}</Providers>
       </body>
