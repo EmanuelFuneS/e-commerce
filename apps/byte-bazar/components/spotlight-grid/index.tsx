@@ -1,8 +1,8 @@
 "use client";
-import psSlim from "@/public/svg/ps5-slim.svg";
-import speaker from "@/public/svg/speaker-horizontal.svg";
-import speakerLit from "@/public/svg/speaker.svg";
-import valveIndex from "@/public/svg/valve_index_vr.webp";
+import psSlim from "@/public/img/ps5-slim.svg";
+import speaker from "@/public/img/speaker-horizontal.svg";
+import speakerLit from "@/public/img/speaker.svg";
+import valveIndex from "@/public/img/valve_index_vr.webp";
 import { Card } from "@workspace/ui/components";
 import Image from "next/image";
 import { useEffect, useRef } from "react";

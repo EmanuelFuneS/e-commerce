@@ -7,9 +7,9 @@ import {
   Label,
 } from "@workspace/ui/components/";
 
-import steamMachine from "@/public/svg/SteamMachine.webp";
-import steamController from "@/public/svg/steam-controller.webp";
-import steamDeck from "@/public/svg/steamdeck.webp";
+import steamMachine from "@/public/img/SteamMachine.webp";
+import steamController from "@/public/img/steam-controller.webp";
+import steamDeck from "@/public/img/steamdeck.webp";
 
 import Autoplay from "embla-carousel-autoplay";
 import Image from "next/image";
