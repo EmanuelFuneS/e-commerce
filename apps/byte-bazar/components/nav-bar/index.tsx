@@ -37,7 +37,7 @@ const NavBar = () => {
             <NavigationMenuItem>
               <NavigationMenuTrigger>Products</NavigationMenuTrigger>
 
-              <NavigationMenuContent>
+              <NavigationMenuContent className="relative z-50">
                 <ul className="grid w-[400px] gap-2 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
                   {categories.map((cat: Category, index: number) => (
                     <ListItem
@@ -70,20 +70,50 @@ const NavBar = () => {
               <ThemeToggle />
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <NavigationMenuLink asChild href="/Wishlist">
-                <Heart size={37} />
-              </NavigationMenuLink>
+              <NavigationMenuTrigger>
+                <Heart size={20} />
+              </NavigationMenuTrigger>
+              <NavigationMenuContent className="relative z-50">
+                <ul className="grid w-[200px] gap-4">
+                  <li>
+                    items Wishlist items
+                    <NavigationMenuLink asChild>
+                      <Link
+                        href={"/wishlist"}
+                        className="border-2 shadow-lg bg-background dark:bg-card text-center hover:scale-105  transform transition-transform duration-300"
+                      >
+                        View All
+                      </Link>
+                    </NavigationMenuLink>
+                  </li>
+                </ul>
+              </NavigationMenuContent>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <NavigationMenuLink asChild href="/cart">
-                <Cart size={37} />
-              </NavigationMenuLink>
+              <NavigationMenuTrigger>
+                <Cart size={20} />
+              </NavigationMenuTrigger>
+              <NavigationMenuContent className="relative z-50">
+                <ul className="grid w-[200px] gap-4">
+                  <li>
+                    items in cart
+                    <NavigationMenuLink asChild>
+                      <Link
+                        href="/cart"
+                        className="border-2 shadow-lg bg-background dark:bg-card text-center hover:scale-105  transform transition-transform duration-300"
+                      >
+                        View Cart
+                      </Link>
+                    </NavigationMenuLink>
+                  </li>
+                </ul>
+              </NavigationMenuContent>
             </NavigationMenuItem>
             <NavigationMenuItem>
               <NavigationMenuTrigger>
                 <ProfilePicture />
               </NavigationMenuTrigger>
-              <NavigationMenuContent className="relative z-10">
+              <NavigationMenuContent className="relative z-50">
                 <ul className="grid w-[200px] gap-4">
                   <li>
                     <NavigationMenuLink asChild>
@@ -143,7 +173,7 @@ const NavBar = () => {
               <NavigationMenuTrigger>
                 <Menu />
               </NavigationMenuTrigger>
-              <NavigationMenuContent>
+              <NavigationMenuContent className="relative z-50">
                 <ul className="grid w-[300px] gap-4">
                   <li>
                     <NavigationMenuLink asChild>
@@ -203,7 +233,7 @@ function ListItem({
 }) {
   return (
     <li {...props}>
-      <NavigationMenuLink asChild>
+      <NavigationMenuLink asChild className="hover:bg-background dark:bg-card">
         <Link href={href}>
           <NextImage
             src={imageUrl}

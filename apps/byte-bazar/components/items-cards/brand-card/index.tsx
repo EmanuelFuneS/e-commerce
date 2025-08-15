@@ -7,7 +7,7 @@ interface BrandCardProps {
 
 const BrandCard = ({ data }: BrandCardProps) => {
   return (
-    <Card className="bg-white p-1 rounded-lg relative">
+    <Card className="bg-white p-1 rounded-lg relative hover:scale-105  transform transition-transform duration-300">
       <CardContent className="w-40 h-40">
         <Image
           src={data.logo}

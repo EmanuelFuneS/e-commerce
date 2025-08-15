@@ -42,17 +42,30 @@ export async function getProducts(
   pageSize: number = 10
 ): Promise<ActionResponse> {
   try {
-    const products = await prisma.product.findMany({
-      where: { isActive: true },
-      orderBy: { name: "asc" },
-      include: {
-        _count: {
-          select: { stockMovements: true },
+    const [totalProducts, products] = await prisma.$transaction([
+      prisma.product.count(),
+      prisma.product.findMany({
+        where: { isActive: true },
+        orderBy: { name: "asc" },
+        include: {
+          category: {
+            select: {
+              name: true,
+            },
+          },
+          brand: {
+            select: {
+              name: true,
+            },
+          },
+          _count: {
+            select: { stockMovements: true },
+          },
         },
-      },
-      skip: (page - 1) * pageSize,
-      take: pageSize,
-    });
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      }),
+    ]);
 
     const serializedData = serializeDecimals(products);
 
@@ -62,7 +75,7 @@ export async function getProducts(
       pagination: {
         page,
         pageSize,
-        totalPages: Math.ceil(products.length / pageSize),
+        totalPages: Math.ceil(totalProducts / pageSize),
         totalItems: products.length,
       },
     } as ActionResponse;

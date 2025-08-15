@@ -7,12 +7,17 @@ import {
   Label,
 } from "@workspace/ui/components/";
 
+import steamMachine from "@/public/svg/SteamMachine.webp";
+import steamController from "@/public/svg/steam-controller.webp";
+import steamDeck from "@/public/svg/steamdeck.webp";
+
 import Autoplay from "embla-carousel-autoplay";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import useCategories from "../../lib/hooks/useCategories";
 import { Category } from "../../lib/types/categories";
+
 const CategoryShowcase = () => {
   const plugin = React.useRef(
     Autoplay({ delay: 4000, stopOnInteraction: true })
@@ -47,7 +52,7 @@ const CategoryShowcase = () => {
       </div>
 
       {/* Carousel section */}
-      <Card className="w-full md:w-4/5">
+      <Card className="w-full md:w-4/5 p-0">
         <Carousel
           className="w-full h-full" // Cambiar de max-w-xs a w-full h-full
           plugins={[plugin.current]}
@@ -56,18 +61,30 @@ const CategoryShowcase = () => {
         >
           <CarouselContent className="h-full">
             <CarouselItem className="h-full">
-              <div className="h-[310px] md:h-[400px] flex justify-center items-center">
-                <span className="text-4xl font-semibold">A</span>
+              <div className="h-[310px] md:h-[400px] rounded-xl flex justify-center items-center bg-black">
+                <Image
+                  src={steamDeck}
+                  alt="Banner"
+                  className=" h-full w-full object-contain "
+                />
               </div>
             </CarouselItem>
             <CarouselItem className="h-full">
-              <div className="h-[310px] md:h-[400px] flex justify-center items-center">
-                <span className="text-4xl font-semibold">B</span>
+              <div className="h-[310px] md:h-[400px] rounded-xl flex justify-center items-center bg-black">
+                <Image
+                  src={steamMachine}
+                  alt="Banner"
+                  className=" h-full w-full object-scale-down "
+                />
               </div>
             </CarouselItem>
             <CarouselItem className="h-full">
-              <div className="h-[310px] md:h-[400px] flex justify-center items-center">
-                <span className="text-4xl font-semibold">C</span>
+              <div className="h-[310px] md:h-[400px] rounded-xl flex justify-center items-center bg-black">
+                <Image
+                  src={steamController}
+                  alt="Banner"
+                  className=" h-4/6 w-4/6 object-contain "
+                />
               </div>
             </CarouselItem>
           </CarouselContent>

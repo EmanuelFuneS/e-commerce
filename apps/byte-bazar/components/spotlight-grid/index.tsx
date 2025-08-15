@@ -1,4 +1,10 @@
 "use client";
+import psSlim from "@/public/svg/ps5-slim.svg";
+import speaker from "@/public/svg/speaker-horizontal.svg";
+import speakerLit from "@/public/svg/speaker.svg";
+import valveIndex from "@/public/svg/valve_index_vr.webp";
+import { Card } from "@workspace/ui/components";
+import Image from "next/image";
 import { useEffect, useRef } from "react";
 
 const SpotlightGrid = () => {
@@ -28,15 +34,56 @@ const SpotlightGrid = () => {
   return (
     <section
       ref={sectionRef}
-      className=" h-screen flex items-center snap-center text-white"
+      className=" h-full flex items-center snap-center text-white"
     >
-      <div className="w-full h-[70%] grid grid-cols-2 gap-2">
-        <div className="bg-black rounded">left image max h</div>
+      <div className="w-full h-[70%] grid grid-cols-1 md:grid-cols-2 gap-2">
+        <div>
+          <Card className="relative h-full shadow-lg bg-black p-0 overflow-hidden">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-2/6 h-2/6 rounded-full bg-[#D9D9D9] blur-3xl opacity-100 " />
+            </div>
+            <Image
+              src={valveIndex}
+              alt="Valve Index Banner"
+              className="relative z-10 object-scale-down h-full w-full"
+            />
+          </Card>
+        </div>
         <div className="w-full h-full grid grid-cols-1 grid-rows-2 gap-2">
-          <div className="bg-black rounded">upper foto</div>
+          <div>
+            <Card className="h-full relative shadow-lg bg-black p-0 overflow-hidden">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-3/6 h-3/6 rounded-full bg-[#D9D9D9] blur-3xl opacity-100 " />
+              </div>
+              <Image
+                src={speaker}
+                alt="Speaker Banner"
+                className="relative z-50 object-scale-down h-full w-full"
+              />
+            </Card>
+          </div>
           <div className="w-full h-full grid grid-cols-2 gap-2">
-            <div className="bg-black rounded"></div>
-            <div className="bg-black rounded"></div>
+            <div>
+              <Card className="relative h-full shadow-lg bg-black p-0">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-3/6 h-3/6 rounded-full bg-[#D9D9D9] blur-3xl opacity-100 " />
+                </div>
+                <Image
+                  src={speakerLit}
+                  alt="Speaker Lit Banner"
+                  className="relative z-50 object-scale-down h-full w-full"
+                />
+              </Card>
+            </div>
+            <div>
+              <Card className="h-full shadow-lg bg-black p-0">
+                <Image
+                  src={psSlim}
+                  alt="PS5 Slim Banner"
+                  className="object-scale-down h-full w-full"
+                />
+              </Card>
+            </div>
           </div>
         </div>
       </div>

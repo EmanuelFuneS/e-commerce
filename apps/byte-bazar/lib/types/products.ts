@@ -30,6 +30,12 @@ interface Product {
   updateAt: Date;
   orderItems?: OrderItem;
   stockMovements?: StockMovement;
+  brand: {
+    name: string;
+  };
+  category: {
+    name: string;
+  };
 }
 
 export type { Product };

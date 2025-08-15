@@ -6,7 +6,7 @@ import { getBrands, getProducts } from "@/lib/actions";
 import { brandsTest, productTest } from "@/lib/test/data";
 
 export default async function Page() {
-  const products = await getProducts();
+  const products = await getProducts(undefined, undefined);
   const brands = await getBrands();
   // const categories = await getCategoryPreview();
 
