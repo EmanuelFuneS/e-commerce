@@ -1,4 +1,4 @@
-interface brandDynamicZoneProps {
+interface BrandDynamicZoneProps {
   params: { slug: string[] };
   searchParams: { [key: string]: string | string[] | undefined };
 }
@@ -6,7 +6,7 @@ interface brandDynamicZoneProps {
 export default async function BrandDynamicZone({
   params,
   searchParams,
-}: brandDynamicZoneProps) {
+}: BrandDynamicZoneProps) {
   const { slug } = params;
 
   return <div>Página no encontrada</div>;
