@@ -3,10 +3,11 @@
 import { z } from "zod";
 
 import { revalidatePath } from "next/cache";
-import prisma from "../../prisma";
+import prisma, { safeDbOperation } from "../../prisma";
 import productsSchema, {
   ProductsSchema,
 } from "../../schemas/products/products.schema";
+import { createSkeletons, productTemplate } from "../../skeleton-templates";
 import { ActionResponse } from "../../types/common";
 import { serializeDecimals } from "../../utils";
 
@@ -37,55 +38,58 @@ export async function createProduct(
   }
 }
 
-export async function getProducts(
-  page: number = 1,
-  pageSize: number = 10
-): Promise<ActionResponse> {
-  try {
-    const [totalProducts, products] = await prisma.$transaction([
-      prisma.product.count(),
-      prisma.product.findMany({
-        where: { isActive: true },
-        orderBy: { name: "asc" },
-        include: {
-          category: {
-            select: {
-              name: true,
+export async function getProducts(page: number = 1, pageSize: number = 10) {
+  return safeDbOperation<ActionResponse>(
+    async () => {
+      const [totalProducts, products] = await prisma.$transaction([
+        prisma.product.count(),
+        prisma.product.findMany({
+          where: { isActive: true },
+          orderBy: { name: "asc" },
+          include: {
+            category: {
+              select: {
+                name: true,
+              },
+            },
+            brand: {
+              select: {
+                name: true,
+              },
+            },
+            _count: {
+              select: { stockMovements: true },
             },
           },
-          brand: {
-            select: {
-              name: true,
-            },
-          },
-          _count: {
-            select: { stockMovements: true },
-          },
+          skip: (page - 1) * pageSize,
+          take: pageSize,
+        }),
+      ]);
+
+      const serializedData = serializeDecimals(products);
+
+      return {
+        success: true,
+        data: serializedData,
+        pagination: {
+          page,
+          pageSize,
+          totalPages: Math.ceil(totalProducts / pageSize),
+          totalItems: products.length,
         },
-        skip: (page - 1) * pageSize,
-        take: pageSize,
-      }),
-    ]);
-
-    const serializedData = serializeDecimals(products);
-
-    return {
-      success: true,
-      data: serializedData,
+      } as ActionResponse;
+    },
+    {
+      success: false,
+      data: createSkeletons(productTemplate, 8),
       pagination: {
         page,
         pageSize,
-        totalPages: Math.ceil(totalProducts / pageSize),
-        totalItems: products.length,
+        totalPages: 0,
+        totalItems: 0,
       },
-    } as ActionResponse;
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    return {
-      success: false,
-      error: "Failed to fetch products",
-    } as ActionResponse;
-  }
+    }
+  );
 }
 
 export async function SearchByProductName() {
@@ -124,41 +128,38 @@ export async function getProductPreview(params?: {
   discount?: boolean;
   promotion?: boolean;
   sale?: boolean;
-}): Promise<ActionResponse> {
-  try {
-    const where: any = { isActive: true };
+}) {
+  return safeDbOperation<ActionResponse>(
+    async () => {
+      const where: any = { isActive: true };
 
-    if (params?.search) {
-      where.name = { contains: params.search, mode: "insensitive" };
-    }
-    if (params?.discount) {
-      where.discount = { gt: 0 };
-    }
-    if (params?.promotion) {
-      where.promotion = true;
-    }
-    if (params?.sale) {
-      where.sale = true;
-    }
+      if (params?.search) {
+        where.name = { contains: params.search, mode: "insensitive" };
+      }
+      if (params?.discount) {
+        where.discount = { gt: 0 };
+      }
+      if (params?.promotion) {
+        where.promotion = true;
+      }
+      if (params?.sale) {
+        where.sale = true;
+      }
 
-    const products = await prisma.product.findMany({
-      where,
-      orderBy: { createdAt: "desc" },
-      take: 10,
-      include: {
-        brand: { select: { name: true } },
-        category: { select: { name: true } },
-      },
-    });
+      const products = await prisma.product.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+        take: 5,
+        include: {
+          brand: { select: { name: true } },
+          category: { select: { name: true } },
+        },
+      });
 
-    return { success: true, data: products } as ActionResponse;
-  } catch (error) {
-    console.error("Error fetching product preview:", error);
-    return {
-      success: false,
-      error: "Failed to fetch product preview",
-    } as ActionResponse;
-  }
+      return { success: true, data: products } as ActionResponse;
+    },
+    { success: true, data: createSkeletons(productTemplate, 6) }
+  );
 }
 
 export async function getProductByBrands(

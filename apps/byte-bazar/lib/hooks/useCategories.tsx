@@ -11,7 +11,7 @@ const useCategories = () => {
       try {
         const response = await getCategoryPreview();
 
-        setCategories(response.data);
+        setCategories(response!.data);
       } catch (error) {
         setError(error);
       } finally {

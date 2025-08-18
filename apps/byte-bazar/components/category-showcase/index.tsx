@@ -5,6 +5,7 @@ import {
   CarouselContent,
   CarouselItem,
   Label,
+  Skeleton,
 } from "@workspace/ui/components/";
 
 import steamMachine from "@/public/img/SteamMachine.webp";
@@ -24,27 +25,17 @@ const CategoryShowcase = () => {
   );
 
   const { categories } = useCategories();
+  console.log(categories);
+
   return (
     <section className="flex flex-col md:flex-row h-[400px] my-10 space-x-4 ">
-      {/* Categories section */}
+      {/* categories section */}
       <div className="w-full md:w-2/7">
         <Card className="flex h-full p-4">
           <ul className=" flex flex-wrap justify-center md:flex-col gap-2">
             {categories.map((cat: Category, index) => (
               <li key={index}>
-                <Link
-                  href={`/products/${cat.slug}`}
-                  className="p-1 flex space-x-2 hover:text-slate-400 "
-                >
-                  <Image
-                    src={cat.imageUrl}
-                    alt={cat.name}
-                    width={20}
-                    height={20}
-                    className="w-6 h-6 dark:invert dark:brightness-0 dark:contrast-100"
-                  />
-                  <Label className="text-md">{cat.name}</Label>
-                </Link>
+                <CategoryLink cat={cat} idx={index} />
               </li>
             ))}
           </ul>
@@ -93,5 +84,35 @@ const CategoryShowcase = () => {
     </section>
   );
 };
+
+function CategoryLink({ cat, idx }: { cat: Category; idx: number }) {
+  const isSkeleton = !cat.id || !cat.name || !cat.imageUrl;
+  return (
+    <>
+      {isSkeleton ? (
+        <div className="p-1 flex items-center space-x-2 ">
+          <Skeleton className="h-6 w-8  bg-slate-400 " />
+          <Skeleton
+            className={`${idx % 2 === 1 ? "w-[100px]" : "w-[120px]"} h-4 bg-slate-400 `}
+          />
+        </div>
+      ) : (
+        <Link
+          href={`/products/${cat.slug}`}
+          className="p-1 flex space-x-2 hover:text-slate-400 "
+        >
+          <Image
+            src={cat.imageUrl || ""}
+            alt={cat.name || ""}
+            width={20}
+            height={20}
+            className="w-6 h-6 dark:invert dark:brightness-0 dark:contrast-100"
+          />
+          <Label className="text-md">{cat.name}</Label>
+        </Link>
+      )}
+    </>
+  );
+}
 
 export default CategoryShowcase;

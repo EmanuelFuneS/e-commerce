@@ -11,3 +11,21 @@ const prisma =
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
 export default prisma;
+
+export async function safeDbOperation<T>(
+  operations: () => Promise<T>,
+  fallback?: T
+): Promise<T | null> {
+  try {
+    return await operations();
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message.includes("Can't reach database server")
+    ) {
+      console.warn("Database not available, returning fallback value");
+      return fallback ?? null;
+    }
+    throw error;
+  }
+}

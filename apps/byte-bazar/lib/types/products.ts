@@ -2,38 +2,38 @@ import { OrderItem } from "./orders";
 import { StockMovement } from "./stockMovement";
 
 interface Product {
-  id: string;
+  id?: string;
   name: string;
   description: string;
-  comparePrice: number;
-  price: number;
-  stock: number;
-  minStock: number;
-  categoryId: string;
-  brandId: string;
-  imageUrl: string;
-  images: string[];
-  tags: string[];
-  specification: object;
-  discountPercentage: number;
-  discountStartDate: Date;
-  discountEndDate: Date;
-  isActive: boolean;
-  isFeatured: boolean;
-  weight: number;
-  dimension: number;
-  slug: string;
-  views: number;
+  comparePrice?: number;
+  price?: number;
+  stock?: number;
+  minStock?: number;
+  categoryId?: string;
+  brandId?: string;
+  imageUrl?: string;
+  images?: string[];
+  tags?: string[];
+  specification?: object;
+  discountPercentage?: number;
+  discountStartDate?: Date;
+  discountEndDate?: Date;
+  isActive?: boolean;
+  isFeatured?: boolean;
+  weight?: number;
+  dimension?: number;
+  slug?: string;
+  views?: number;
   metaTitle?: string;
   metaDescription?: string;
-  createdAt: Date;
-  updateAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
   orderItems?: OrderItem;
   stockMovements?: StockMovement;
-  brand: {
+  brand?: {
     name: string;
   };
-  category: {
+  category?: {
     name: string;
   };
 }

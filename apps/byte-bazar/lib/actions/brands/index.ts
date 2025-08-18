@@ -1,9 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import prisma from "../../prisma";
+import prisma, { safeDbOperation } from "../../prisma";
 
 import brandSchema, { BrandSchema } from "../../schemas/brand/brand.schema";
+import { brandTemplate, createSkeletons } from "../../skeleton-templates";
 import { ActionResponse } from "../../types/common";
 
 export async function createBrand(data: BrandSchema): Promise<ActionResponse> {
@@ -24,35 +25,38 @@ export async function createBrand(data: BrandSchema): Promise<ActionResponse> {
   }
 }
 
-export async function getBrands(
-  page: number = 1,
-  pageSize: number = 10
-): Promise<ActionResponse> {
-  try {
-    const brands = await prisma.brand.findMany({
-      where: { isActive: true },
-      orderBy: { name: "asc" },
-      skip: (page - 1) * pageSize,
-      take: pageSize,
-    });
+export async function getBrands(page: number = 1, pageSize: number = 10) {
+  return safeDbOperation<ActionResponse>(
+    async () => {
+      const brands = await prisma.brand.findMany({
+        where: { isActive: true },
+        orderBy: { name: "asc" },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      });
 
-    return {
-      success: true,
-      data: brands,
+      return {
+        success: true,
+        data: brands,
+        pagination: {
+          page,
+          pageSize,
+          totalPages: Math.ceil(brands.length / pageSize),
+          totalItems: brands.length,
+        },
+      } as ActionResponse;
+    },
+    {
+      success: false,
+      data: createSkeletons(brandTemplate, 6),
       pagination: {
         page,
         pageSize,
-        totalPages: Math.ceil(brands.length / pageSize),
-        totalItems: brands.length,
+        totalPages: 0,
+        totalItems: 0,
       },
-    } as ActionResponse;
-  } catch (error) {
-    console.error("Error fetching brands", error);
-    return {
-      success: false,
-      error: "Failed to get brands",
-    } as ActionResponse;
-  }
+    }
+  );
 }
 
 export async function getBrandById(id: string): Promise<ActionResponse> {
@@ -74,22 +78,19 @@ export async function getBrandById(id: string): Promise<ActionResponse> {
   }
 }
 
-export async function getBrandPreview(): Promise<ActionResponse> {
-  try {
-    const brands = await prisma.brand.findMany({
-      where: { isActive: true },
-      orderBy: { name: "asc" },
-      take: 10,
-    });
+export async function getBrandPreview() {
+  return safeDbOperation<ActionResponse>(
+    async () => {
+      const brands = await prisma.brand.findMany({
+        where: { isActive: true },
+        orderBy: { name: "asc" },
+        take: 10,
+      });
 
-    return { success: true, data: brands } as ActionResponse;
-  } catch (error) {
-    console.error("Error fetching brand preview", error);
-    return {
-      success: false,
-      error: "Failed to fetch brand preview",
-    } as ActionResponse;
-  }
+      return { success: true, data: brands } as ActionResponse;
+    },
+    { success: true, data: createSkeletons(brandTemplate, 6) }
+  );
 }
 
 export async function updateBrand() {}

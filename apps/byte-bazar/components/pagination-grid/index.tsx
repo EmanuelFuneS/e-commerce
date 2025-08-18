@@ -29,7 +29,7 @@ const PaginationGrid = ({
         {data &&
           data.map((e: Product, i: number) => <ProductCard key={i} data={e} />)}
       </div>
-      <Pagination>
+      <Pagination className="py-4">
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious
