@@ -11,7 +11,7 @@ const BrandCard = ({ data }: BrandCardProps) => {
     <Card
       className={`${data && "bg-white"} rounded-lg relative hover:scale-105  transform transition-transform duration-300 p-0`}
     >
-      {isSkeleton ? (
+      {!data.logo ? (
         <Skeleton className="w-full h-40 bg-slate-400" />
       ) : (
         <CardContent className="w-40 h-40">

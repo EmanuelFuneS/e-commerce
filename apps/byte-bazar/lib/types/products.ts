@@ -23,6 +23,7 @@ interface Product {
   weight?: number;
   dimension?: number;
   slug?: string;
+  sku?: string;
   views?: number;
   metaTitle?: string;
   metaDescription?: string;
@@ -36,6 +37,10 @@ interface Product {
   category?: {
     name: string;
   };
+
+  //for seed only
+  brandName?: string;
+  categoryName?: string;
 }
 
 export type { Product };

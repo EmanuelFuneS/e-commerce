@@ -8,6 +8,9 @@ cloudinary.config({
 
 export async function uploadImage(imagePath: string) {
   try {
+    if (!imagePath || imagePath.trim() === "") {
+      return "";
+    }
     const result = await cloudinary.uploader.upload(imagePath);
     console.log("image uploaded");
     return result.secure_url;

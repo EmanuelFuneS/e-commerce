@@ -27,7 +27,7 @@ const ProductCard = ({ data }: ProductCardProps) => {
         {/*  <HeartSolid className="hidden hover:block" /> */}
       </CardHeader>
       <CardContent className="w-full h-40 flex justify-center relative">
-        {isSkeleton ? (
+        {!image ? (
           <Skeleton className="w-full h-full bg-slate-400" />
         ) : (
           <Image
@@ -40,7 +40,7 @@ const ProductCard = ({ data }: ProductCardProps) => {
         )}
       </CardContent>
 
-      <CardFooter className="w-full flex flex-col gap-2 items-start">
+      <CardFooter className="min-w-40 flex flex-col gap-2 items-start">
         {isSkeleton ? (
           <div className="w-full flex flex-col space-y-2">
             <Skeleton className="w-full h-5 p-0.5 bg-slate-400" />

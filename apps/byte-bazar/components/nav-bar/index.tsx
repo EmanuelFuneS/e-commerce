@@ -20,6 +20,7 @@ import {
 } from "@workspace/ui/lib";
 import NextImage from "next/image";
 import Link from "next/link";
+import { Skeleton } from "../../../../packages/ui/src/components";
 import useCategories from "../../lib/hooks/useCategories";
 import { Category } from "../../lib/types/categories";
 import ProfileAuth from "../profile/profile-auth";
@@ -44,10 +45,14 @@ const NavBar = () => {
                       key={cat.id}
                       title={cat.name}
                       href={`/products/${cat.slug}`}
-                      imageAlt={cat.name}
-                      imageUrl={cat.imageUrl}
+                      imageAlt={cat.name || ""}
+                      imageUrl={cat.imageUrl || ""}
                     >
-                      {cat.description || "Default Description"}
+                      {cat.description || (
+                        <Skeleton
+                          className={`${index % 2 === 0 ? "w-[100px]" : "w-[120px]"} h-4 bg-slate-500`}
+                        />
+                      )}
                     </ListItem>
                   ))}
                 </ul>
@@ -235,13 +240,17 @@ function ListItem({
     <li {...props}>
       <NavigationMenuLink asChild className="hover:bg-background dark:bg-card">
         <Link href={href}>
-          <NextImage
-            src={imageUrl}
-            alt={imageAlt}
-            width={20}
-            height={20}
-            className="w-6 h-6 dark:invert dark:brightness-0 dark:contrast-100"
-          />
+          {imageUrl ? (
+            <NextImage
+              src={imageUrl}
+              alt={imageAlt}
+              width={20}
+              height={20}
+              className="w-6 h-6 dark:invert dark:brightness-0 dark:contrast-100"
+            />
+          ) : (
+            <Skeleton className="w-5 h-5 bg-slate-500" />
+          )}
           <div className="text-sm leading-none font-medium">{title}</div>
           <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">
             {children}

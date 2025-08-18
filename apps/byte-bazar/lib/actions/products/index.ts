@@ -149,7 +149,7 @@ export async function getProductPreview(params?: {
       const products = await prisma.product.findMany({
         where,
         orderBy: { createdAt: "desc" },
-        take: 5,
+        take: 6,
         include: {
           brand: { select: { name: true } },
           category: { select: { name: true } },

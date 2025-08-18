@@ -1,16 +1,29 @@
 "use client";
+import useHealthDB from "@/lib/hooks/useHealthDB";
 import { Product } from "@/lib/types/products";
 import { useCallback, useEffect, useState, useTransition } from "react";
+import { toast } from "sonner";
 import PaginationGrid from "../../../components/pagination-grid";
 import { getProducts } from "../../../lib/actions";
 import { ApiResponse } from "../../../lib/types/common";
 
-type Props = {};
-
-const Page = (props: Props) => {
+const Page = () => {
   const [page, setPage] = useState<number>(1);
   const [products, setProducts] = useState<ApiResponse<Product[]> | null>(null);
   const [isPending, startTransition] = useTransition();
+  const { availableDB } = useHealthDB();
+
+  useEffect(() => {
+    if (availableDB) {
+      toast("Sync success", {
+        description: `DB is successfully connected`,
+      });
+    } else {
+      toast("Sync failed", {
+        description: `DB is failed connected`,
+      });
+    }
+  }, [availableDB]);
 
   useEffect(() => {
     startTransition(async () => {

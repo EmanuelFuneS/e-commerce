@@ -85,7 +85,7 @@ const CategoryShowcase = () => {
   );
 };
 
-function CategoryLink({ cat, idx }: { cat: Category; idx: number }) {
+export function CategoryLink({ cat, idx }: { cat: Category; idx: number }) {
   const isSkeleton = !cat.id || !cat.name || !cat.imageUrl;
   return (
     <>

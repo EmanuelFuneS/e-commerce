@@ -84,7 +84,7 @@ export async function getBrandPreview() {
       const brands = await prisma.brand.findMany({
         where: { isActive: true },
         orderBy: { name: "asc" },
-        take: 10,
+        take: 6,
       });
 
       return { success: true, data: brands } as ActionResponse;

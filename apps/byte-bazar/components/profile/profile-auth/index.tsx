@@ -9,9 +9,8 @@ import Link from "next/link";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { syncUser } from "../../../lib/actions/auth/syncUser";
-type Props = {};
 
-const ProfileAuth = (props: Props) => {
+const ProfileAuth = () => {
   const { user, isLoading } = useUser();
 
   useEffect(() => {
