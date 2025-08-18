@@ -24,7 +24,7 @@ export default async function handle(req: NextRequest) {
         auth0_id: sub,
         isActive: true,
         lastLogin: new Date(),
-        roleId: "USER",
+        /* roleId: "USER", */
       },
     });
 
