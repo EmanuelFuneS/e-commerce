@@ -5,9 +5,7 @@ import PaginationGrid from "../../../components/pagination-grid";
 import { getBrands } from "../../../lib/actions";
 import { ApiResponse } from "../../../lib/types/common";
 
-type Props = {};
-
-const Page = (props: Props) => {
+const Page = () => {
   const [page, setPage] = useState<number>(1);
   const [brands, setBrands] = useState<ApiResponse<Product[]> | null>(null);
   const [isPending, startTransition] = useTransition();

@@ -1,6 +1,4 @@
-type Props = {};
-
-const Page = (props: Props) => {
+const Page = () => {
   return <div className="h-screen">Settings</div>;
 };
 
