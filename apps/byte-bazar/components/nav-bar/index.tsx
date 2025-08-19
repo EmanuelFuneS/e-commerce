@@ -1,6 +1,7 @@
 "use client";
 
 import { useUser } from "@auth0/nextjs-auth0";
+import { Button, Input, ScrollArea, Skeleton } from "@workspace/ui/components";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -15,14 +16,17 @@ import {
   Heart,
   InboxArchive,
   Menu,
+  Search,
   User,
   XCircle,
 } from "@workspace/ui/lib";
 import NextImage from "next/image";
 import Link from "next/link";
-import { Skeleton } from "../../../../packages/ui/src/components";
 import useCategories from "../../lib/hooks/useCategories";
+import useFavoritesProducts from "../../lib/hooks/useFavoritesProducts";
+import { Product } from "../../lib/types";
 import { Category } from "../../lib/types/categories";
+import ListProductCard from "../items-cards/list-product-card";
 import ProfileAuth from "../profile/profile-auth";
 import ProfilePicture from "../profile/profile-picture";
 import ThemeToggle from "../theme-toggle";
@@ -30,9 +34,12 @@ import ThemeToggle from "../theme-toggle";
 const NavBar = () => {
   const { user, isLoading } = useUser();
   const { categories } = useCategories();
+  const { favorites } = useFavoritesProducts();
+
+  console.log(favorites);
   return (
     <>
-      <nav className="hidden md:block w-full mx-auto max-w-fit m-4 px-4">
+      <nav className="hidden md:block w-full mx-auto max-w-fit py-4 ">
         <NavigationMenu viewport={false}>
           <NavigationMenuList>
             <NavigationMenuItem>
@@ -48,10 +55,12 @@ const NavBar = () => {
                       imageAlt={cat.name || ""}
                       imageUrl={cat.imageUrl || ""}
                     >
-                      {cat.description || (
+                      {cat.description ? (
                         <Skeleton
                           className={`${index % 2 === 0 ? "w-[100px]" : "w-[120px]"} h-4 bg-slate-500`}
                         />
+                      ) : (
+                        <p>{cat.description || "Default Descriptions"}</p>
                       )}
                     </ListItem>
                   ))}
@@ -69,8 +78,18 @@ const NavBar = () => {
             <NavigationMenuItem>
               <NavigationMenuLink href="/">Home</NavigationMenuLink>
             </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink>
+                <div className="flex w-full max-w-sm items-center gap-1">
+                  <Input type="text" placeholder="Search" />
+                  <Button type="submit" variant="outline">
+                    <Search />
+                  </Button>
+                </div>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
           </NavigationMenuList>
-          <NavigationMenuList className="pl-40">
+          <NavigationMenuList className="lg:pl-20">
             <NavigationMenuItem>
               <ThemeToggle />
             </NavigationMenuItem>
@@ -79,9 +98,15 @@ const NavBar = () => {
                 <Heart size={20} />
               </NavigationMenuTrigger>
               <NavigationMenuContent className="relative z-50">
-                <ul className="grid w-[200px] gap-4">
+                <ul className="grid w-[200px]">
                   <li>
-                    items Wishlist items
+                    <ScrollArea className="h-[280px]">
+                      {favorites?.map((el: Product, idx: number) => (
+                        <NavigationMenuLink key={idx} asChild>
+                          <ListProductCard item={el} />
+                        </NavigationMenuLink>
+                      ))}
+                    </ScrollArea>
                     <NavigationMenuLink asChild>
                       <Link
                         href={"/wishlist"}
@@ -99,9 +124,15 @@ const NavBar = () => {
                 <Cart size={20} />
               </NavigationMenuTrigger>
               <NavigationMenuContent className="relative z-50">
-                <ul className="grid w-[200px] gap-4">
+                <ul className="grid w-[200px]">
                   <li>
-                    items in cart
+                    <ScrollArea className="h-[280]">
+                      {favorites?.map((el: Product, idx: number) => (
+                        <NavigationMenuLink key={idx} asChild>
+                          <ListProductCard item={el} />
+                        </NavigationMenuLink>
+                      ))}
+                    </ScrollArea>
                     <NavigationMenuLink asChild>
                       <Link
                         href="/cart"
@@ -183,7 +214,7 @@ const NavBar = () => {
                   <li>
                     <NavigationMenuLink asChild>
                       <Link href="#">
-                        <div className="font-medium">Components</div>
+                        <div className="font-medium">Products</div>
                         <div className="text-muted-foreground">
                           Browse all components in the library.
                         </div>
@@ -191,7 +222,7 @@ const NavBar = () => {
                     </NavigationMenuLink>
                     <NavigationMenuLink asChild>
                       <Link href="#">
-                        <div className="font-medium">Documentation</div>
+                        <div className="font-medium">Promotions</div>
                         <div className="text-muted-foreground">
                           Learn how to use the library.
                         </div>
@@ -199,7 +230,7 @@ const NavBar = () => {
                     </NavigationMenuLink>
                     <NavigationMenuLink asChild>
                       <Link href="#">
-                        <div className="font-medium">Blog</div>
+                        <div className="font-medium">User settings</div>
                         <div className="text-muted-foreground">
                           Read our latest blog posts.
                         </div>
@@ -216,6 +247,16 @@ const NavBar = () => {
                   </li>
                 </ul>
               </NavigationMenuContent>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink>
+                <div className="flex w-full max-w-sm items-center gap-1">
+                  <Input type="text" placeholder="Search" />
+                  <Button type="submit" variant="outline">
+                    <Search />
+                  </Button>
+                </div>
+              </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>

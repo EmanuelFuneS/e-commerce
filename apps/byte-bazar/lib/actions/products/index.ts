@@ -147,7 +147,15 @@ export async function getProductPreview(params?: {
       }
 
       const products = await prisma.product.findMany({
-        where,
+        where: {
+          AND: [
+            {
+              images: {
+                isEmpty: false,
+              },
+            },
+          ],
+        },
         orderBy: { createdAt: "desc" },
         take: 6,
         include: {
@@ -155,8 +163,9 @@ export async function getProductPreview(params?: {
           category: { select: { name: true } },
         },
       });
+      const serializedData = serializeDecimals(products);
 
-      return { success: true, data: products } as ActionResponse;
+      return { success: true, data: serializedData } as ActionResponse;
     },
     { success: true, data: createSkeletons(productTemplate, 6) }
   );

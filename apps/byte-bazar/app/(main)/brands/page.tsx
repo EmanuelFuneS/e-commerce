@@ -1,44 +1,54 @@
 "use client";
-import { Product } from "@/lib/types/products";
-import { useCallback, useEffect, useState, useTransition } from "react";
-import PaginationGrid from "../../../components/pagination-grid";
-import { getBrands } from "../../../lib/actions";
-import { ApiResponse } from "../../../lib/types/common";
+
+import { getBrands } from "@/lib/actions";
+import { Brand } from "@/lib/types";
+import { ApiResponse } from "@/lib/types/common";
+import Autoplay from "embla-carousel-autoplay";
+import React, { useEffect, useState, useTransition } from "react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "../../../../../packages/ui/src/components";
+import BrandCard from "../../../components/items-cards/brand-card";
 
 const Page = () => {
-  const [page, setPage] = useState<number>(1);
-  const [brands, setBrands] = useState<ApiResponse<Product[]> | null>(null);
+  const plugin = React.useRef(
+    Autoplay({ delay: 4000, stopOnInteraction: true })
+  );
+
+  const [brands, setBrands] = useState<ApiResponse<Brand[]> | null>(null);
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     startTransition(async () => {
-      const response = await getBrands(page);
+      const response = await getBrands();
       setBrands(response);
     });
-  }, [page]);
-
-  const changePage = useCallback((newPage: number) => {
-    setPage(newPage);
   }, []);
 
   if (!brands) return <div>Loading</div>;
   return (
-    <div className="w-full ">
-      <section className="flex flex-col md:flex-row justify-between">
-        <aside className="h-full w-[350px] mt-5 rounded-lg shadow-2xl bg-card dark:bg-card ">
-          aside
-        </aside>
-        <section className=" h-full w-full py-4">
-          {!isPending && (
-            <PaginationGrid
-              data={brands.data}
-              setPage={changePage}
-              page={page}
-              totalPages={brands.pagination?.totalPages}
-            />
-          )}
-        </section>
-      </section>
+    <div className="w-auto my-10">
+      <Carousel
+        id="Carro"
+        className="w-full md:min-w-xl lg:min-w-3xl"
+        plugins={[plugin.current]}
+      >
+        <CarouselContent>
+          {brands.data!.map((brand: Brand, idx: number) => {
+            return (
+              <CarouselItem key={idx} className=" md:basis-1/2 lg:basis-1/4">
+                <BrandCard data={brand} />
+              </CarouselItem>
+            );
+          })}
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
     </div>
   );
 };
