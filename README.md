@@ -4,7 +4,7 @@
 
 ## 🌐 Deploy
 
-[Desploy](https://tu-proyecto.vercel.app](https://e-commerce-byte-bazar.vercel.app/)
+[Desploy](https://e-commerce-byte-bazar.vercel.app/)
 
 ## 🛠️ Stack Tecnológico
 
