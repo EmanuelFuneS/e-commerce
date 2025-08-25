@@ -12,10 +12,8 @@ export default function DashboardLayout({
   return (
     <SidebarProvider>
       <AdminSidebar />
-      <main className="max-w-7xl mx-auto">
-        <SidebarTrigger />
-        {children}
-      </main>
+      <SidebarTrigger />
+      <main className="max-w-7xl mx-auto flex-grow">{children}</main>
     </SidebarProvider>
   );
 }

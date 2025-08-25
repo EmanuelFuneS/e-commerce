@@ -1,8 +1,12 @@
+"use client";
 import { Moon, SunDim } from "@workspace/ui/lib";
 import { useTheme } from "next-themes";
-import { NavigationMenuLink } from "../../../../packages/ui/src/components";
 
-const ThemeToggle = () => {
+interface ThemeToggleProps {
+  size?: number;
+}
+
+const ThemeToggle = ({ size }: ThemeToggleProps) => {
   const { theme, setTheme } = useTheme();
 
   const changeTheme = () => {
@@ -12,19 +16,19 @@ const ThemeToggle = () => {
   };
 
   return (
-    <NavigationMenuLink asChild onClick={changeTheme} className="">
+    <div onClick={changeTheme} className="">
       {theme === "dark" ? (
         <Moon
-          size={37}
+          size={size || 37}
           className="hover:scale-115 transform transition-transform duration-300"
         />
       ) : (
         <SunDim
-          size={37}
+          size={size || 37}
           className="hover:scale-115 transform transition-transform duration-300"
         />
       )}
-    </NavigationMenuLink>
+    </div>
   );
 };
 

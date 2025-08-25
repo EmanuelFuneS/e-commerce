@@ -91,7 +91,9 @@ const NavBar = () => {
           </NavigationMenuList>
           <NavigationMenuList className="lg:pl-20">
             <NavigationMenuItem>
-              <ThemeToggle />
+              <NavigationMenuLink>
+                <ThemeToggle />
+              </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
               <NavigationMenuTrigger>

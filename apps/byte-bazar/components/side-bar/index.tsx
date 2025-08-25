@@ -1,7 +1,9 @@
+"use client";
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
+  SidebarGroupAction,
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
@@ -9,31 +11,33 @@ import {
   SidebarMenuItem,
 } from "@workspace/ui/components/sidebar";
 import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
+import Link from "next/link";
+import ThemeToggle from "../theme-toggle";
 
 const itemsTest = [
   {
-    title: "Home",
-    url: "#",
+    title: "Analytics",
+    url: "/dashboard/analytics",
     icon: Home,
   },
   {
-    title: "Inbox",
-    url: "#",
+    title: "Inventory",
+    url: "/dashboard/inventory",
     icon: Inbox,
   },
   {
-    title: "Calendar",
-    url: "#",
+    title: "Clients",
+    url: "/dashboard/clients",
     icon: Calendar,
   },
   {
     title: "Search",
-    url: "#",
+    url: "/dashboard/",
     icon: Search,
   },
   {
     title: "Settings",
-    url: "#",
+    url: "/dashboard/",
     icon: Settings,
   },
 ];
@@ -43,19 +47,24 @@ const AdminSidebar = () => {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Byte Bazar</SidebarGroupLabel>
+          <SidebarGroupLabel>Admin Byte Bazar</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {itemsTest.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a>
+                    <Link href={item.url}>
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
+            {/** --------------------------------------- */}
+            <SidebarGroupContent />
+            <SidebarGroupAction>
+              <ThemeToggle size={20} />
+            </SidebarGroupAction>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
