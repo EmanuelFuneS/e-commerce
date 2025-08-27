@@ -4,16 +4,17 @@ import { ChartBarMultiple } from "../../../components/charts/bar-chart";
 
 const Page = () => {
   return (
-    <div className="my-5">
-      <div className="grid grid-cols-2">
-        <div className="">
+    <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+      <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+        <div className="bg-muted/50 aspect-video rounded-xl">
           <ChartBarMultiple />
         </div>
-        <div className="">
+        <div className="bg-muted/50 aspect-video rounded-xl">
           <ChartAreaIcons />
         </div>
+        <div className="bg-muted/50 aspect-video rounded-xl"></div>
       </div>
-      <div className="w-auto h-fit">
+      <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min">
         <ChartAreaInteractive />
       </div>
     </div>

@@ -1,4 +1,5 @@
 import {
+  Card,
   Table,
   TableBody,
   TableCaption,
@@ -15,35 +16,39 @@ interface ProductTableProps {
 
 const ProductTable = ({ data }: ProductTableProps) => {
   return (
-    <Table>
-      <TableCaption>A list of products</TableCaption>
-      <TableHeader>
+    <Card className="p-2">
+      <Table>
+        <TableCaption>A list of products</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[100px]">Name</TableHead>
+            <TableHead>Price</TableHead>
+            <TableHead>Description</TableHead>
+            <TableHead className="text-right">Images</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {data.map((el, idx) => {
+            return (
+              <TableRow>
+                <TableCell className="font-medium">{el.name}</TableCell>
+                <TableCell>{el.price}</TableCell>
+                <TableCell>{el.description}</TableCell>
+                <TableCell className="text-right">
+                  {el.images?.length}
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+        {/* <TableFooter>
         <TableRow>
-          <TableHead className="w-[100px]">Name</TableHead>
-          <TableHead>Price</TableHead>
-          <TableHead>Description</TableHead>
-          <TableHead className="text-right">Images</TableHead>
+        <TableCell colSpan={3}>Total</TableCell>
+        <TableCell className="text-right">$2,500.00</TableCell>
         </TableRow>
-      </TableHeader>
-      <TableBody>
-        {data.map((el, idx) => {
-          return (
-            <TableRow>
-              <TableCell className="font-medium">{el.name}</TableCell>
-              <TableCell>{el.price}</TableCell>
-              <TableCell>{el.description}</TableCell>
-              <TableCell className="text-right">{el.images?.length}</TableCell>
-            </TableRow>
-          );
-        })}
-      </TableBody>
-      {/* <TableFooter>
-        <TableRow>
-          <TableCell colSpan={3}>Total</TableCell>
-          <TableCell className="text-right">$2,500.00</TableCell>
-        </TableRow>
-      </TableFooter> */}
-    </Table>
+        </TableFooter> */}
+      </Table>
+    </Card>
   );
 };
 
