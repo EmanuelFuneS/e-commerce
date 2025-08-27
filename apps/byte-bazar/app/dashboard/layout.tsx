@@ -22,7 +22,6 @@ export default function DashboardLayout({
   return (
     <SidebarProvider>
       <AdminSidebar />
-
       <main className="max-w-7xl mx-auto flex-grow">
         <SidebarInset>
           <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
