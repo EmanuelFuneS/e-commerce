@@ -8,8 +8,8 @@ export const auth0 = new Auth0Client({
   appBaseUrl: process.env.APP_BASE_URL,
   secret: process.env.AUTH0_SECRET,
 
-  /*   authorizationParameters: {
+  authorizationParameters: {
     scope: process.env.AUTH0_SCOPE,
     audience: process.env.AUTH0_AUDIENCE,
-  }, */
+  },
 } as Auth0ClientOptions);
