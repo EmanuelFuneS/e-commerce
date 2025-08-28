@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "../../../lib/prisma";
 
-export default async function handle(req: NextRequest) {
+export const GET = async function handle(req: NextRequest) {
   if (req.method !== "POST") {
     return NextResponse.json(
       { message: "Method not allowed" },
@@ -44,4 +44,4 @@ export default async function handle(req: NextRequest) {
       { status: 500 }
     );
   }
-}
+};
