@@ -1,3 +1,5 @@
+"use client";
+import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -14,7 +16,7 @@ import {
 } from "../../../../packages/ui/src/components/sidebar";
 import AdminSidebar from "../../components/side-bar";
 
-export default function DashboardLayout({
+export default withPageAuthRequired(function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -52,4 +54,4 @@ export default function DashboardLayout({
       </main>
     </SidebarProvider>
   );
-}
+});
