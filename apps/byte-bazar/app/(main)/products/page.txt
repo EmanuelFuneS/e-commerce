@@ -1,4 +1,4 @@
-"use client";
+/* "use client";
 import useHealthDB from "@/lib/hooks/useHealthDB";
 import { Product } from "@/lib/types/products";
 import { useCallback, useEffect, useState, useTransition } from "react";
@@ -8,7 +8,7 @@ import { getProducts } from "../../../lib/actions";
 import { ApiResponse } from "../../../lib/types/common";
 
 const Page = () => {
-  const [page, setPage] = useState<number>(1);
+  const [page, setPage] = useState<number>(0);
   const [products, setProducts] = useState<ApiResponse<Product[]> | null>(null);
   const [isPending, startTransition] = useTransition();
   const { availableDB } = useHealthDB();
@@ -27,7 +27,7 @@ const Page = () => {
 
   useEffect(() => {
     startTransition(async () => {
-      const response = await getProducts(page);
+      const response = await getProducts(page, 9);
       setProducts(response);
     });
   }, [page]);
@@ -59,3 +59,4 @@ const Page = () => {
 };
 
 export default Page;
+ */

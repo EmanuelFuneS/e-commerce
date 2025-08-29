@@ -12,7 +12,7 @@ import {
 interface PaginationGrid {
   data: Product[] | undefined;
   page: number;
-  setPage?: (pageNumber: number) => void;
+  setPage: (pageNumber: number) => void;
   totalPages?: number;
 }
 
@@ -25,7 +25,7 @@ const PaginationGrid = ({
   const pages = new Array(totalPages).fill("");
   return (
     <div>
-      <div className="px-4 grid grid-rows-auto grid-cols-2 md:grid-cols-4 lg:grid-cols-auto gap-3 w-full">
+      <div className="px-4 grid grid-rows-3 grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 w-full">
         {data &&
           data.map((e: Product, i: number) => <ProductCard key={i} data={e} />)}
       </div>
@@ -33,19 +33,24 @@ const PaginationGrid = ({
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious
-              className="hover:scale-105  transform transition-transform duration-300" /* onClick={() => setPage(page - 1)} */
+              className="hover:scale-105  transform transition-transform duration-300"
+              onClick={() => setPage(page - 1)}
             />
           </PaginationItem>
           <PaginationItem>
             {pages.map((_, idx: number) => (
-              <PaginationLink /* onClick={() => setPage(idx)} */>
+              <PaginationLink
+                isActive={idx === page}
+                onClick={() => setPage(idx)}
+              >
                 {idx + 1}
               </PaginationLink>
             ))}
           </PaginationItem>
           <PaginationItem>
             <PaginationNext
-              className="hover:scale-105  transform transition-transform duration-300" /* onClick={() => setPage(page + 1)} */
+              className="hover:scale-105  transform transition-transform duration-300"
+              onClick={() => setPage(page + 1)}
             />
           </PaginationItem>
         </PaginationContent>

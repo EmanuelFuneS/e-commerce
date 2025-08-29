@@ -38,13 +38,17 @@ export async function createProduct(
   }
 }
 
-export async function getProducts(page: number = 1, pageSize: number = 10) {
+export async function getProducts(
+  page: number = 1,
+  pageSize: number = 10,
+  filter: {} = {}
+) {
   return safeDbOperation<ActionResponse>(
     async () => {
       const [totalProducts, products] = await prisma.$transaction([
         prisma.product.count(),
         prisma.product.findMany({
-          where: { isActive: true },
+          where: { isActive: true, ...filter },
           orderBy: { name: "asc" },
           include: {
             category: {
@@ -61,7 +65,7 @@ export async function getProducts(page: number = 1, pageSize: number = 10) {
               select: { stockMovements: true },
             },
           },
-          skip: (page - 1) * pageSize,
+          skip: page * pageSize,
           take: pageSize,
         }),
       ]);
@@ -170,8 +174,8 @@ export async function getProductPreview(params?: {
     { success: true, data: createSkeletons(productTemplate, 6) }
   );
 }
-
-export async function getProductByBrands(
+//not use this actions, extend getProducts
+/* export async function getProductByBrands(
   brandIds: string[]
 ): Promise<ActionResponse> {
   try {
@@ -221,7 +225,7 @@ export async function getProductByCategory(
       error: "Failed to fetch products by categories",
     } as ActionResponse;
   }
-}
+} */
 
 export async function updateProduct(
   id: string,
