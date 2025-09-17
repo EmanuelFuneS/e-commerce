@@ -7,7 +7,19 @@ import { ActionResponse } from "../../types/common";
 
 export async function createCategory() {}
 
-export async function getCategories() {}
+export async function getCategories() {
+  return safeDbOperation<ActionResponse>(
+    async () => {
+      const categories = await prisma.category.findMany({
+        where: { isActive: true },
+        orderBy: { name: "asc" },
+      });
+
+      return { success: true, data: categories } as ActionResponse;
+    },
+    { success: false, data: createSkeletons(categoriesTemplate, 9) }
+  );
+}
 
 export async function getCategoryPreview() {
   return safeDbOperation<ActionResponse>(

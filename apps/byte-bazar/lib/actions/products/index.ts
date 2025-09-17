@@ -96,8 +96,28 @@ export async function getProducts(
   );
 }
 
-export async function SearchByProductName() {
-  //this function will search product by name
+export async function SearchByProductName(name: string) {
+  return safeDbOperation<ActionResponse>(
+    async () => {
+      const product = await prisma.product.findMany({
+        where: {
+          isActive: true,
+          name: { contains: name, mode: "insensitive" },
+        },
+        orderBy: { name: "asc" },
+        take: 1,
+      });
+
+      const serializedData = serializeDecimals(product);
+
+      if (product.length === 0) {
+        return { success: false, error: "Product not found" } as ActionResponse;
+      }
+
+      return { success: true, data: serializedData[0] } as ActionResponse;
+    },
+    { success: false, data: [] }
+  );
 }
 
 export async function getProductById(id: string): Promise<ActionResponse> {
@@ -174,6 +194,31 @@ export async function getProductPreview(params?: {
     { success: true, data: createSkeletons(productTemplate, 6) }
   );
 }
+
+export async function getRelatedProducts(categoryId: string) {
+  return safeDbOperation<ActionResponse>(
+    async () => {
+      const products = await prisma.product.findMany({
+        where: {
+          isActive: true,
+          categoryId: categoryId,
+        },
+        orderBy: { createdAt: "desc" },
+        take: 6,
+        include: {
+          brand: { select: { name: true } },
+          category: { select: { name: true } },
+        },
+      });
+
+      const serializedData = serializeDecimals(products);
+
+      return { success: true, data: serializedData } as ActionResponse;
+    },
+    { success: true, data: createSkeletons(productTemplate, 6) }
+  );
+}
+
 //not use this actions, extend getProducts
 /* export async function getProductByBrands(
   brandIds: string[]

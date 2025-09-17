@@ -27,7 +27,7 @@ export default async function ProductDynamicZone({
   if (decodeSlug.length === 1) {
     return <ProductFilter filter={decodeFilter} />;
   } else if (decodeSlug.length === 2) {
-    return <ProductDetail />;
+    return <ProductDetail params={{ slug }} />;
   } else {
     return <ProductNotFound />;
   }
