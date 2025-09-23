@@ -1,19 +1,12 @@
 "use client";
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-  Separator,
-} from "../../../../packages/ui/src/components";
+import { Separator } from "../../../../packages/ui/src/components";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "../../../../packages/ui/src/components/sidebar";
+import NavigationBreadCrumb from "../../components/navigation-breadcrumb";
 import AdminSidebar from "../../components/side-bar";
 
 export default withPageAuthRequired(function DashboardLayout({
@@ -33,19 +26,7 @@ export default withPageAuthRequired(function DashboardLayout({
                 orientation="vertical"
                 className="mr-2 data-[orientation=vertical]:h-4"
               />
-              <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem className="hidden md:block">
-                    <BreadcrumbLink href="#">
-                      Building Your Application
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator className="hidden md:block" />
-                  <BreadcrumbItem>
-                    <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
+              <NavigationBreadCrumb />
             </div>
           </header>
 

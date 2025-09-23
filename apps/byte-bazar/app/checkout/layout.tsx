@@ -1,3 +1,5 @@
+import NavigationBreadCrumb from "../../components/navigation-breadcrumb";
+
 export default function CheckoutLayout({
   children,
 }: {
@@ -5,7 +7,10 @@ export default function CheckoutLayout({
 }) {
   return (
     <>
-      <main className="max-w-7xl mx-auto">{children}</main>
+      <main className="max-w-7xl mx-auto">
+        <NavigationBreadCrumb />
+        {children}
+      </main>
     </>
   );
 }

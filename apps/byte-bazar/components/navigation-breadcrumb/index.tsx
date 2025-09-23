@@ -9,7 +9,7 @@ import {
 } from "@workspace/ui/components";
 import { usePathname } from "next/navigation";
 
-const Navigation = () => {
+const NavigationBreadCrumb = () => {
   const pathname = usePathname();
 
   const segments = pathname?.split("/").filter(Boolean) || [];
@@ -55,4 +55,4 @@ const Navigation = () => {
   );
 };
 
-export default Navigation;
+export default NavigationBreadCrumb;
