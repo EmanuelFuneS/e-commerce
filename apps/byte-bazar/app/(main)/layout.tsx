@@ -10,8 +10,10 @@ export default function MainLayout({
   return (
     <body className="">
       <NavBar />
-      <Navigation />
-      <main className="max-w-6xl mx-auto md:px-4 flex-grow">{children}</main>
+      <main className="max-w-6xl mx-auto md:px-4 flex-grow">
+        <Navigation />
+        {children}
+      </main>
       <Footer />
     </body>
   );
