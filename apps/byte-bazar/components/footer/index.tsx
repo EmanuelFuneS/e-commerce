@@ -10,7 +10,7 @@ import Link from "next/link";
 
 const Footer = () => {
   return (
-    <footer className="w-full bg-black dark:text-primary text-secondary flex items-center justify-center py-10">
+    <footer className="w-full bg-card dark:text-primary font-semibold flex items-center justify-center py-10">
       <div className="w-full text-center md:text-start max-w-7xl px-4 md:px-6 flex flex-col md:flex-row md:justify-between ">
         <div className="space-y-4">
           <h2 className="text-lg font-bold">Exclusive</h2>
@@ -31,7 +31,7 @@ const Footer = () => {
         </div>
         <div className="space-y-4">
           <h2 className="text-lg font-bold">Networks</h2>
-          <div className="w-full flex justify-center pb-4 items-center gap-4">
+          <div className="w-full flex flex-wrap justify-center  md:justify-start pb-4 items-center gap-4">
             <a href="#" aria-label="Facebook" className="hover:text-amber-100">
               <BrandFacebook size={30} />
             </a>
