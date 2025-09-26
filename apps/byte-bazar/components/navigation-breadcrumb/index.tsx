@@ -27,10 +27,16 @@ const NavigationBreadCrumb = () => {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
 
-          <BreadcrumbItem className="capitalize">
-            <BreadcrumbLink href={`/${basePath}`}>{basePath}</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
+          {basePath && (
+            <>
+              <BreadcrumbItem className="capitalize">
+                <BreadcrumbLink href={`/${basePath}`}>
+                  {basePath}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+            </>
+          )}
           {slug &&
             slug.length > 0 &&
             slug.map((segment, index) => (
