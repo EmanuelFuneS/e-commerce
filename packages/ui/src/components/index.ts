@@ -16,6 +16,7 @@ export * from "./label";
 export * from "./navigation-menu";
 export * from "./pagination";
 export * from "./progress";
+export * from "./radio-group";
 export * from "./resizable";
 export * from "./scroll-area";
 export * from "./select";

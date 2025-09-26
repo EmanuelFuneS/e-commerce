@@ -38,11 +38,11 @@ const itemsTest = [
         url: "#",
       },
       {
-        title: "Explorer",
+        title: "Delete",
         url: "#",
       },
       {
-        title: "Delete",
+        title: "Explorer",
         url: "#",
       },
     ],

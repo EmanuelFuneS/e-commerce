@@ -13,8 +13,11 @@ import { getProducts } from "@/lib/actions";
 import useHealthDB from "@/lib/hooks/useHealthDB";
 import { ApiResponse } from "@/lib/types/common";
 import { Product } from "@/lib/types/products";
+
 import { useCallback, useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
+import Filter from "../../../../components/filter";
+import { useCategoriesStore } from "../../../../lib/store";
 
 interface ProductFilterProps {
   filter: string | undefined;
@@ -25,6 +28,8 @@ export default function ProductFilter({ filter }: ProductFilterProps) {
   const [products, setProducts] = useState<ApiResponse<Product[]> | null>(null);
   const [isPending, startTransition] = useTransition();
   const { availableDB } = useHealthDB();
+
+  const { categories } = useCategoriesStore();
 
   console.log(filter);
 
@@ -74,8 +79,8 @@ export default function ProductFilter({ filter }: ProductFilterProps) {
   return (
     <div className="w-full ">
       <section className="flex flex-col md:flex-row justify-between">
-        <aside className="h-full w-[350px] mt-5 rounded-lg shadow-2xl bg-card dark:bg-card ">
-          aside
+        <aside>
+          <Filter />
         </aside>
         <section className=" h-full w-full py-4">
           {!isPending && (
