@@ -57,83 +57,95 @@ const Filter = () => {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <FormField
-            control={form.control}
-            name="sort"
-            render={({ field }) => (
-              <FormItem className="mb-4">
-                <FormLabel>Sort by</FormLabel>
-                <Select>
+          <div className="space-y-10">
+            <FormField
+              control={form.control}
+              name="sort"
+              render={({ field }) => (
+                <FormItem className="mb-4">
+                  <FormLabel>Sort by</FormLabel>
+                  <Select>
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="select order" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {sortOptions.map((options, index) => (
+                        <SelectItem key={index} value={options.value}>
+                          {options.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>Sort products</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="price"
+              render={({ field }) => (
+                <FormItem className="mb-4">
+                  <FormLabel>Price</FormLabel>
                   <FormControl>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="select order" />
-                    </SelectTrigger>
+                    <Input placeholder="Enter price" {...field} />
                   </FormControl>
-                  <SelectContent>
-                    {sortOptions.map((options, index) => (
-                      <SelectItem key={index} value={options.value}>
-                        {options.label}
-                      </SelectItem>
+                  <FormDescription>Filter by price</FormDescription>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="brand"
+              render={({ field }) => (
+                <FormItem className="mb-4">
+                  <FormLabel>Brands</FormLabel>
+                  <RadioGroup className="flex flex-wrap gap-2">
+                    {brands.map((brand, idx: number) => (
+                      <div key={idx} className="flex items-center space-x-2">
+                        <FormControl>
+                          <RadioGroupItem
+                            id={idx.toString()}
+                            value={brand.id}
+                          />
+                        </FormControl>
+                        <Label htmlFor={brand.id}>{brand.name}</Label>
+                      </div>
                     ))}
-                  </SelectContent>
-                </Select>
-                <FormDescription>Sort products</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  </RadioGroup>
+                  <FormDescription>Filter by Brand</FormDescription>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="category"
+              render={({ field }) => (
+                <FormItem className="mb-4">
+                  <FormLabel>Categories</FormLabel>
+                  <RadioGroup className="flex flex-wrap gap-2">
+                    {categories.map((category, idx: number) => (
+                      <div key={idx} className="flex items-center space-x-2">
+                        <FormControl>
+                          <RadioGroupItem
+                            id={idx.toString()}
+                            value={category.id}
+                          />
+                        </FormControl>
+                        <Label htmlFor={category.id}>{category.name}</Label>
+                      </div>
+                    ))}
+                  </RadioGroup>
+                  <FormDescription>Filter by Category</FormDescription>
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="price"
-            render={({ field }) => (
-              <FormItem className="mb-4">
-                <FormLabel>Price</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter price" {...field} />
-                </FormControl>
-                <FormDescription>Filter by price</FormDescription>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="brand"
-            render={({ field }) => (
-              <FormItem className="mb-4">
-                <FormLabel>Brands</FormLabel>
-                <FormControl>
-                  {/* <Input placeholder="Enter price" {...field} /> */}
-                </FormControl>
-                <FormDescription>Filter by Brand</FormDescription>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="category"
-            render={({ field }) => (
-              <FormItem className="mb-4">
-                <FormLabel>Categories</FormLabel>
-                <RadioGroup className="flex flex-wrap gap-2">
-                  {categories.map((category, idx: number) => (
-                    <div key={idx} className="flex items-center space-x-2">
-                      <FormControl>
-                        <RadioGroupItem
-                          id={idx.toString()}
-                          value={category.id}
-                        />
-                      </FormControl>
-                      <Label htmlFor={category.id}>{category.name}</Label>
-                    </div>
-                  ))}
-                </RadioGroup>
-                <FormDescription>Filter by Category</FormDescription>
-              </FormItem>
-            )}
-          />
-
-          {/* <FormField /> */}
+            {/* <FormField /> */}
+          </div>
         </Form>
       </CardContent>
     </Card>

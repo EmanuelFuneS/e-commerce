@@ -34,7 +34,7 @@ export default async function ProductDynamicZone({
 }
 
 function ProductNotFound() {
-  return <div>product not found !!</div>;
+  return <div className="w-full">product not found !!</div>;
 }
 
 async function determineFilterType(slug: string) {
