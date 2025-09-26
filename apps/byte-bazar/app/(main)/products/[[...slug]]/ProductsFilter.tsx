@@ -31,7 +31,7 @@ export default function ProductFilter({ filter }: ProductFilterProps) {
 
   const { categories } = useCategoriesStore();
 
-  console.log(filter);
+  //console.log(filter);
 
   useEffect(() => {
     if (availableDB) {

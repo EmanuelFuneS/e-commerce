@@ -22,7 +22,7 @@ export default async function ProductDynamicZone({
 
   const filter = await determineFilterType(decodeFilter!);
 
-  console.log(filter);
+  //console.log(filter);
 
   if (decodeSlug.length === 1) {
     return <ProductFilter filter={decodeFilter} />;

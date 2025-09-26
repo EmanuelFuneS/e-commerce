@@ -18,7 +18,7 @@ interface ProductCardProps {
 
 const ProductCard = ({ data }: ProductCardProps) => {
   const image = data.images!.length && data.images![0];
-  console.log(data.brand);
+  //console.log(data.brand);
   const isSkeleton = !data.id || !data.name;
   return (
     <Card className="rounded-lg shadow-lg hover:scale-105 transform transition-transform duration-300">

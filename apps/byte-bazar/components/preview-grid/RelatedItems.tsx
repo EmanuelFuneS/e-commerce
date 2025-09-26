@@ -26,7 +26,7 @@ const RelatedItems = ({ categoryName }: RelatedItemsProps) => {
         );
 
         if (matchedCategory) {
-          console.log("CATEGORIES", categories);
+          //console.log("CATEGORIES", categories);
           const result = await getRelatedProducts(matchedCategory.id);
 
           if (result?.data) {

@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../../packages/ui/src/components";
-import { useCategoriesStore } from "../../lib/store";
+import { useBrandsStore, useCategoriesStore } from "../../lib/store";
 
 const sortOptions = [
   { value: "price-asc", label: "Price: Low to High" },
@@ -32,6 +32,13 @@ const sortOptions = [
 
 const Filter = () => {
   const { categories } = useCategoriesStore();
+  const { brands } = useBrandsStore();
+
+  //const response = await getBrands();
+
+  console.log("Categories", categories);
+
+  console.log("Brands", brands);
 
   const form = useForm({
     defaultValues: {

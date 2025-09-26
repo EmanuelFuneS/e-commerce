@@ -1,11 +1,13 @@
 import { useEffect } from "react";
-import { useCategoriesStore } from "../../lib/store";
+import { useBrandsStore, useCategoriesStore } from "../../lib/store";
 
 const StoreInitializer = () => {
   const { initializeCategories } = useCategoriesStore();
+  const { initializeBrands } = useBrandsStore();
   useEffect(() => {
     initializeCategories();
-  }, [initializeCategories]);
+    initializeBrands();
+  }, [initializeCategories, initializeBrands]);
 
   return null;
 };

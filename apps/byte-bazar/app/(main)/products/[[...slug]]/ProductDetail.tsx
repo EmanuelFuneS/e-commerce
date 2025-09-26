@@ -17,7 +17,7 @@ export default async function ProductDetail({ params }: Params) {
   const productResponse = await SearchByProductName(decodeName);
   const product: Product = productResponse!.data;
 
-  console.log("PRODUCT", product);
+  //console.log("PRODUCT", product);
 
   return (
     <section className="w-full h-full pb-10">

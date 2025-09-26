@@ -25,7 +25,7 @@ const CategoryShowcase = () => {
   );
 
   const { categories } = useCategories();
-  console.log(categories);
+  //console.log(categories);
 
   return (
     <section className="flex flex-col md:flex-row h-[400px] my-10 space-x-4 ">

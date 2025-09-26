@@ -36,7 +36,7 @@ const NavBar = () => {
   const { categories } = useCategories();
   const { favorites } = useFavoritesProducts();
 
-  console.log(favorites);
+  //console.log(favorites);
   return (
     <>
       <nav className="hidden md:block w-full mx-auto max-w-fit py-4 ">
