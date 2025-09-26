@@ -1,5 +1,4 @@
 "use client";
-import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { Separator } from "../../../../packages/ui/src/components";
 import {
   SidebarInset,
@@ -9,7 +8,7 @@ import {
 import NavigationBreadCrumb from "../../components/navigation-breadcrumb";
 import AdminSidebar from "../../components/side-bar";
 
-export default withPageAuthRequired(function DashboardLayout({
+export default /* withPageAuthRequired( */ function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -35,4 +34,4 @@ export default withPageAuthRequired(function DashboardLayout({
       </main>
     </SidebarProvider>
   );
-});
+} /* ) */

@@ -67,7 +67,7 @@ const itemsTest = [
 const AdminSidebar = () => {
   return (
     <Sidebar>
-      <SidebarContent>
+      <SidebarContent className="py-10">
         <SidebarGroup>
           <SidebarGroupLabel>Admin Byte Bazar</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -119,12 +119,14 @@ const AdminSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="pb-20">
         <SidebarGroup>
           <SidebarGroupLabel>Options</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              <ThemeToggle size={20} />
+              <div className="w-full px-2">
+                <ThemeToggle size={20} />
+              </div>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
