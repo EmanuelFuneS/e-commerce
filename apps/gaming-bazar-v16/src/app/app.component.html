@@ -72,7 +72,12 @@
 <div class="wrapper">
   <input type="text" [(ngModel)]="imgParent" />
 
-  <app-img (loaded)="onLoaded($event)" [img]="imgParent"></app-img>
+  <!-- <app-img (loaded)="onLoaded($event)" [img]="imgParent"></app-img> -->
+
+  <app-game-product
+    [game]="game"
+    *ngFor="let game of products"
+  ></app-game-product>
 </div>
 
 <router-outlet></router-outlet>
