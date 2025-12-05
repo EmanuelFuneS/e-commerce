@@ -72,7 +72,7 @@
 <div class="wrapper">
   <input type="text" [(ngModel)]="imgParent" />
 
-  <app-img [img]="imgParent"></app-img>
+  <app-img (loaded)="onLoaded($event)" [img]="imgParent"></app-img>
 </div>
 
 <router-outlet></router-outlet>

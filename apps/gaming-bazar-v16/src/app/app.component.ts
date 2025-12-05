@@ -7,4 +7,8 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   imgParent: string = 'https://w3schools.com/howto/img_avatar.png';
+
+  onLoaded(img: string) {
+    console.log('Image load event received in parent component.', img);
+  }
 }
