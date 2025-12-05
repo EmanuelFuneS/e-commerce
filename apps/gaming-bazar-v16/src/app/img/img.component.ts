@@ -7,4 +7,11 @@ import { Component, Input } from '@angular/core';
 })
 export class ImgComponent {
   @Input() img: string = '';
+
+  imageError: boolean = false;
+
+  onImageError() {
+    console.log('Image failed to load.');
+    this.imageError = true;
+  }
 }
