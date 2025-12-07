@@ -71,8 +71,13 @@
 
 <div class="wrapper">
   <input type="text" [(ngModel)]="imgParent" />
-
-  <!-- <app-img (loaded)="onLoaded($event)" [img]="imgParent"></app-img> -->
+  <button (click)="onToggleImage()">Toggle Image</button>
+  <p>{{ toggleShowImg }}</p>
+  <app-img
+    *ngIf="toggleShowImg"
+    (loaded)="onLoaded($event)"
+    [img]="imgParent"
+  ></app-img>
 
   <app-game-product
     [game]="game"

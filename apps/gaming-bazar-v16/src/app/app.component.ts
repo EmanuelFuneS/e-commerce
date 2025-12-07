@@ -8,7 +8,7 @@ import { GameProduct } from './models/game-product.model';
 })
 export class AppComponent {
   imgParent: string = 'https://w3schools.com/howto/img_avatar.png';
-
+  toggleShowImg: boolean = true;
   products: GameProduct[] = [
     {
       id: 1,
@@ -44,5 +44,9 @@ export class AppComponent {
 
   onLoaded(img: string) {
     console.log('Image load event received in parent component.', img);
+  }
+
+  onToggleImage() {
+    this.toggleShowImg = !this.toggleShowImg;
   }
 }
