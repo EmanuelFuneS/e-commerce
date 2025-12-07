@@ -1,12 +1,3 @@
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * The content below * * * * * * * * * * * -->
-<!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * -->
-<!-- * * * * * * * * * * and can be replaced. * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * Delete the template below * * * * * * * * * * -->
-<!-- * * * * * * * to get started with your project! * * * * * * * * -->
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-
 <style>
   :host {
     font-family:
@@ -33,6 +24,7 @@
   }
 
   .wrapper {
+    background-color: orange;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -45,44 +37,24 @@
     .terminal {
       width: 100%;
     }
-
-    .card:not(.highlight-card) {
-      height: 16px;
-      margin: 8px 0;
-    }
-
-    .card.highlight-card span {
-      margin-left: 72px;
-    }
-
-    svg#rocket-smoke {
-      right: 120px;
-      transform: rotate(-5deg);
-    }
   }
 
   @media screen and (max-width: 575px) {
-    svg#rocket-smoke {
-      display: none;
-      visibility: hidden;
-    }
   }
 </style>
 
 <div class="wrapper">
-  <input type="text" [(ngModel)]="imgParent" />
+  <app-nav></app-nav>
+
+  <app-game-products></app-game-products>
+  <!-- <input type="text" [(ngModel)]="imgParent" />
   <button (click)="onToggleImage()">Toggle Image</button>
   <p>{{ toggleShowImg }}</p>
   <app-img
     *ngIf="toggleShowImg"
     (loaded)="onLoaded($event)"
     [img]="imgParent"
-  ></app-img>
-
-  <app-game-product
-    [game]="game"
-    *ngFor="let game of products"
-  ></app-game-product>
+  ></app-img> -->
 </div>
 
 <router-outlet></router-outlet>

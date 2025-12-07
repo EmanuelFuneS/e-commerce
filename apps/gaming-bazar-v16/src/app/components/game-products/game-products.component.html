@@ -1,1 +1,6 @@
-<p>game-products works!</p>
+<div class="products--grid">
+  <app-game-product
+    [game]="game"
+    *ngFor="let game of products"
+  ></app-game-product>
+</div>
