@@ -8,9 +8,10 @@ import { GameProductComponent } from './components/game-product/game-product.com
 import { ImgComponent } from './components/img/img.component';
 import { GameProductsComponent } from './components/game-products/game-products.component';
 import { NavComponent } from './components/nav/nav.component';
+import { FooterComponent } from './components/footer/footer.component';
 
 @NgModule({
-  declarations: [AppComponent, ImgComponent, GameProductComponent, GameProductsComponent, NavComponent],
+  declarations: [AppComponent, ImgComponent, GameProductComponent, GameProductsComponent, NavComponent, FooterComponent],
   imports: [BrowserModule, AppRoutingModule, FormsModule],
   providers: [],
   bootstrap: [AppComponent],
