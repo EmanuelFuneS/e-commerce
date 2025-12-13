@@ -29,7 +29,6 @@ export async function getBrands(page: number = 1, pageSize: number = 10) {
   return safeDbOperation<ActionResponse>(
     async () => {
       const brands = await prisma.brand.findMany({
-        where: { isActive: true },
         orderBy: { name: "asc" },
         skip: (page - 1) * pageSize,
         take: pageSize,
@@ -82,7 +81,6 @@ export async function getBrandPreview() {
   return safeDbOperation<ActionResponse>(
     async () => {
       const brands = await prisma.brand.findMany({
-        where: { isActive: true },
         orderBy: { name: "asc" },
         take: 6,
       });
@@ -94,24 +92,6 @@ export async function getBrandPreview() {
 }
 
 export async function updateBrand() {}
-
-export async function deleteSoftBrand(id: string): Promise<ActionResponse> {
-  try {
-    const brand = await prisma.brand.update({
-      where: { id },
-      data: { isActive: false },
-    });
-
-    revalidateBrandPath();
-    return { success: true, data: brand } as ActionResponse;
-  } catch (error) {
-    console.error("Error soft deleting brand", error);
-    return {
-      success: false,
-      error: "Failed to soft delete brand",
-    } as ActionResponse;
-  }
-}
 
 export async function deleteBrand(id: string): Promise<ActionResponse> {
   try {

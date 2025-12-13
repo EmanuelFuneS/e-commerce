@@ -4,8 +4,9 @@ import { z } from "zod";
 
 import { revalidatePath } from "next/cache";
 import prisma, { safeDbOperation } from "../../prisma";
-import productsSchema, {
+import {
   ProductsSchema,
+  productsSchema,
 } from "../../schemas/products/products.schema";
 import { createSkeletons, productTemplate } from "../../skeleton-templates";
 import { ActionResponse } from "../../types/common";

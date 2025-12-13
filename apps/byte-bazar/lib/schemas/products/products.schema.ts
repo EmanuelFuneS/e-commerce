@@ -1,42 +1,31 @@
-import zod from "zod";
+import { z } from "zod";
 
-const productsSchema = zod.object({
-  name: zod.string().min(1, { message: "Product name is required" }),
-  description: zod.string().min(1, { message: "Description is required" }),
-  sku: zod.string().min(1, { message: "SKU is required" }),
-  price: zod.number().positive({ message: "Price must be a positive number" }),
-  comparePrice: zod.number(),
-  stock: zod.number().int().nonnegative({
-    message: "Stock must be a non-negative integer",
-  }),
-  minStock: zod.number().int().nonnegative({
-    message: "Minimum stock must be a non-negative integer",
-  }),
+export const productsSchema = z.object({
+  name: z.string().min(1, { message: "Product name is required" }),
+  description: z.string().min(1, { message: "Description is required" }),
+  price: z.number().positive({ message: "Price must be a positive number" }),
+  categoryId: z.string().min(1, { message: "Category is required" }),
+  brandId: z.string().min(1, { message: "Brand is required" }),
+  stock: z
+    .number()
+    .int()
+    .nonnegative({
+      message: "Stock must be a non-negative integer",
+    })
+    .default(0),
 
-  categoryId: zod.string().min(1, { message: "Category is required" }),
-  brandId: zod.string().min(1, { message: "Brand is required" }),
-  imageUrl: zod.string().url({ message: "Image URL must be a valid URL" }),
-  images: zod.array(zod.string().url({ message: "Image URL must be valid" })),
-  tags: zod.array(zod.string().min(1, { message: "Tag cannot be empty" })),
+  images: z
+    .array(z.string().url({ message: "Image URL must be valid" }))
+    .default([]),
 
-  discountPercentage: zod.number(),
-  discountStartDate: zod.date(),
-  discountEndDate: zod.date(),
+  isActive: z.boolean().default(true),
 
-  isActive: zod.boolean(),
-  isFeatured: zod.boolean(),
-  Weight: zod.number(),
-  dimensions: zod.object({
-    length: zod.number(),
-    width: zod.number(),
-    height: zod.number(),
-  }),
-  slug: zod.string(),
-  Views: zod.number().default(0),
-  metaTitle: zod.string(),
-  metaDescription: zod.string(),
+  sku: z.string().min(1, { message: "SKU is required" }), // Generado: categoryId + brandId + timestamp o random
+  tags: z
+    .array(z.string().min(1, { message: "Tag cannot be empty" }))
+    .default([]), // Generados: desde name, description, category
+  slug: z.string(), // Generado: desde name (ej: "Product Name" -> "product-name")
+  Views: z.number().default(0), // Inicializado en 0
 });
-export default productsSchema;
 
-export type { zod as ZodType };
-export type ProductsSchema = zod.infer<typeof productsSchema>;
+export type ProductsSchema = z.infer<typeof productsSchema>;
