@@ -9,14 +9,18 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  signIn(username: string, pass: string): any {
-    const user = this.usersService.findOne(username);
-    if (user?.password === pass) {
+  async signIn(username: string, pass: string) {
+    console.log('AuthService signIn called with:', { username, pass });
+    const user = await this.usersService.findOne(username);
+    console.log('User found:', user);
+    if (user?.password !== pass) {
       throw new UnauthorizedException('Invalid credentials');
     }
     const payload = { sub: user?.userId, username: user?.username };
+    const token = await this.jwtService.signAsync(payload);
+    console.log('JWT Payload:', payload);
     return {
-      access_token: this.jwtService.signAsync(payload),
+      access_token: token,
     };
   }
 }
