@@ -1,5 +1,11 @@
 import {
+  Button,
   Card,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
   Table,
   TableBody,
   TableCaption,
@@ -25,6 +31,7 @@ const ProductTable = ({ data }: ProductTableProps) => {
             <TableHead>Price</TableHead>
             <TableHead>Description</TableHead>
             <TableHead className="text-right">Images</TableHead>
+            <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -37,15 +44,31 @@ const ProductTable = ({ data }: ProductTableProps) => {
                 <TableCell className="text-right">
                   {el.images?.length}
                 </TableCell>
+                <TableCell>
+                  <div>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline">...</Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-12">
+                        <DropdownMenuGroup>
+                          <DropdownMenuItem>View</DropdownMenuItem>
+                          <DropdownMenuItem>Edit</DropdownMenuItem>
+                          <DropdownMenuItem>Disable</DropdownMenuItem>
+                        </DropdownMenuGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </TableCell>
               </TableRow>
             );
           })}
         </TableBody>
         {/* <TableFooter>
-        <TableRow>
-        <TableCell colSpan={3}>Total</TableCell>
-        <TableCell className="text-right">$2,500.00</TableCell>
-        </TableRow>
+          <TableRow>
+            <TableCell colSpan={3}>Total</TableCell>
+            <TableCell className="text-right">$2,500.00</TableCell>
+          </TableRow>
         </TableFooter> */}
       </Table>
     </Card>
