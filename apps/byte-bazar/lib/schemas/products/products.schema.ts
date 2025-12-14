@@ -6,13 +6,9 @@ export const productsSchema = z.object({
   price: z.number().positive({ message: "Price must be a positive number" }),
   categoryId: z.string().min(1, { message: "Category is required" }),
   brandId: z.string().min(1, { message: "Brand is required" }),
-  stock: z
-    .number()
-    .int()
-    .nonnegative({
-      message: "Stock must be a non-negative integer",
-    })
-    .default(0),
+  stock: z.number().int().nonnegative({
+    message: "Stock must be a non-negative integer",
+  }),
 
   images: z
     .array(z.string().url({ message: "Image URL must be valid" }))

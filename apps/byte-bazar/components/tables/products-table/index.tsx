@@ -22,15 +22,16 @@ interface ProductTableProps {
 
 const ProductTable = ({ data }: ProductTableProps) => {
   return (
-    <Card className="p-2">
-      <Table>
+    <Card className="p-2 h-fit">
+      <Table className="">
         <TableCaption>A list of products</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">Name</TableHead>
             <TableHead>Price</TableHead>
-            <TableHead>Description</TableHead>
-            <TableHead className="text-right">Images</TableHead>
+            <TableHead>Stock</TableHead>
+            <TableHead>isActive</TableHead>
+            <TableHead className="">Images</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -39,11 +40,10 @@ const ProductTable = ({ data }: ProductTableProps) => {
             return (
               <TableRow>
                 <TableCell className="font-medium">{el.name}</TableCell>
-                <TableCell>{el.price}</TableCell>
-                <TableCell>{el.description}</TableCell>
-                <TableCell className="text-right">
-                  {el.images?.length}
-                </TableCell>
+                <TableCell className="">{el.price}</TableCell>
+                <TableCell>{el.stock}</TableCell>
+                <TableCell>{el.isActive}</TableCell>
+                <TableCell className="">{el.images?.length}</TableCell>
                 <TableCell>
                   <div>
                     <DropdownMenu>
