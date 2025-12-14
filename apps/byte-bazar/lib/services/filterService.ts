@@ -16,12 +16,10 @@ export const getCachedFilterData = unstable_cache(
     return safeDbOperation(async () => {
       const [categories, brands] = await prisma.$transaction([
         prisma.category.findMany({
-          where: { isActive: true },
           select: { name: true },
           orderBy: { name: "asc" },
         }),
         prisma.brand.findMany({
-          where: { isActive: true },
           select: { name: true },
           orderBy: { name: "asc" },
         }),
