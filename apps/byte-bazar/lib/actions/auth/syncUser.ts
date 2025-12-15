@@ -1,4 +1,4 @@
-"use server";
+/* "use server";
 
 import prisma from "../../prisma";
 
@@ -30,4 +30,4 @@ export async function syncUser(email: string, sub: string) {
     console.error("Error in the synchronization", error);
     return { success: false, message: "Failed To Sync User" };
   }
-}
+} */

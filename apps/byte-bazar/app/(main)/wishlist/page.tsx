@@ -32,7 +32,7 @@ const Page = () => {
         {!isPending && (
           <PaginationGrid
             data={products.data}
-            setPage={changePage}
+            changePage={changePage}
             page={page}
             totalPages={products!.pagination!.totalPages || 1}
           />

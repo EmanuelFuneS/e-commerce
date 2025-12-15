@@ -9,9 +9,7 @@ interface ProductGalleryProps {
 }
 
 const ProductGallery = ({ product }: ProductGalleryProps) => {
-  const [selectedImage, setSelectedImage] = useState(
-    product.imageUrl ? product.imageUrl : product.images![0]
-  );
+  const [selectedImage, setSelectedImage] = useState(product.images![0]);
 
   const handleChangeImage = (imageUrl: string) => {
     setSelectedImage(imageUrl);
@@ -63,15 +61,17 @@ const ProductGallery = ({ product }: ProductGalleryProps) => {
         <div className="my-4 flex items-center gap-2">
           <Label className="text-2xl font-bold">{product.price}</Label>
           <Label className="text-sm text-muted-foreground line-through">
-            {typeof product.price === "number" &&
+            {/*  {typeof product.price === "number" &&
             typeof product.discountPercentage === "number"
               ? product.price - product.discountPercentage
-              : ""}
+              : ""} */}{" "}
+            Discount
           </Label>
           <Label className="text-sm text-green-500">
-            {product.discountPercentage === 0
+            {/*  {product.discountPercentage === 0
               ? ""
-              : product.discountPercentage + "% off"}
+              : product.discountPercentage + "% off"} */}{" "}
+            Discount
           </Label>
         </div>
         <div className="my-4 flex flex-col gap-2">
