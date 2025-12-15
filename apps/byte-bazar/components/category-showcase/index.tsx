@@ -98,7 +98,7 @@ export function CategoryLink({ cat, idx }: { cat: Category; idx: number }) {
         </div>
       ) : (
         <Link
-          href={`/products/${cat.slug}`}
+          href={`/products/${cat.name}`}
           className="p-1 flex space-x-2 hover:text-slate-400 "
         >
           <Image

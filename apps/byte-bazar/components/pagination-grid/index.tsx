@@ -12,16 +12,18 @@ import {
 interface PaginationGrid {
   data: Product[] | undefined;
   page: number;
-  setPage: (pageNumber: number) => void;
+  changePage: (pageNumber: number) => void;
   totalPages?: number;
 }
 
 const PaginationGrid = ({
   data,
   page,
-  setPage,
+  changePage,
   totalPages,
 }: PaginationGrid) => {
+  console.log("pages", totalPages, page);
+
   const pages = new Array(totalPages).fill("");
   return (
     <div>
@@ -34,14 +36,14 @@ const PaginationGrid = ({
           <PaginationItem>
             <PaginationPrevious
               className="hover:scale-105  transform transition-transform duration-300"
-              onClick={() => setPage(page - 1)}
+              onClick={() => (page > 0 ? changePage(page - 1) : null)}
             />
           </PaginationItem>
           <PaginationItem>
             {pages.map((_, idx: number) => (
               <PaginationLink
                 isActive={idx === page}
-                onClick={() => setPage(idx)}
+                onClick={() => changePage(idx)}
               >
                 {idx + 1}
               </PaginationLink>
@@ -50,7 +52,9 @@ const PaginationGrid = ({
           <PaginationItem>
             <PaginationNext
               className="hover:scale-105  transform transition-transform duration-300"
-              onClick={() => setPage(page + 1)}
+              onClick={() =>
+                page < totalPages! - 1 ? changePage(page + 1) : null
+              }
             />
           </PaginationItem>
         </PaginationContent>

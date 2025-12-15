@@ -1,96 +1,126 @@
 "use client";
-
-/* import { useCallback, useEffect, useState, useTransition } from "react";
-import { toast } from "sonner";
-import PaginationGrid from "../../../../components/pagination-grid";
-import { getProducts } from "../../../../lib/actions";
-import useHealthDB from "../../../../lib/hooks/useHealthDB";
-import { ApiResponse } from "../../../../lib/types";
-import { Product } from "../../../generated/prisma"; */
-
 import PaginationGrid from "@/components/pagination-grid";
-import { getProducts } from "@/lib/actions";
-import useHealthDB from "@/lib/hooks/useHealthDB";
+import { getProducts, ProductFilters } from "@/lib/actions";
 import { ApiResponse } from "@/lib/types/common";
 import { Product } from "@/lib/types/products";
-
-import { useCallback, useEffect, useState, useTransition } from "react";
-import { toast } from "sonner";
+import { usePathname, useRouter } from "next/navigation";
+import {
+  Suspense,
+  useCallback,
+  useEffect,
+  useState,
+  useTransition,
+} from "react";
 import Filter from "../../../../components/filter";
-import { useCategoriesStore } from "../../../../lib/store";
+import { FilterType } from "../../../../lib/services/filterService";
 
 interface ProductFilterProps {
-  filter: string | undefined;
+  filter?: FilterType;
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
-export default function ProductFilter({ filter }: ProductFilterProps) {
+export default function ProductFilter({
+  filter,
+  searchParams,
+}: ProductFilterProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+
   const [page, setPage] = useState<number>(0);
   const [products, setProducts] = useState<ApiResponse<Product[]> | null>(null);
   const [isPending, startTransition] = useTransition();
-  const { availableDB } = useHealthDB();
+  /* const { availableDB } = useHealthDB(); */
 
-  const { categories } = useCategoriesStore();
+  const buildFilters = useCallback((): ProductFilters => {
+    const categoryFromParams = searchParams.category as string;
+    const brandFromParams = searchParams.brand as string;
 
-  //console.log(filter);
-
-  useEffect(() => {
-    if (availableDB) {
-      toast("Sync success", {
-        description: `DB is successfully connected`,
-      });
-    } else {
-      toast("Sync failed", {
-        description: `DB is failed connected`,
-      });
+    // --- MODIFIED LOGIC ---
+    let category: string | undefined;
+    if (filter?.type === "category") {
+      // Prioritize the ID from the filter object if one exists
+      category = filter.id;
+    } else if (categoryFromParams) {
+      // Fallback to the slug from searchParams ONLY if no filter object exists
+      // (This might still be the slug, meaning you need a separate map)
+      category = categoryFromParams;
     }
-  }, [availableDB]);
+
+    let brand: string | undefined;
+    if (filter?.type === "brand") {
+      brand = filter.id;
+    } else if (brandFromParams) {
+      brand = brandFromParams;
+    }
+    // ----------------------
+
+    // ... rest of the function ...
+
+    return {
+      category: category !== "all" ? category : undefined,
+      brand: brand !== "all" ? brand : undefined,
+      // ...
+    };
+  }, [searchParams, filter]);
 
   useEffect(() => {
+    const page = Number(searchParams.page || 1) - 1; // API usa 0-indexed
+    const filters = buildFilters();
+
     startTransition(async () => {
-      const response = await getProducts(page);
+      const response = await getProducts(page, 10, filters);
       setProducts(response);
     });
-  }, [page]);
+  }, [searchParams, buildFilters, page]);
 
-  /*  useEffect(() => {
-    startTransition(async () => {
+  const changePage = useCallback(
+    (newPage: number) => {
+      const params = new URLSearchParams(
+        searchParams as Record<string, string>
+      );
+      Object.entries(searchParams).forEach(([key, value]) => {
+        if (filter && key === filter.type) {
+          return;
+        }
 
-      if(filter.type === "category") {
-        const response = await getProductsbycategory(page, filter);
-        setProducts(response);
+        if (value && key !== "page") {
+          params.set(key, String(value));
+        }
+      });
+      params.set("page", String(newPage + 1));
+      const queryString = params.toString();
+      const newUrl = queryString ? `${pathname}?${queryString}` : pathname;
+      console.log("Changing page to:", newUrl);
+      router.push(newUrl);
+    },
+    [pathname, router, searchParams]
+  );
 
-      }else if (filterType === "brand") {
-        const response = await getProductsbyBrand(page, filter);
-        setProducts(response);
-
-      } else {
-
-        const response = await getProducts(page);
-        setProducts(response);
-      }
-    });
-  }, [page]); */
-
-  const changePage = useCallback((newPage: number) => {
-    setPage(newPage);
-  }, []);
-
-  if (!products) return <div>Loading</div>;
+  if (!products)
+    return (
+      <div className="min-w-6x flex justify-center">
+        <h1>Loading</h1>
+      </div>
+    );
   return (
-    <div className="w-full ">
+    <div className="min-w-6xl ">
       <section className="flex flex-col md:flex-row justify-between">
         <aside>
-          <Filter />
+          <Suspense fallback={<div>Loading filters...</div>}>
+            <Filter searchParams={searchParams} filter={filter} />
+          </Suspense>
         </aside>
-        <section className=" h-full w-full py-4">
-          {!isPending && (
-            <PaginationGrid
-              data={products.data}
-              setPage={changePage}
-              page={page}
-              totalPages={products.pagination?.totalPages}
-            />
-          )}
+        <section className="w-full h-full py-4">
+          <Suspense fallback={<div>Loading products...</div>}>
+            {!isPending && products.data && (
+              <PaginationGrid
+                data={products.data}
+                changePage={changePage}
+                page={Number(searchParams.page || 1) - 1}
+                totalPages={products.pagination?.totalPages}
+              />
+            )}
+          </Suspense>
         </section>
       </section>
     </div>

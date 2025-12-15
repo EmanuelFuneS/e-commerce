@@ -19,7 +19,7 @@ const NavigationBreadCrumb = () => {
   console.log("BASEPATH", basePath);
   console.log("SLUG", slug); */
   return (
-    <div className="h-[10vh] flex items-center px-4">
+    <div className="h-[10vh] flex items-center px-4 ">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -40,20 +40,23 @@ const NavigationBreadCrumb = () => {
           {slug &&
             slug.length > 0 &&
             slug.map((segment, index) => (
-              <>
-                <BreadcrumbItem>
+              <span className="flex items-center space-x-2" key={index}>
+                <BreadcrumbItem className="">
                   {index === slug.length - 1 ? (
-                    <BreadcrumbPage>
+                    <BreadcrumbPage className="capitalize ">
                       {decodeURIComponent(segment)}
                     </BreadcrumbPage>
                   ) : (
-                    <BreadcrumbLink href={`/${basePath}/${segment}`}>
+                    <BreadcrumbLink
+                      className="capitalize"
+                      href={`/${basePath}/${segment}`}
+                    >
                       {decodeURIComponent(segment)}
                     </BreadcrumbLink>
                   )}
                 </BreadcrumbItem>
                 {index < 1 && <BreadcrumbSeparator />}
-              </>
+              </span>
             ))}
         </BreadcrumbList>
       </Breadcrumb>

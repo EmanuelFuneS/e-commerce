@@ -11,7 +11,6 @@ export async function getCategories() {
   return safeDbOperation<ActionResponse>(
     async () => {
       const categories = await prisma.category.findMany({
-        where: { isActive: true },
         orderBy: { name: "asc" },
       });
 
@@ -25,7 +24,6 @@ export async function getCategoryPreview() {
   return safeDbOperation<ActionResponse>(
     async () => {
       const brands = await prisma.category.findMany({
-        where: { isActive: true },
         orderBy: { name: "asc" },
         take: 10,
       });
