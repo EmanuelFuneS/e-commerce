@@ -1,19 +1,17 @@
 "use client";
-import { useUser } from "@auth0/nextjs-auth0";
+/* import { useUser } from "@auth0/nextjs-auth0"; */
 import {
   NavigationMenuLink,
   navigationMenuTriggerStyle,
 } from "@workspace/ui/components/navigation-menu";
-import { Login, Logout } from "@workspace/ui/lib";
+import { Login } from "@workspace/ui/lib";
 import Link from "next/link";
-import { useEffect } from "react";
-import { toast } from "sonner";
-import { syncUser } from "../../../lib/actions/auth/syncUser";
+/* import { syncUser } from "../../../lib/actions/auth/syncUser"; */
 
 const ProfileAuth = () => {
-  const { user, isLoading } = useUser();
+  /* const { user, isLoading } = useUser(); */
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (user?.email && user?.sub && user?.name) {
       const runSync = async () => {
         const result = await syncUser(user.email!, user.sub!);
@@ -29,24 +27,24 @@ const ProfileAuth = () => {
       };
       runSync();
     }
-  }, [user]);
+  }, [user]); */
   return (
     <>
-      {user ? (
+      {/*   {user ? (
         <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
           <Link href={"/auth/logout"} className="flex-row items-center gap-2">
             <Logout />
             Logout
           </Link>
         </NavigationMenuLink>
-      ) : (
-        <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-          <Link href="/auth/login" className="flex-row items-center gap-2">
-            <Login />
-            Login
-          </Link>
-        </NavigationMenuLink>
-      )}
+      ) : ( */}
+      <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+        <Link href="/auth/login" className="flex-row items-center gap-2">
+          <Login />
+          Login
+        </Link>
+      </NavigationMenuLink>
+      {/*    )} */}
     </>
   );
 };

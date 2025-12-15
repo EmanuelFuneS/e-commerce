@@ -26,7 +26,7 @@ export const productTemplate: Product = {
 
 export const categoriesTemplate: Category = {
   name: "",
-  logo: "",
+  imageUrl: "",
 };
 
 export function createSkeleton<T>(sampleObject: T): T {
