@@ -12,6 +12,7 @@
     "lint:fix": "next lint --fix",
     "typecheck": "tsc --noEmit",
     "test": "jest",
+    "codemod": "codemod",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "db:generate": "prisma generate",
