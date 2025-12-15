@@ -39,18 +39,73 @@ export async function createProduct(
   }
 }
 
+export interface ProductFilters {
+  category?: string;
+  brand?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  sort?: string;
+}
+
 export async function getProducts(
   page: number = 1,
   pageSize: number = 10,
-  filter: {} = {}
+  filters: ProductFilters = {}
 ) {
   return safeDbOperation<ActionResponse>(
     async () => {
+      // Construir el where clause dinámicamente
+      const whereClause: any = { isActive: true };
+
+      // Filtro por categoría
+      if (filters.category) {
+        whereClause.categoryId = filters.category;
+      }
+
+      // Filtro por marca
+      if (filters.brand) {
+        whereClause.brandId = filters.brand;
+      }
+
+      // Filtro por precio
+      if (filters.minPrice !== undefined || filters.maxPrice !== undefined) {
+        whereClause.price = {};
+        if (filters.minPrice !== undefined) {
+          whereClause.price.gte = filters.minPrice;
+        }
+        if (filters.maxPrice !== undefined) {
+          whereClause.price.lte = filters.maxPrice;
+        }
+      }
+
+      // Construir el orderBy dinámicamente
+      let orderBy: any = { name: "asc" }; // Default
+
+      if (filters.sort) {
+        switch (filters.sort) {
+          case "price-asc":
+            orderBy = { price: "asc" };
+            break;
+          case "price-desc":
+            orderBy = { price: "desc" };
+            break;
+          case "name-asc":
+            orderBy = { name: "asc" };
+            break;
+          case "name-desc":
+            orderBy = { name: "desc" };
+            break;
+          case "relevance":
+            orderBy = { createdAt: "desc" };
+            break;
+        }
+      }
+
       const [totalProducts, products] = await prisma.$transaction([
-        prisma.product.count(),
+        prisma.product.count({ where: whereClause }),
         prisma.product.findMany({
-          where: { isActive: true, ...filter },
-          orderBy: { name: "asc" },
+          where: whereClause,
+          orderBy,
           include: {
             category: {
               select: {

@@ -5,10 +5,9 @@ interface User {
   name?: string;
   email: string;
   isActive: boolean;
+  roleId: string;
   role?: Role;
   lastLogin?: Date;
-  picture?: string;
-  auth0_id: string;
   createdAt: Date;
   updatedAt: Date;
   orders: Order[];

@@ -2,13 +2,14 @@ import { unstable_cache } from "next/cache";
 import prisma, { safeDbOperation } from "../prisma";
 
 export interface FilterData {
-  categories: Array<string>;
-  brands: Array<string>;
+  categories: Array<{ id: string; name: string }>;
+  brands: Array<{ id: string; name: string }>;
 }
 
 export interface FilterType {
-  type: "category" | "brand" | null;
+  type: "category" | "brand";
   value: string;
+  id: string;
 }
 
 export const getCachedFilterData = unstable_cache(
@@ -16,19 +17,19 @@ export const getCachedFilterData = unstable_cache(
     return safeDbOperation(async () => {
       const [categories, brands] = await prisma.$transaction([
         prisma.category.findMany({
-          select: { name: true },
+          select: { id: true, name: true },
           orderBy: { name: "asc" },
         }),
         prisma.brand.findMany({
-          select: { name: true },
+          select: { id: true, name: true },
           orderBy: { name: "asc" },
         }),
       ]);
 
-      const arrayCat = categories.map((el) => el.name);
-      const arrayBrand = brands.map((el) => el.name);
-
-      return { categories: arrayCat, brands: arrayBrand };
+      return {
+        categories,
+        brands,
+      };
     });
   }
 );

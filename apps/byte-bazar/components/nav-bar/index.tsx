@@ -26,8 +26,8 @@ import useCategories from "../../lib/hooks/useCategories";
 import useFavoritesProducts from "../../lib/hooks/useFavoritesProducts";
 import { Product } from "../../lib/types";
 import { Category } from "../../lib/types/categories";
+import { ProductHelper } from "../../lib/utils/productHelper";
 import ListProductCard from "../items-cards/list-product-card";
-import ProfileAuth from "../profile/profile-auth";
 import ProfilePicture from "../profile/profile-picture";
 import ThemeToggle from "../theme-toggle";
 
@@ -51,18 +51,10 @@ const NavBar = () => {
                     <ListItem
                       key={cat.id}
                       title={cat.name}
-                      href={`/products/${cat.slug}`}
+                      href={`/products/${ProductHelper.generateSlug(cat.name || "")}`}
                       imageAlt={cat.name || ""}
                       imageUrl={cat.imageUrl || ""}
-                    >
-                      {cat.description ? (
-                        <Skeleton
-                          className={`${index % 2 === 0 ? "w-[100px]" : "w-[120px]"} h-4 bg-slate-500`}
-                        />
-                      ) : (
-                        <p>{cat.description || "Default Descriptions"}</p>
-                      )}
-                    </ListItem>
+                    ></ListItem>
                   ))}
                 </ul>
               </NavigationMenuContent>
@@ -190,17 +182,17 @@ const NavBar = () => {
                         Settings
                       </Link>
                     </NavigationMenuLink>
-                    {user && <ProfileAuth />}
+                    {/*  {user && <ProfileAuth />} */}
                   </li>
                 </ul>
               </NavigationMenuContent>
             </NavigationMenuItem>
 
-            {!user && (
+            {/* {!user && (
               <NavigationMenuItem>
                 <ProfileAuth />
               </NavigationMenuItem>
-            )}
+            )} */}
           </NavigationMenuList>
         </NavigationMenu>
       </nav>
