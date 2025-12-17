@@ -9,7 +9,13 @@ const nextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "**",
+      },
     ],
+    dangerouslyAllowSVG: true,
+    unoptimized: process.env.NODE_ENV === "development",
   },
 };
 

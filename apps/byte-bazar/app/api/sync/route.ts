@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+/* import { NextRequest, NextResponse } from "next/server";
 import prisma from "../../../lib/prisma";
 
 export const GET = async function handle(req: NextRequest) {
@@ -24,7 +24,7 @@ export const GET = async function handle(req: NextRequest) {
         auth0_id: sub,
         isActive: true,
         lastLogin: new Date(),
-        /* roleId: "USER", */
+        roleId: "USER",
       },
     });
 
@@ -45,3 +45,4 @@ export const GET = async function handle(req: NextRequest) {
     );
   }
 };
+ */

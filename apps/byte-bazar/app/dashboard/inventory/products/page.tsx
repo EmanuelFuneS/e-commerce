@@ -14,6 +14,7 @@ import {
   NativeSelectOption,
   Textarea,
 } from "../../../../../../packages/ui/src/components";
+import InputImages, { ImageItem } from "../../../../components/Input-images";
 import {
   ProductsSchema,
   productsSchema,
@@ -26,6 +27,7 @@ const Page = () => {
   const [slug, setSlug] = useState<string>("");
   const { categories } = useCategoriesStore();
   const { brands } = useBrandsStore();
+  const [images, setImages] = useState<ImageItem[]>([]);
 
   const form = useForm<ProductsSchema>({
     resolver: zodResolver(productsSchema) as any,
@@ -86,12 +88,11 @@ const Page = () => {
   return (
     <section className="min-h-full">
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <section className="h-full p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="row-span-2 mb-5 min-w-[250px] h-[150px] md:mb-0  lg:min-w-[325px] lg:h-[165px]">
-            <FieldLabel>Images Loader</FieldLabel>
-            <div className="my-3 ml-0.5 bg-muted h-full w-full rounded-md">
-              {/* images array */}
-            </div>
+        <section className="h-full p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4  [&>*:first-child]:mb-8">
+          <div className="row-span-2 min-w-[250px] h-[200px] md:mb-0  lg:min-w-[330px] ">
+            <FieldLabel className="mb-2">Images Loader</FieldLabel>
+            <InputImages setStateForm={setImages} stateForm={images} />
+            <FieldDescription>Only 4 Images can be loaded.</FieldDescription>
           </div>
 
           <Field>
@@ -156,7 +157,7 @@ const Page = () => {
             <FieldError>{form.formState.errors.price?.message}</FieldError>
           </Field>
 
-          <Field className="col-span-full">
+          <Field className="col-span-1">
             <FieldLabel htmlFor="description">Description</FieldLabel>
             <Textarea
               id="description"
