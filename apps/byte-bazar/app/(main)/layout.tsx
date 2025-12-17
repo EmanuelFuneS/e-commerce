@@ -10,7 +10,7 @@ export default function MainLayout({
   return (
     <body className="">
       <NavBar />
-      <main className="max-w-6xl mx-auto md:px-4 grow">
+      <main className="w-full max-w-6xl mx-auto grow">
         <NavigationBreadCrumb />
         {children}
       </main>
