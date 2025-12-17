@@ -1,3 +1,5 @@
+import Footer from "../../components/footer";
+import NavBar from "../../components/nav-bar";
 import NavigationBreadCrumb from "../../components/navigation-breadcrumb";
 
 export default function CheckoutLayout({
@@ -7,10 +9,12 @@ export default function CheckoutLayout({
 }) {
   return (
     <>
-      <main className="max-w-7xl mx-auto">
+      <NavBar />
+      <main className="w-full max-w-6xl mx-auto md:px-4 grow">
         <NavigationBreadCrumb />
         {children}
       </main>
+      <Footer />
     </>
   );
 }
