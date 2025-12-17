@@ -1,13 +1,14 @@
-import { Component } from '@angular/core';
-import { GameProduct } from '../../models/game-product.model';
+import { Component, OnInit } from '@angular/core';
+import { VideoGame, VideoGameDetail } from '../../models/Videogame.model';
+import { VideogamesService } from '../../services/videogames.service';
 
 @Component({
   selector: 'app-game-products',
   templateUrl: './game-products.component.html',
   styleUrls: ['./game-products.component.sass'],
 })
-export class GameProductsComponent {
-  products: GameProduct[] = [
+export class GameProductsComponent implements OnInit {
+  /*   products: GameProduct[] = [
     {
       id: 1,
       name: 'Game Name',
@@ -110,5 +111,34 @@ export class GameProductsComponent {
       img: 'https://example.com/seventeenth-game-image.png',
       price: 23,
     },
-  ];
+  ]; */
+
+  productsGames: VideoGame[] = [];
+  selectedGame: VideoGameDetail | null = null;
+  loading = false;
+  error: string | null = null;
+
+  constructor(private videogamesService: VideogamesService) {}
+
+  ngOnInit(): void {
+    this.loadAllGames();
+  }
+
+  loadAllGames(): void {
+    this.loading = true;
+    this.error = null;
+
+    this.videogamesService.getAllGames().subscribe({
+      next: (data) => {
+        this.productsGames = data;
+        this.loading = false;
+        console.log('Games Loaded:', data.length);
+      },
+      error: (err) => {
+        this.error = err.message;
+        this.loading = false;
+        console.error('Error in load games: ' + err);
+      },
+    });
+  }
 }

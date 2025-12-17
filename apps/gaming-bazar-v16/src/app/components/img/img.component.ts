@@ -25,7 +25,7 @@ export class ImgComponent implements OnChanges, OnInit {
   imageError: boolean = false;
 
   counter: number = 0;
-  /* counterFn: number | undefined; */
+  //counterFn: number | undefined;
 
   onImageError() {
     console.log('Image failed to load.');
@@ -69,6 +69,6 @@ export class ImgComponent implements OnChanges, OnInit {
   ngOnDestroy() {
     // cleanup just before Angular destroys the component
     console.log('ngOnDestroy: ImgComponent about to be destroyed');
-    /* window.clearInterval(this.counterFn); */
+    // window.clearInterval(this.counterFn);
   }
 }

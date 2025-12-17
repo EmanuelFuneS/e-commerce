@@ -1,6 +1,3 @@
-export interface GameProduct {
-  id: number;
-  name: string;
-  img: string;
-  price: number;
-}
+import { VideoGame } from './Videogame.model';
+
+export interface GameProduct extends VideoGame {}
