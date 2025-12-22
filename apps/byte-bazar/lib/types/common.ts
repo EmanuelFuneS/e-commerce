@@ -15,4 +15,4 @@ interface Pagination {
   totalItems: number;
 }
 
-export interface ActionResponse extends ApiResponse {}
+export interface ActionResponse<T = any> extends ApiResponse<T> {}

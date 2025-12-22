@@ -14,6 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@workspace/ui/components";
+import Link from "next/link";
 import { Product } from "../../../lib/types";
 
 interface ProductTableProps {
@@ -53,7 +54,11 @@ const ProductTable = ({ data }: ProductTableProps) => {
                       <DropdownMenuContent className="w-12">
                         <DropdownMenuGroup>
                           <DropdownMenuItem>View</DropdownMenuItem>
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <Link href={`inventory/products/${el.slug}`}>
+                              Edit
+                            </Link>
+                          </DropdownMenuItem>
                           <DropdownMenuItem>Disable</DropdownMenuItem>
                         </DropdownMenuGroup>
                       </DropdownMenuContent>

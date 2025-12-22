@@ -55,7 +55,7 @@ const NavigationBreadCrumb = () => {
                     </BreadcrumbLink>
                   )}
                 </BreadcrumbItem>
-                {index < 1 && <BreadcrumbSeparator />}
+                {index < 2 && <BreadcrumbSeparator />}
               </span>
             ))}
         </BreadcrumbList>

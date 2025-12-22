@@ -176,6 +176,31 @@ export async function SearchByProductName(name: string) {
   );
 }
 
+export async function getProductBySlug(slug: string) {
+  return safeDbOperation<ActionResponse>(
+    async () => {
+      const product = await prisma.product.findMany({
+        where: {
+          isActive: true,
+          slug: { contains: slug, mode: "insensitive" },
+        },
+        orderBy: { name: "asc" },
+        take: 1,
+      });
+
+      const serializedData = serializeDecimals(product);
+      if (product.length === 0) {
+        return { success: false, error: "product not found" };
+      }
+      return { success: true, data: serializedData[0] } as ActionResponse;
+    },
+    {
+      success: false,
+      data: [],
+    }
+  );
+}
+
 export async function getProductById(id: string): Promise<ActionResponse> {
   try {
     const product = await prisma.product.findUnique({
