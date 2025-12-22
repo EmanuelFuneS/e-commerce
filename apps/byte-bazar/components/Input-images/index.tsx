@@ -3,23 +3,26 @@ import { useCallback, useEffect, useState } from "react";
 import Dropzone from "react-dropzone";
 import { Button, Card, Input } from "../../../../packages/ui/src/components";
 import { Delete } from "../../../../packages/ui/src/lib";
-
-export type ImageItem =
-  | { type: "file"; file: File }
-  | { type: "url"; url: string };
+import { ImageItem } from "../../lib/utils/productHelper";
 
 interface InputImagesProps {
   stateForm: ImageItem[];
   setStateForm: React.Dispatch<React.SetStateAction<ImageItem[]>>;
+  dbImages?: string[];
 }
 
-function InputImages({ stateForm, setStateForm }: InputImagesProps) {
+function InputImages({ stateForm, setStateForm, dbImages }: InputImagesProps) {
   const [preview, setPreview] = useState<string[]>([]);
   const [urlInput, setUrlInput] = useState("");
 
   const onChangeURL = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUrlInput(e.target.value);
   };
+  useEffect(() => {
+    if (dbImages!.length > 0) {
+      setPreview(dbImages!);
+    }
+  }, [dbImages]);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const newItems = acceptedFiles.map((file) => ({
@@ -30,8 +33,6 @@ function InputImages({ stateForm, setStateForm }: InputImagesProps) {
 
     setStateForm((prev) => [...prev, ...newItems]);
     setPreview((prev) => [...prev, ...newPreviews]);
-    console.log(stateForm);
-    console.log(preview);
   }, []);
 
   const removeImages = (index: number) => {
@@ -41,8 +42,6 @@ function InputImages({ stateForm, setStateForm }: InputImagesProps) {
 
     setStateForm((prev) => prev.filter((_, idx) => idx !== index));
     setPreview((prev) => prev.filter((_, idx) => idx !== index));
-    console.log(stateForm);
-    console.log(preview);
   };
 
   useEffect(() => {
@@ -55,21 +54,14 @@ function InputImages({ stateForm, setStateForm }: InputImagesProps) {
     if (!urlInput.trim()) return;
 
     const newItem = { type: "url" as const, url: urlInput };
-
-    // Agregar la URL directamente a preview (no necesita createObjectURL)
     setPreview((prev) => [...prev, urlInput]);
-
-    // Guardar la URL en images para diferenciarla de Files
-    // Opción: guardar un objeto que identifique el tipo
-    setStateForm((prev) => [...prev, newItem]); // O usa un objeto: {type: 'url', value: urlInput}
-
-    // Limpiar el input
+    setStateForm((prev) => [...prev, newItem]);
     setUrlInput("");
   };
 
   return (
-    <Card className="p-2 h-full w-full flex flex-col justify-between gap-1">
-      <div className="h-[55%] flex gap-1">
+    <Card className="p-2 w-full space-y-2 flex flex-col gap-1">
+      <div className="h-[40%] flex justify-center">
         {!!preview.length &&
           preview.map((previewUrl: string, idx: number) => {
             return (
@@ -84,12 +76,12 @@ function InputImages({ stateForm, setStateForm }: InputImagesProps) {
                   />
                 </button>
                 <Image
-                  width={60}
-                  height={60}
+                  width={120}
+                  height={120}
                   key={idx}
                   src={previewUrl}
                   alt="Image Loaded"
-                  className="w-full h-full object-cover rounded-md"
+                  className="h-full object-cover rounded-md"
                 />
               </div>
             );
@@ -104,7 +96,7 @@ function InputImages({ stateForm, setStateForm }: InputImagesProps) {
                 {...getInputProps()}
               />
               <p
-                className={`${preview.length > 3 ? "" : "hover:text-gray-500"}`}
+                className={`${preview.length > 3 ? "text-gray-500" : "hover:text-gray-500"}`}
               >
                 Drag 'n' drop some files here, or click to select files
               </p>
