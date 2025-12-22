@@ -1,3 +1,7 @@
+export type ImageItem =
+  | { type: "file"; file: File }
+  | { type: "url"; url: string };
+
 export class ProductHelper {
   static generateSlug(name: string): string {
     return name
@@ -25,5 +29,12 @@ export class ProductHelper {
   static generateSKU(categoryId: string, brandId: string): string {
     const timestamp = Date.now().toString(36);
     return `${categoryId.slice(categoryId.length - 3)}-${brandId.slice(brandId.length - 3)}-${timestamp}`.toUpperCase();
+  }
+
+  static formatDBImages(images: string[]): ImageItem[] {
+    return images.map((el, idx) => ({
+      type: "url",
+      url: el,
+    }));
   }
 }
