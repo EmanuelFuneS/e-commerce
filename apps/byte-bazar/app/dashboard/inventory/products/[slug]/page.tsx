@@ -1,6 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { startTransition, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import {
   Badge,
@@ -13,16 +13,25 @@ import {
   NativeSelect,
   NativeSelectOption,
   Textarea,
-} from "../../../../../../packages/ui/src/components";
-import InputImages from "../../../../components/Input-images";
+} from "../../../../../../../packages/ui/src/components";
+import InputImages from "../../../../../components/Input-images";
+import { getProductBySlug } from "../../../../../lib/actions";
 import {
   ProductsSchema,
   productsSchema,
-} from "../../../../lib/schemas/products/products.schema";
-import { useBrandsStore, useCategoriesStore } from "../../../../lib/store";
-import { ImageItem, ProductHelper } from "../../../../lib/utils/productHelper";
+} from "../../../../../lib/schemas/products/products.schema";
+import { useBrandsStore, useCategoriesStore } from "../../../../../lib/store";
+import { ActionResponse, Product } from "../../../../../lib/types";
+import {
+  ImageItem,
+  ProductHelper,
+} from "../../../../../lib/utils/productHelper";
 
-const Page = () => {
+interface PageProps {
+  params: { slug: string };
+}
+
+const Page = ({ params }: PageProps) => {
   const [renderTag, setRenderTag] = useState<string[]>([]);
   const [slug, setSlug] = useState<string>("");
   const { categories } = useCategoriesStore();
@@ -46,6 +55,26 @@ const Page = () => {
       Views: 0,
     },
   });
+
+  const previewDbImages = form.watch("images");
+  console.log(previewDbImages);
+
+  useEffect(() => {
+    startTransition(async () => {
+      const slugParam = params.slug;
+      const response: ActionResponse<Product> | null =
+        await getProductBySlug(slugParam);
+      if (response?.data) {
+        form.reset(response.data);
+        if (response.data.tags && response.data.slug && response.data.images) {
+          setRenderTag(response.data.tags);
+          setSlug(response.data.slug);
+          setImages(ProductHelper.formatDBImages(response.data.images));
+        }
+      }
+      console.log(response);
+    });
+  }, [form]);
 
   useEffect(() => {
     const { unsubscribe } = form.watch((value, { name, type }) => {
@@ -89,9 +118,13 @@ const Page = () => {
     <section className="min-h-full">
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <section className="h-full p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4  [&>*:first-child]:mb-8">
-          <div className="row-span-2 min-w-[250px] md:mb-0 ">
+          <div className="row-span-2 min-w-[250px] md:mb-0">
             <FieldLabel className="mb-2">Images Loader</FieldLabel>
-            <InputImages setStateForm={setImages} stateForm={images} />
+            <InputImages
+              setStateForm={setImages}
+              stateForm={images}
+              dbImages={previewDbImages}
+            />
             <FieldDescription>Only 4 Images can be loaded.</FieldDescription>
           </div>
 
