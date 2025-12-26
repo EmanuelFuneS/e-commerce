@@ -2,8 +2,8 @@
 
 import { z } from "zod";
 
+import { prisma, safeDbOperation } from "@workspace/database";
 import { revalidatePath } from "next/cache";
-import prisma, { safeDbOperation } from "../../prisma";
 import {
   ProductsSchema,
   productsSchema,
