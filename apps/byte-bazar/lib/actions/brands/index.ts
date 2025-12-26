@@ -1,7 +1,7 @@
 "use server";
 
+import { prisma, safeDbOperation } from "@workspace/database";
 import { revalidatePath } from "next/cache";
-import prisma, { safeDbOperation } from "../../prisma";
 
 import brandSchema, { BrandSchema } from "../../schemas/brand/brand.schema";
 import { brandTemplate, createSkeletons } from "../../skeleton-templates";

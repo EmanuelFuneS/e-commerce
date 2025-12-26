@@ -1,7 +1,7 @@
 "use server";
 
+import { prisma, safeDbOperation } from "@workspace/database";
 import { revalidatePath } from "next/cache";
-import prisma, { safeDbOperation } from "../../prisma";
 import { categoriesTemplate, createSkeletons } from "../../skeleton-templates";
 import { ActionResponse } from "../../types/common";
 

@@ -1,5 +1,5 @@
+import { prisma, safeDbOperation } from "@workspace/database";
 import { unstable_cache } from "next/cache";
-import prisma, { safeDbOperation } from "../prisma";
 
 export interface FilterData {
   categories: Array<{ id: string; name: string }>;

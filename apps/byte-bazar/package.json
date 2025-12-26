@@ -5,8 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "prisma generate && next build",
-    "postinstall": "prisma generate",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
@@ -14,23 +13,17 @@
     "test": "jest",
     "codemod": "codemod",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "db:generate": "prisma generate",
-    "db:push": "prisma db push",
-    "db:migrate": "prisma migrate dev",
-    "db:studio": "prisma studio",
-    "db:seed": "tsx prisma/seed.ts",
-    "db:reset": "prisma migrate reset --force"
+    "test:coverage": "jest --coverage"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@workspace/ui": "workspace:*",
+    "@prisma/client": "^5.22.0",
+    "@workspace/database": "workspace:*",
     "@auth0/nextjs-auth0": "^4.8.0",
     "@hookform/resolvers": "^5.1.1",
-    "@prisma/client": "^6.13.0",
-    "@prisma/extension-accelerate": "^2.0.2",
-    "@workspace/ui": "workspace:*",
     "cloudinary": "^2.7.0",
     "embla-carousel-autoplay": "^8.6.0",
     "eslint-config-next": "^16.0.7",
@@ -60,7 +53,6 @@
     "babel-jest": "^30.0.5",
     "jest": "^30.0.5",
     "jest-environment-jsdom": "^30.0.5",
-    "prisma": "^6.13.0",
     "tsx": "^4.20.3",
     "typescript": "^5.7.3"
   }

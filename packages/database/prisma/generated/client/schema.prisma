@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../app/generated/prisma"
+  output   = "./generated/client"
 }
 
 datasource db {
@@ -70,9 +70,9 @@ model User {
   createdAt      DateTime        @default(now()) @map("created_at")
   updatedAt      DateTime        @updatedAt @map("updated_at")
 
-  @@map("users")
   @@index([roleId])
   @@index([email])
+  @@map("users")
 }
 
 // ===== PRODUCTOS Y CATÁLOGO =====
@@ -121,11 +121,11 @@ model Product {
   createdAt      DateTime        @default(now()) @map("created_at")
   updatedAt      DateTime        @updatedAt @map("updated_at")
 
-  @@map("products")
   @@index([categoryId])
   @@index([brandId])
   @@index([slug])
   @@index([isActive])
+  @@map("products")
 }
 
 // ===== DESCUENTOS =====
@@ -142,10 +142,10 @@ model Discount {
   createdAt     DateTime     @default(now()) @map("created_at")
   updatedAt     DateTime     @updatedAt @map("updated_at")
 
-  @@map("discounts")
   @@index([productId])
   @@index([isActive])
   @@index([startDate, endDate])
+  @@map("discounts")
 }
 
 // ===== GESTIÓN DE STOCK =====
@@ -161,10 +161,10 @@ model StockMovement {
   user      User              @relation(fields: [userId], references: [id])
   createdAt DateTime          @default(now()) @map("created_at")
 
-  @@map("stock_movements")
   @@index([productId])
   @@index([userId])
   @@index([createdAt])
+  @@map("stock_movements")
 }
 
 // ===== ÓRDENES Y VENTAS =====
@@ -193,11 +193,11 @@ model Order {
   shippedAt       DateTime?     @map("shipped_at")
   deliveredAt     DateTime?     @map("delivered_at")
 
-  @@map("orders")
   @@index([userId])
   @@index([orderNumber])
   @@index([status])
   @@index([createdAt])
+  @@map("orders")
 }
 
 model OrderItem {
@@ -210,9 +210,9 @@ model OrderItem {
   unitPrice Decimal @map("unit_price") @db.Decimal(10, 2)
 
   @@unique([orderId, productId])
-  @@map("order_items")
   @@index([orderId])
   @@index([productId])
+  @@map("order_items")
 }
 
 // ===== CUPONES Y DESCUENTOS =====
@@ -235,9 +235,9 @@ model Coupon {
   createdAt      DateTime      @default(now()) @map("created_at")
   updatedAt      DateTime      @updatedAt @map("updated_at")
 
-  @@map("coupons")
   @@index([code])
   @@index([isActive])
+  @@map("coupons")
 }
 
 model CouponUsage {
@@ -250,9 +250,8 @@ model CouponUsage {
   order    Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   usedAt   DateTime @default(now()) @map("used_at")
 
-  @@map("coupon_usages")
   @@index([couponId])
   @@index([userId])
   @@index([orderId])
+  @@map("coupon_usages")
 }
-
