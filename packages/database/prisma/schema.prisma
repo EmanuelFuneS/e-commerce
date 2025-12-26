@@ -45,37 +45,119 @@ enum DiscountType {
   @@map("discount_type")
 }
 
-// ===== USUARIOS Y ROLES =====
-model UserRole {
-  id        String   @id @default(cuid())
-  name      String   @unique
-  users     User[]
+// ============================================
+// AUTH MODELS (del auth-service)
+// ============================================
+
+model User {
+  id                   String    @id @default(cuid())
+  email                String    @unique
+  password             String
+  name                 String?
+  isActive             Boolean   @default(true) @map("is_active")
+  isVerified           Boolean   @default(false) @map("is_verified")
+  verificationToken    String?   @map("verification_token")
+  resetPasswordToken   String?   @map("reset_password_token")
+  resetPasswordExpires DateTime? @map("reset_password_expires")
+  lastLogin            DateTime? @map("last_login")
+  loginAttempts        Int       @default(0) @map("login_attempts")
+  lockedUntil          DateTime? @map("locked_until")
+  
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@map("user_roles")
-}
-
-model User {
-  id             String          @id @default(cuid())
-  name           String
-  email          String          @unique
-  isActive       Boolean         @default(true) @map("is_active")
-  roleId         String          @map("role_id")
-  role           UserRole        @relation(fields: [roleId], references: [id])
-  lastLogin      DateTime?       @map("last_login")
-  orders         Order[]
+  // Relaciones auth
+  userRoles     UserRole[]
+  refreshTokens RefreshToken[]
+  
+  // Relaciones con otros dominios (si las necesitas)
+  orders Order[]
   stockMovements StockMovement[]
   couponUsages   CouponUsage[]
-  createdAt      DateTime        @default(now()) @map("created_at")
-  updatedAt      DateTime        @updatedAt @map("updated_at")
+  // Agrega más según necesites
 
   @@map("users")
-  @@index([roleId])
   @@index([email])
 }
 
-// ===== PRODUCTOS Y CATÁLOGO =====
+model Role {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  userRoles          UserRole[]
+  roleHasPermissions RoleHasPermission[]
+
+  @@map("roles")
+}
+
+model RolePermission {
+  id           String @id @default(cuid())
+  action       String // create, read, update, delete
+  subject      String // user, products, orders, etc
+  permissionId Int    @unique @default(autoincrement()) @map("permission_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  roleHasPermissions RoleHasPermission[]
+
+  @@unique([action, subject])
+  @@map("role_permissions")
+}
+
+model RoleHasPermission {
+  id               String @id @default(cuid())
+  roleId           String @map("role_id")
+  rolePermissionId String @map("role_permission_id")
+  
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  role           Role           @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  rolePermission RolePermission @relation(fields: [rolePermissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, rolePermissionId])
+  @@map("role_has_permissions")
+}
+
+model UserRole {
+  id     String @id @default(cuid())
+  userId String @map("user_id")
+  roleId String @map("role_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId])
+  @@map("user_roles")
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String   @map("user_id")
+  expiresAt DateTime @map("expires_at")
+  isRevoked Boolean  @default(false) @map("is_revoked")
+  
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
+  @@index([userId])
+  @@index([token])
+}
+
+// ============================================
+// BUSINESS MODELS (main-app, order-service, etc)
+// ============================================
+
 model Category {
   id        String    @id @default(cuid())
   name      String

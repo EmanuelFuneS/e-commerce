@@ -122,22 +122,62 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.UserRoleScalarFieldEnum = {
+exports.Prisma.UserScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  password: 'password',
+  name: 'name',
+  isActive: 'isActive',
+  isVerified: 'isVerified',
+  verificationToken: 'verificationToken',
+  resetPasswordToken: 'resetPasswordToken',
+  resetPasswordExpires: 'resetPasswordExpires',
+  lastLogin: 'lastLogin',
+  loginAttempts: 'loginAttempts',
+  lockedUntil: 'lockedUntil',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.RoleScalarFieldEnum = {
   id: 'id',
   name: 'name',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.UserScalarFieldEnum = {
+exports.Prisma.RolePermissionScalarFieldEnum = {
   id: 'id',
-  name: 'name',
-  email: 'email',
-  isActive: 'isActive',
-  roleId: 'roleId',
-  lastLogin: 'lastLogin',
+  action: 'action',
+  subject: 'subject',
+  permissionId: 'permissionId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.RoleHasPermissionScalarFieldEnum = {
+  id: 'id',
+  roleId: 'roleId',
+  rolePermissionId: 'rolePermissionId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.UserRoleScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  roleId: 'roleId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.RefreshTokenScalarFieldEnum = {
+  id: 'id',
+  token: 'token',
+  userId: 'userId',
+  expiresAt: 'expiresAt',
+  isRevoked: 'isRevoked',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.CategoryScalarFieldEnum = {
@@ -314,8 +354,12 @@ exports.CouponType = exports.$Enums.CouponType = {
 };
 
 exports.Prisma.ModelName = {
-  UserRole: 'UserRole',
   User: 'User',
+  Role: 'Role',
+  RolePermission: 'RolePermission',
+  RoleHasPermission: 'RoleHasPermission',
+  UserRole: 'UserRole',
+  RefreshToken: 'RefreshToken',
   Category: 'Category',
   Brand: 'Brand',
   Product: 'Product',
