@@ -1,4 +1,4 @@
-import {
+/* import {
   CanActivate,
   ExecutionContext,
   Injectable,
@@ -47,3 +47,4 @@ export class AuthGuard implements CanActivate {
     return type === 'Bearer' ? token : undefined;
   }
 }
+ */
