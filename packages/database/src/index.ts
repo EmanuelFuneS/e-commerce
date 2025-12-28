@@ -19,6 +19,8 @@ function createPrismaClient() {
 
 export const prisma = globalForPrisma.prisma ?? createPrismaClient();
 
+export type ExtendedPrismaClient = typeof prisma;
+
 export async function disconnectPrisma() {
   await prisma.$disconnect();
 }
