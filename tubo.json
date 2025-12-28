@@ -1,0 +1,38 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "ui": "tui",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**", "build/**"],
+      "env": [
+        "APP_BASE_URL",
+        "AUTH0_SECRET",
+        "AUTH0_DOMAIN",
+        "AUTH0_CLIENT_ID",
+        "AUTH0_CLIENT_SECRET",
+        "AUTH0_AUDIENCE",
+        "AUTH0_SCOPE",
+        "AUTH0_SYNC_SECRET",
+        "CLOUDINARY_CLOUD_NAME",
+        "CLOUDINARY_API_KEY",
+        "CLOUDINARY_API_SECRET",
+        "CLOUDINARY_API_ENV",
+        "DATABASE_URL",
+        "DIRECT_URL",
+        "NODE_ENV"
+      ]
+    },
+    "lint": {
+      "dependsOn": ["^lint"]
+    },
+    "check-types": {
+      "dependsOn": ["^check-types"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    }
+  }
+}
