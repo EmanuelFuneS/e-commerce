@@ -8,6 +8,12 @@ import {
 
 @Injectable()
 export class PrismaService implements OnModuleInit, OnModuleDestroy {
+  public readonly client: ExtendedPrismaClient;
+
+  constructor() {
+    this.client = prisma;
+  }
+
   private basePermissions: Array<{ action: string; subject: string }> = [
     { action: 'create', subject: 'users' },
     { action: 'read', subject: 'users' },
@@ -22,26 +28,22 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
     { action: 'update', subject: 'orders' },
     { action: 'delete', subject: 'orders' },
   ];
-  get client(): ExtendedPrismaClient {
-    return prisma;
-  }
 
-  async onModuleInit() {
-    await this.client.$connect();
-    console.log('Database connected');
-    //await this.seed();
+  onModuleInit() {
+    // Con Accelerate, normalmente NO necesitas $connect manual
+    // porque usa conexión pool vía HTTP. Pero si quieres mantenerlo:
+    // await this.client.$connect();
+    console.log('Prisma Client ready (with Accelerate)');
   }
 
   async onModuleDestroy() {
     await this.client.$disconnect();
-    console.log('Database disconnected');
   }
 
   private async seed() {
     try {
       console.log('🌱 Checking seed data...');
 
-      // Crear roles por defecto
       const userRole: Role = await this.client.role.upsert({
         where: { name: 'user' },
         update: {},
@@ -66,8 +68,6 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
         },
       });
 
-      // Crear permisos
-
       const createdPermissions: Array<any> = [];
       for (const perm of this.basePermissions) {
         const permission: RolePermission = await prisma.rolePermission.upsert({
@@ -83,9 +83,6 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
         createdPermissions.push(permission);
       }
 
-      // Asignar permisos a roles
-
-      // Usuario: solo lectura
       const userPermissions = createdPermissions.filter(
         (p) => p.action === 'read',
       );
@@ -105,7 +102,6 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
         });
       }
 
-      // Moderador: lectura, crear y actualizar productos/órdenes
       const moderatorPermissions = createdPermissions.filter(
         (p) =>
           p.action === 'read' ||
@@ -128,7 +124,6 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
         });
       }
 
-      // Admin: todos los permisos
       for (const permission of createdPermissions) {
         await this.client.roleHasPermission.upsert({
           where: {
@@ -148,7 +143,6 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
       console.log('✅ Seed data checked/created successfully');
     } catch (error) {
       console.error('❌ Seed error:', error);
-      // No lanzar error para que la app siga funcionando
     }
   }
 }
