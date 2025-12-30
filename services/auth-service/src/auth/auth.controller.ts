@@ -76,7 +76,6 @@ export class AuthController {
         newPassword,
       );
       if (changedPassword) {
-        console.log('finish validation');
         return {
           message: 'changed password',
         };
