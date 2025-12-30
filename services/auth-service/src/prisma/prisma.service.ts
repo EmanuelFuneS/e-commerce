@@ -1,14 +1,10 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
-import {
-  prisma,
-  type ExtendedPrismaClient,
-  type Role,
-  type RolePermission,
-} from '@workspace/database';
+import { prisma, type Role, type RolePermission } from '@workspace/database';
 
 @Injectable()
+@Injectable()
 export class PrismaService implements OnModuleInit, OnModuleDestroy {
-  public readonly client: ExtendedPrismaClient;
+  public readonly client;
 
   constructor() {
     this.client = prisma;
@@ -44,29 +40,29 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
     try {
       console.log('🌱 Checking seed data...');
 
-      const userRole: Role = await this.client.role.upsert({
+      const userRole = (await this.client.role.upsert({
         where: { name: 'user' },
         update: {},
         create: {
           name: 'user',
         },
-      });
+      })) as Role;
 
-      const adminRole: Role = await this.client.role.upsert({
+      const adminRole = (await this.client.role.upsert({
         where: { name: 'admin' },
         update: {},
         create: {
           name: 'admin',
         },
-      });
+      })) as Role;
 
-      const moderatorRole: Role = await this.client.role.upsert({
+      const moderatorRole = (await this.client.role.upsert({
         where: { name: 'moderator' },
         update: {},
         create: {
           name: 'moderator',
         },
-      });
+      })) as Role;
 
       const createdPermissions: Array<any> = [];
       for (const perm of this.basePermissions) {
