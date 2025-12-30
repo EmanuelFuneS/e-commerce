@@ -1,7 +1,7 @@
 import { Prisma } from '@workspace/database';
 
 export interface User {
-  id?: string;
+  id: string;
   email: string;
   password?: string;
   name?: string;
@@ -16,11 +16,25 @@ export interface User {
   createdAt: Date;
   updateAt: Date;
   //relations
-  userRoles?: any;
+  userRoles: UserRole[];
   refreshToken: any;
   orders: any;
   stockMovements?: any;
   couponUsages: any;
+}
+
+export interface UserRole {
+  id: string;
+  userId: string;
+  roleId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  role: Role;
+}
+
+export interface Role {
+  id: string;
+  name: string;
 }
 
 export type UserWithRoles = Prisma.UserGetPayload<{
