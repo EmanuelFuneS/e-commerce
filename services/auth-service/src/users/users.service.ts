@@ -3,30 +3,32 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import type { Role, User } from '@workspace/database';
+import type { Role } from '@workspace/database';
 import bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
-import { UserRegister } from './types';
+import { User, UserRegister, UserRole } from './types';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prismaService: PrismaService) {}
 
-  private readonly users = [
-    {
-      userId: 1,
-      username: 'john',
-      password: 'changeme',
+  async updateUser(
+    id: string,
+    data: {
+      password: string;
+      updatedAt: Date;
     },
-    {
-      userId: 2,
-      username: 'maria',
-      password: 'guess',
-    },
-  ];
+  ) {
+    return (await this.prismaService.client.user.update({
+      where: { id },
+      data: {
+        ...data,
+      },
+    })) as User;
+  }
 
   async findByEmail(email: string) {
-    const userFined = await this.prisma.user.findUnique({
+    const userFound = (await this.prismaService.client.user.findUnique({
       where: { email },
       include: {
         userRoles: {
@@ -43,13 +45,15 @@ export class UsersService {
           },
         },
       },
-    });
-    return userFined;
+    })) as User;
+    const roles = userFound.userRoles.map((ur: UserRole) => ur.role.name);
+
+    return { ...userFound, roles: roles };
   }
 
   async findById(id: string) {
-    const user = await this.prisma.user.findUnique({
-      where: { id },
+    const userFound = (await this.prismaService.client.user.findUnique({
+      where: { id: id },
       include: {
         userRoles: {
           include: {
@@ -62,22 +66,21 @@ export class UsersService {
           },
         },
       },
-    });
-    const roles = user.userRoles.map((ur) => ur.role.name);
-    if (!user) {
+    })) as User;
+    if (!userFound) {
       throw new NotFoundException('User not found');
     }
+    const roles = userFound.userRoles.map((ur: UserRole) => ur.role.name);
 
-    const { password: _, ...userWithOutPassword } = user;
     return {
-      ...userWithOutPassword,
+      ...userFound,
       roles: roles,
     };
   }
 
   async createWithDefaultRole(userRegister: UserRegister) {
     try {
-      const existingUser = (await this.prisma.user.findUnique({
+      const existingUser = (await this.prismaService.client.user.findUnique({
         where: { email: userRegister.email },
       })) as User;
 
@@ -86,7 +89,7 @@ export class UsersService {
       }
 
       const roleName = userRegister.roleName || 'user';
-      const role: Role = await this.prisma.role.findUnique({
+      const role: Role = await this.prismaService.client.role.findUnique({
         where: { name: roleName },
       });
 
@@ -99,7 +102,7 @@ export class UsersService {
         10,
       );
 
-      const user = (await this.prisma.user.create({
+      const user = (await this.prismaService.client.user.create({
         data: {
           email: userRegister.email,
           password: hashedPassword,
@@ -125,7 +128,8 @@ export class UsersService {
       })) as User;
 
       const { password, ...userWithoutPassword } = user;
-      const roles = user.userRoles.map((ur) => ur.role.name);
+
+      const roles = user.userRoles.map((ur: UserRole) => ur.role.name);
       return {
         ...userWithoutPassword,
         roles,
