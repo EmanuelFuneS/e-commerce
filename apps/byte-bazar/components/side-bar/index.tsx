@@ -34,6 +34,11 @@ const itemsTest = [
     icon: Calendar,
   },
   {
+    title: "Orders",
+    url: "/dashboard/orders",
+    icon: Calendar,
+  },
+  {
     title: "Settings",
     url: "/dashboard/settings",
     icon: Settings,
