@@ -19,7 +19,7 @@ function InputImages({ stateForm, setStateForm, dbImages }: InputImagesProps) {
     setUrlInput(e.target.value);
   };
   useEffect(() => {
-    if (dbImages!.length > 0) {
+    if (dbImages && dbImages.length > 0) {
       setPreview(dbImages!);
     }
   }, [dbImages]);
