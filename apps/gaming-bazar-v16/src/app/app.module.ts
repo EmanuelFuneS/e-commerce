@@ -11,6 +11,9 @@ import { GameProductsComponent } from './components/game-products/game-products.
 import { ImgComponent } from './components/img/img.component';
 import { NavComponent } from './components/nav/nav.component';
 import { VideogamesService } from './services/videogames.service';
+import { GameDetailComponent } from './pages/game-detail/game-detail.component';
+import { LandingComponent } from './pages/landing/landing.component';
+import { NotFoundComponent } from './pages/not-found/not-found.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +23,9 @@ import { VideogamesService } from './services/videogames.service';
     GameProductsComponent,
     NavComponent,
     FooterComponent,
+    GameDetailComponent,
+    LandingComponent,
+    NotFoundComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule, HttpClientModule],
   providers: [VideogamesService],
