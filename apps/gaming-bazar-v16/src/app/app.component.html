@@ -23,11 +23,13 @@
     margin: 0;
   }
 
-  .wrapper {
+  .app-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    max-width: 1280px;
+    margin-inline: auto;
   }
 
   /* Responsive Styles */
@@ -42,20 +44,10 @@
   }
 </style>
 
-<div class="wrapper">
+<body>
   <app-nav></app-nav>
-
-  <app-game-products></app-game-products>
-  <!-- <input type="text" [(ngModel)]="imgParent" />
-  <button (click)="onToggleImage()">Toggle Image</button>
-  <p>{{ toggleShowImg }}</p>
-  <app-img
-    *ngIf="toggleShowImg"
-    (loaded)="onLoaded($event)"
-    [img]="imgParent"
-  ></app-img> -->
-
+  <main class="app-wrapper">
+    <router-outlet></router-outlet>
+  </main>
   <app-footer></app-footer>
-</div>
-
-<router-outlet></router-outlet>
+</body>
