@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '@workspace/database';
 import * as bcrypt from 'bcrypt';
+import { UserRegister } from '../users/types';
 import { UsersService } from '../users/users.service';
 
 interface JwtPayload {
@@ -24,61 +24,64 @@ export class AuthService {
 
   async validateUser(username: string, password: string) {
     const user = await this.userService.findByEmail(username);
-    if (!user || !user.isActive) {
-      return null;
+    if (user && user.isActive && user.password) {
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      if (!isPasswordValid) {
+        return null;
+      }
+      const { password: _, ...result } = user;
+      return result;
     }
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-
-    if (!isPasswordValid) {
-      return null;
-    }
-
-    const { password: _, ...result } = user;
-    return result;
+    return null;
   }
 
   async login(logUser: Login) {
-    const user = await this.userService.findByEmail(logUser.email);
-    if (user && user.id) {
-      const roles = user.userRoles?.map((ur) => ur.role.name) || [];
-      const payload = {
-        username: user.name,
-        sub: user.id,
-        roles: roles,
-      };
-      const token = this.jwtService.sign(payload);
-      return {
-        access_token: token,
-        user: {
-          id: user.id,
-          email: user.email,
-          roles: roles,
-          isVerified: user.isVerified,
-        },
-      };
+    const userFound = await this.userService.findByEmail(logUser.email);
+
+    if (userFound && userFound.password) {
+      const isPasswordValid = await bcrypt.compare(
+        logUser.password,
+        userFound.password,
+      );
+      if (isPasswordValid) {
+        const payload = {
+          username: userFound.name,
+          sub: userFound.id,
+          roles: userFound.roles,
+        };
+        const token = this.jwtService.sign(payload);
+        return {
+          access_token: token,
+          user: {
+            id: userFound.id,
+            email: userFound.email,
+            roles: userFound.roles,
+            isVerified: userFound.isVerified,
+          },
+        };
+      } else {
+        throw new ConflictException(`Password Failed`);
+      }
     }
-    return null;
   }
 
   async register(userRegister: any) {
     const userCreated = await this.userService.createWithDefaultRole({
       ...userRegister,
       roleName: 'user',
-    });
+    } as UserRegister);
     if (userCreated) {
-      const rolesMapped = userCreated.userRoles.map((ur) => ur.role.name) | [];
-
       const payload = {
         username: userCreated.name,
         sub: userCreated.id,
-        roles: rolesMapped,
+        roles: userCreated.roles,
       };
       return {
         access_token: this.jwtService.sign(payload),
         user: {
           id: userCreated.id,
           email: userCreated.email,
-          roles: rolesMapped,
+          roles: userCreated.roles,
           isVerified: userCreated.isVerified,
         },
       };
@@ -86,14 +89,45 @@ export class AuthService {
     return null;
   }
 
-  async refreshToken(userId: string) {
-    const user: User = await this.userService.findById(userId);
-    if (user) {
-      return this.login({
-        email: user.email,
-        password: user.password || '',
-      });
+  async refreshToken(id: string) {
+    const user = await this.userService.findById(id);
+    if (user && user.id) {
+      const payload = {
+        username: user.name,
+        sub: user.id,
+        roles: user.roles,
+      };
+      return {
+        refresh_token: this.jwtService.sign(payload),
+        user: {
+          id: user.id,
+          email: user.email,
+          roles: user.roles,
+          isVerified: user.isVerified,
+        },
+      };
     }
     return null;
+  }
+
+  async changePassword(id: string, password: string, newPassword: string) {
+    const userFound = await this.userService.findById(id);
+    if (userFound.password) {
+      const isPasswordValid = await bcrypt.compare(
+        password,
+        userFound.password,
+      );
+
+      if (isPasswordValid) {
+        const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+        const updateUser = await this.userService.updateUser(id, {
+          password: hashedNewPassword,
+          updatedAt: new Date(),
+        });
+        if (updateUser) {
+          return userFound;
+        }
+      }
+    }
   }
 }

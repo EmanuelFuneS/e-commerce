@@ -10,6 +10,7 @@ import {
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
 import { Public } from './Decorator/public.decorator';
+import type { AuthRequest } from './types';
 
 class RegisterDto {
   email: string;
@@ -25,6 +26,10 @@ class LoginDto {
 class ChangePasswordDto {
   odlPassword: string;
   newPassword: string;
+  confirmedPassword: boolean; // for front when validate new password
+}
+class RefreshDto {
+  id: string;
 }
 
 @Controller('auth')
@@ -52,19 +57,33 @@ export class AuthController {
   }
 
   @Post('refresh')
-  refresh(@Request() req: any) {
-    // refreshToken method
-    return;
+  refresh(@Body() body: RefreshDto) {
+    const { id } = body;
+    return this.authService.refreshToken(id);
   }
 
   @Post('change-password')
   async changePassword(
-    @Request() req: any,
+    @Request() req: AuthRequest,
     @Body() body: ChangePasswordDto,
   ): Promise<{ message: string }> {
-    //changePassword method
+    const { odlPassword, newPassword, confirmedPassword } = body;
+    const { userId } = req.user;
+    if (newPassword && confirmedPassword && userId) {
+      const changedPassword = await this.authService.changePassword(
+        userId,
+        odlPassword,
+        newPassword,
+      );
+      if (changedPassword) {
+        console.log('finish validation');
+        return {
+          message: 'changed password',
+        };
+      }
+    }
     return {
-      message: '',
+      message: 'its no possible change password',
     };
   }
 
