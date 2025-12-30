@@ -1,37 +1,141 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import type { Role } from '@workspace/database';
+import bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
-
-export type User = {
-  userId: number;
-  username: string;
-  password: string;
-};
+import { User, UserRegister, UserRole } from './types';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prismaService: PrismaService) {}
 
-  private readonly users = [
-    {
-      userId: 1,
-      username: 'john',
-      password: 'changeme',
+  async updateUser(
+    id: string,
+    data: {
+      password: string;
+      updatedAt: Date;
     },
-    {
-      userId: 2,
-      username: 'maria',
-      password: 'guess',
-    },
-  ];
-
-  // eslint-disable-next-line @typescript-eslint/require-await
-  async findOne(username: string): Promise<User | undefined> {
-    return this.users.find((user) => user.username === username);
+  ) {
+    return (await this.prismaService.client.user.update({
+      where: { id },
+      data: {
+        ...data,
+      },
+    })) as User;
   }
 
-  async create(user) {
-    return await this.prisma.client.user.create({
-      data: user,
-    });
+  async findByEmail(email: string) {
+    const userFound = (await this.prismaService.client.user.findUnique({
+      where: { email },
+      include: {
+        userRoles: {
+          include: {
+            role: {
+              include: {
+                roleHasPermissions: {
+                  include: {
+                    rolePermission: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    })) as User;
+    const roles = userFound.userRoles.map((ur: UserRole) => ur.role.name);
+
+    return { ...userFound, roles: roles };
+  }
+
+  async findById(id: string) {
+    const userFound = (await this.prismaService.client.user.findUnique({
+      where: { id: id },
+      include: {
+        userRoles: {
+          include: {
+            role: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    })) as User;
+    if (!userFound) {
+      throw new NotFoundException('User not found');
+    }
+    const roles = userFound.userRoles.map((ur: UserRole) => ur.role.name);
+
+    return {
+      ...userFound,
+      roles: roles,
+    };
+  }
+
+  async createWithDefaultRole(userRegister: UserRegister) {
+    try {
+      const existingUser = (await this.prismaService.client.user.findUnique({
+        where: { email: userRegister.email },
+      })) as User;
+
+      if (existingUser) {
+        throw new ConflictException('User already exist');
+      }
+
+      const roleName = userRegister.roleName || 'user';
+      const role: Role = await this.prismaService.client.role.findUnique({
+        where: { name: roleName },
+      });
+
+      if (!role) {
+        throw new Error(`Role ${roleName} not found`);
+      }
+
+      const hashedPassword: string = await bcrypt.hash(
+        userRegister.password,
+        10,
+      );
+
+      const user = (await this.prismaService.client.user.create({
+        data: {
+          email: userRegister.email,
+          password: hashedPassword,
+          name: userRegister.name,
+          userRoles: {
+            create: {
+              roleId: role.id,
+            },
+          },
+        },
+        include: {
+          userRoles: {
+            include: {
+              role: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      })) as User;
+
+      const { password, ...userWithoutPassword } = user;
+
+      const roles = user.userRoles.map((ur: UserRole) => ur.role.name);
+      return {
+        ...userWithoutPassword,
+        roles,
+      };
+    } catch (error) {
+      console.error(`Failed to Create User: ${error}`);
+    }
   }
 }
