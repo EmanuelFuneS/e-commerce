@@ -26,7 +26,7 @@ export default function ProductFilter({
   const router = useRouter();
   const pathname = usePathname();
 
-  const [page, setPage] = useState<number>(0);
+  const [page] = useState<number>(0);
   const [products, setProducts] = useState<ApiResponse<Product[]> | null>(null);
   const [isPending, startTransition] = useTransition();
   /* const { availableDB } = useHealthDB(); */
@@ -69,7 +69,7 @@ export default function ProductFilter({
 
     startTransition(async () => {
       const response = await getProducts(page, 10, filters);
-      setProducts(response);
+      setProducts(response as ApiResponse<Product[]> | null);
     });
   }, [searchParams, buildFilters, page]);
 
@@ -93,7 +93,7 @@ export default function ProductFilter({
       console.log("Changing page to:", newUrl);
       router.push(newUrl);
     },
-    [pathname, router, searchParams]
+    [pathname, router, searchParams, filter]
   );
 
   if (!products)

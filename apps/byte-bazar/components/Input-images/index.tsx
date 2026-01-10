@@ -11,7 +11,7 @@ interface InputImagesProps {
   dbImages?: string[];
 }
 
-function InputImages({ stateForm, setStateForm, dbImages }: InputImagesProps) {
+function InputImages({ setStateForm, dbImages }: InputImagesProps) {
   const [preview, setPreview] = useState<string[]>([]);
   const [urlInput, setUrlInput] = useState("");
 
@@ -24,16 +24,21 @@ function InputImages({ stateForm, setStateForm, dbImages }: InputImagesProps) {
     }
   }, [dbImages]);
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    const newItems = acceptedFiles.map((file) => ({
-      type: "file" as const,
-      file,
-    }));
-    const newPreviews = acceptedFiles.map((file) => URL.createObjectURL(file));
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      const newItems = acceptedFiles.map((file) => ({
+        type: "file" as const,
+        file,
+      }));
+      const newPreviews = acceptedFiles.map((file) =>
+        URL.createObjectURL(file)
+      );
 
-    setStateForm((prev) => [...prev, ...newItems]);
-    setPreview((prev) => [...prev, ...newPreviews]);
-  }, []);
+      setStateForm((prev) => [...prev, ...newItems]);
+      setPreview((prev) => [...prev, ...newPreviews]);
+    },
+    [setStateForm]
+  );
 
   const removeImages = (index: number) => {
     if (preview[index]?.startsWith("blob:")) {
@@ -68,7 +73,7 @@ function InputImages({ stateForm, setStateForm, dbImages }: InputImagesProps) {
               <div key={idx} className="relative" style={{ zIndex: idx }}>
                 <button
                   className="absolute top-0 left-0 z-10"
-                  onClick={(e) => removeImages(idx)}
+                  onClick={() => removeImages(idx)}
                 >
                   <Delete
                     className="hover:scale-125 text-destructive-foreground"
@@ -98,7 +103,7 @@ function InputImages({ stateForm, setStateForm, dbImages }: InputImagesProps) {
               <p
                 className={`${preview.length > 3 ? "text-gray-500" : "hover:text-gray-500"}`}
               >
-                Drag 'n' drop some files here, or click to select files
+                Drag `&n` drop some files here, or click to select files
               </p>
             </div>
           </section>

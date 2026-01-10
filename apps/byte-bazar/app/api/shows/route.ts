@@ -22,13 +22,13 @@ export const GET = async function shows() {
     return NextResponse.json(shows, res);
   } catch (error) {
     return NextResponse.json(
-      { error: (error as Error).message },
-      {
+      { error: (error as Error).message }
+      /* {
         status:
           typeof error === "object" && error !== null && "status" in error
-            ? (error as any).status
+            ? (error as Error).name
             : 500,
-      }
+      } */
     );
   }
 };

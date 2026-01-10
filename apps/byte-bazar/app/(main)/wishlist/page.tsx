@@ -15,7 +15,7 @@ const Page = () => {
   useEffect(() => {
     startTransition(async () => {
       const response = await getProducts(page);
-      setProducts(response);
+      setProducts(response as unknown as ApiResponse<Product[]>);
     });
   }, [page]);
 

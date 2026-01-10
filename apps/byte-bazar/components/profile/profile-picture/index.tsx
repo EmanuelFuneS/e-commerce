@@ -4,9 +4,7 @@ import {
   AvatarImage,
 } from "@workspace/ui/components/avatar";
 
-type Props = {};
-
-const ProfilePicture = (props: Props) => {
+const ProfilePicture = () => {
   return (
     <Avatar>
       <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />

@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getCachedFilterData } from "../../../../lib/services/filterService";
+import { Brand, Category } from "../../../../lib/types";
 import ProductDetail from "./ProductDetail";
 import ProductFilter from "./ProductsFilter";
 
@@ -67,7 +68,7 @@ async function determineFilterType(
   const normalizedSlug = slug.toLowerCase();
 
   const brand = filterData.brands.find(
-    (b) => b.name.toLocaleLowerCase() === normalizedSlug
+    (b: Brand) => b.name.toLocaleLowerCase() === normalizedSlug
   );
 
   if (brand) {
@@ -79,7 +80,7 @@ async function determineFilterType(
   }
 
   const category = filterData.categories.find(
-    (c) => c.name.toLocaleLowerCase() === normalizedSlug
+    (c: Category) => c.name?.toLocaleLowerCase() === normalizedSlug
   );
 
   if (category) {

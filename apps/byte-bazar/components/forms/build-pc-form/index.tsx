@@ -4,11 +4,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Card, CardContent, Label } from "@workspace/ui/components/";
 import {
   redirect,
-  usePathname,
-  useRouter,
+  /* useRouter, */
   useSearchParams,
 } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { use, useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { Trash } from "../../../../../packages/ui/src/lib";
@@ -30,11 +29,15 @@ const customPCOrder: Record<string, number> = {
   //'accessories': 8,
 };
 
-interface BuildPcFormProps {}
+interface BuildPcForm {
+  initialSearchParams: Promise<{
+    [key: string]: string | string[] | undefined;
+  }>;
+}
 
-const BuildPcForm = ({}: BuildPcFormProps) => {
-  const router = useRouter();
-  const pathname = usePathname();
+const BuildPcForm = ({ initialSearchParams }: BuildPcForm) => {
+  //const router = useRouter();
+  const pathname = use(initialSearchParams);
   const searchParams = useSearchParams();
 
   const {
@@ -82,9 +85,34 @@ const BuildPcForm = ({}: BuildPcFormProps) => {
 
   const onSubmit = (data: CustomPcSchema) => {
     clearAll();
-
+    console.warn(data);
     redirect("/checkout/preview");
   };
+
+  const updateParams = useCallback((): void => {
+    const newParams = new URLSearchParams();
+    newParams.set("step", step.toString());
+    const entries: Record<string, string | undefined> = form.getValues();
+
+    for (const [key, value] of Object.entries(entries)) {
+      if (value && typeof value === "string" && value.length > 0) {
+        const shortID = ProductHelper.shortenId(value as string);
+        const shortCat = key.slice(0, 3).toLowerCase();
+        newParams.set(shortCat, shortID as string);
+      }
+    }
+
+    const currentParams = new URLSearchParams(searchParams);
+    const currentParamsString = currentParams.toString();
+    const newParamsString = newParams.toString();
+    if (newParamsString !== currentParamsString) {
+      window.history.replaceState(
+        {},
+        "",
+        `${pathname}?${newParams.toString()}`
+      );
+    }
+  }, [form, pathname, searchParams, step]);
 
   //Hydration from URL params
   useEffect(() => {
@@ -116,32 +144,7 @@ const BuildPcForm = ({}: BuildPcFormProps) => {
       form.reset(formValues);
     }
     updateParams();
-  }, [categories]);
-
-  const updateParams = (): void => {
-    const newParams = new URLSearchParams();
-    newParams.set("step", step.toString());
-    const entries: Record<string, string | undefined> = form.getValues();
-
-    for (const [key, value] of Object.entries(entries)) {
-      if (value && typeof value === "string" && value.length > 0) {
-        const shortID = ProductHelper.shortenId(value as string);
-        const shortCat = key.slice(0, 3).toLowerCase();
-        newParams.set(shortCat, shortID as string);
-      }
-    }
-
-    const currentParams = new URLSearchParams(searchParams);
-    const currentParamsString = currentParams.toString();
-    const newParamsString = newParams.toString();
-    if (newParamsString !== currentParamsString) {
-      window.history.replaceState(
-        {},
-        "",
-        `${pathname}?${newParams.toString()}`
-      );
-    }
-  };
+  }, [categories, form, getComponentByShortId, updateParams, searchParams]);
 
   useEffect(() => {
     if (builderState.length === 0) {
@@ -151,7 +154,7 @@ const BuildPcForm = ({}: BuildPcFormProps) => {
 
   useEffect(() => {
     updateParams();
-  }, [step]);
+  }, [step, updateParams]);
 
   if (!categories) return <div>Loading...</div>;
 
@@ -243,16 +246,18 @@ const BuildPcForm = ({}: BuildPcFormProps) => {
           onSubmit={form.handleSubmit(onSubmit)}
         >
           <div className="border p-4  mb-4 rounded-md grid grid-cols-2 gap-3">
-            {!isLoading && products ? (
-              products.data.map((product: Product) => {
-                return (
-                  <ProductCard
-                    key={product.id}
-                    data={product}
-                    onSelect={handleSelectItem}
-                  />
-                );
-              })
+            {!isLoading && products && products.data ? (
+              (products.data as unknown as Product[]).map(
+                (product: Product) => {
+                  return (
+                    <ProductCard
+                      key={product.id}
+                      data={product}
+                      onSelect={handleSelectItem}
+                    />
+                  );
+                }
+              )
             ) : (
               <div>Loading products...</div>
             )}

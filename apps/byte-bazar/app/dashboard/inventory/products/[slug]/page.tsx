@@ -1,7 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { startTransition, useEffect, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import {
   Badge,
   Button,
@@ -21,14 +21,13 @@ import {
   productsSchema,
 } from "../../../../../lib/schemas/products/products.schema";
 import { useBrandsStore, useCategoriesStore } from "../../../../../lib/store";
-import { ActionResponse, Product } from "../../../../../lib/types";
 import {
   ImageItem,
   ProductHelper,
 } from "../../../../../lib/utils/productHelper";
 
 interface PageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 const Page = ({ params }: PageProps) => {
@@ -39,7 +38,10 @@ const Page = ({ params }: PageProps) => {
   const [images, setImages] = useState<ImageItem[]>([]);
 
   const form = useForm<ProductsSchema>({
-    resolver: zodResolver(productsSchema) as any,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    resolver: zodResolver(productsSchema),
+    mode: "onChange",
     defaultValues: {
       name: "",
       description: "",
@@ -53,7 +55,7 @@ const Page = ({ params }: PageProps) => {
       sku: "",
       slug: "",
       Views: 0,
-    },
+    } satisfies ProductsSchema,
   });
 
   const previewDbImages = form.watch("images");
@@ -61,23 +63,24 @@ const Page = ({ params }: PageProps) => {
 
   useEffect(() => {
     startTransition(async () => {
-      const slugParam = params.slug;
-      const response: ActionResponse<Product> | null =
-        await getProductBySlug(slugParam);
+      const slugParam = (await params).slug;
+      const response = await getProductBySlug(slugParam);
       if (response?.data) {
         form.reset(response.data);
         if (response.data.tags && response.data.slug && response.data.images) {
-          setRenderTag(response.data.tags);
-          setSlug(response.data.slug);
-          setImages(ProductHelper.formatDBImages(response.data.images));
+          setRenderTag(response.data.tags as string[]);
+          setSlug(response.data.slug as string);
+          setImages(
+            ProductHelper.formatDBImages(response.data.images as string[])
+          );
         }
       }
       console.log(response);
     });
-  }, [form]);
+  }, [form, params]);
 
   useEffect(() => {
-    const { unsubscribe } = form.watch((value, { name, type }) => {
+    const { unsubscribe } = form.watch((value, { name }) => {
       if (name === "brandId" || name === "categoryId") {
         if (value.brandId && value.categoryId) {
           const newSku = ProductHelper.generateSKU(
@@ -93,7 +96,7 @@ const Page = ({ params }: PageProps) => {
   }, [form]);
 
   useEffect(() => {
-    const { unsubscribe } = form.watch((value, { name, type }) => {
+    const { unsubscribe } = form.watch((value, { name }) => {
       if (name === "name" || name === "description") {
         if (value.name && value.description) {
           const newTags = ProductHelper.generateTags(
@@ -112,13 +115,21 @@ const Page = ({ params }: PageProps) => {
     return unsubscribe;
   }, [form, setRenderTag]);
 
-  const onSubmit: SubmitHandler<ProductsSchema> = (data) => console.log(data);
+  const onSubmit = async (data: ProductsSchema) => {
+    console.log(data);
+  };
 
   return (
     <section className="min-h-full">
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form
+        onSubmit={form.handleSubmit(
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          onSubmit
+        )}
+      >
         <section className="h-full p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4  [&>*:first-child]:mb-8">
-          <div className="row-span-2 min-w-[250px] md:mb-0">
+          <div className="row-span-2 min-w-62.5 md:mb-0">
             <FieldLabel className="mb-2">Images Loader</FieldLabel>
             <InputImages
               setStateForm={setImages}

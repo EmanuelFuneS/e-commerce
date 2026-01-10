@@ -7,7 +7,7 @@ interface Props {
   filter?: ProductFilters;
 }
 
-const useProducts = ({ page, sizePage, filter }: Props) => {
+const useProducts = ({ filter }: Props) => {
   return useQuery({
     queryKey: ["products", filter],
     queryFn: () => getProducts(undefined, undefined, filter),

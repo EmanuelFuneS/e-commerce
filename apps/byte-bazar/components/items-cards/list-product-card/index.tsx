@@ -8,7 +8,7 @@ interface ListProductCardProps {
 
 const ListProductCard = ({ item }: ListProductCardProps) => {
   const image = item.images!.length && item.images![0];
-  const isSkeleton = !item.id || !item.name;
+  //const isSkeleton = !item.id || !item.name;
   return (
     <Card className="m-2 px-0 p-1 shadow-lg">
       <CardContent className="flex items-center justify-between space-x-2">

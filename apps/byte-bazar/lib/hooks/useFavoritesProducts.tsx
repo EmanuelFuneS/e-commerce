@@ -11,8 +11,10 @@ const useFavoritesProducts = () => {
     const fetchFavorites = async () => {
       try {
         const products = await getProductPreview();
-        setFavorites(products!.data);
-      } catch (error) {}
+        setFavorites((products?.data as unknown as Product[]) || []);
+      } catch (error) {
+        console.error((error as Error).message);
+      }
     };
     fetchFavorites();
   }, []);

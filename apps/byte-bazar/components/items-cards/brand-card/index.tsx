@@ -14,7 +14,7 @@ interface BrandCardProps {
 }
 
 const BrandCard = ({ data }: BrandCardProps) => {
-  const isSkeleton = !data.id || !data.name;
+  //const isSkeleton = !data.id || !data.name;
   return (
     <Tooltip>
       <TooltipTrigger asChild>

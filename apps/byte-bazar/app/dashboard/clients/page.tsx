@@ -1,8 +1,6 @@
 import { Label } from "@workspace/ui/components";
 
-type Props = {};
-
-const Page = (props: Props) => {
+const Page = () => {
   return (
     <div className="w-full p-2">
       <div className="my-4">

@@ -28,8 +28,8 @@ const OrderTable = ({ orders }: OrderTableProps) => {
         <TableCaption>A list of products</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">Order Number</TableHead>
-            <TableHead className="w-[100px]">Create At</TableHead>
+            <TableHead className="w-25">Order Number</TableHead>
+            <TableHead className="w-25">Create At</TableHead>
             <TableHead>Items</TableHead>
             <TableHead className="">Sub Total</TableHead>
             <TableHead>Payment Method</TableHead>
@@ -40,7 +40,7 @@ const OrderTable = ({ orders }: OrderTableProps) => {
         <TableBody>
           {orders.map((el, idx) => {
             return (
-              <TableRow>
+              <TableRow key={idx}>
                 <TableCell className="font-medium">{el.orderNumber}</TableCell>
                 <TableCell className="font-medium">
                   {el.createdAt.toLocaleDateString()}

@@ -8,9 +8,7 @@ import {
   CardTitle,
 } from "../../../../packages/ui/src/components";
 
-type Props = {};
-
-const ListCart = (props: Props) => {
+const ListCart = () => {
   const cartItems = new Array(4).fill("");
   return (
     <Card className="">

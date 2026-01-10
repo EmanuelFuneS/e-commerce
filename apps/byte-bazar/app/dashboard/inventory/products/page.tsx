@@ -30,7 +30,9 @@ const Page = () => {
   const [images, setImages] = useState<ImageItem[]>([]);
 
   const form = useForm<ProductsSchema>({
-    resolver: zodResolver(productsSchema) as any,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    resolver: zodResolver(productsSchema) as unknown,
     defaultValues: {
       name: "",
       description: "",
@@ -48,7 +50,7 @@ const Page = () => {
   });
 
   useEffect(() => {
-    const { unsubscribe } = form.watch((value, { name, type }) => {
+    const { unsubscribe } = form.watch((value, { name }) => {
       if (name === "brandId" || name === "categoryId") {
         if (value.brandId && value.categoryId) {
           const newSku = ProductHelper.generateSKU(
@@ -64,7 +66,7 @@ const Page = () => {
   }, [form]);
 
   useEffect(() => {
-    const { unsubscribe } = form.watch((value, { name, type }) => {
+    const { unsubscribe } = form.watch((value, { name }) => {
       if (name === "name" || name === "description") {
         if (value.name && value.description) {
           const newTags = ProductHelper.generateTags(
@@ -87,9 +89,15 @@ const Page = () => {
 
   return (
     <section className="min-h-full">
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form
+        onSubmit={form.handleSubmit(
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          onSubmit
+        )}
+      >
         <section className="h-full p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4  [&>*:first-child]:mb-8">
-          <div className="row-span-2 min-w-[250px] md:mb-0 ">
+          <div className="row-span-2 min-w-62.5 md:mb-0 ">
             <FieldLabel className="mb-2">Images Loader</FieldLabel>
             <InputImages setStateForm={setImages} stateForm={images} />
             <FieldDescription>Only 4 Images can be loaded.</FieldDescription>

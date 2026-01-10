@@ -3,6 +3,7 @@ import PreviewGrid from "@/components/preview-grid";
 
 import SpotlightGrid from "@/components/spotlight-grid";
 import { getBrandPreview, getProductPreview } from "@/lib/actions";
+import { Brand, Product } from "lib/types";
 
 export default async function Page() {
   const products = await getProductPreview();
@@ -16,8 +17,14 @@ export default async function Page() {
       <div className="flex flex-col items-center justify-center my-10 gap-8">
         {/* <h1 className="text-2xl font-bold">Hello World</h1>
         <Button size="sm">Button</Button> */}
-        <PreviewGrid dataType="brands" brands={brands!.data} />
-        <PreviewGrid dataType="products" products={products!.data} />
+        <PreviewGrid
+          dataType="brands"
+          brands={brands!.data as unknown as Brand[]}
+        />
+        <PreviewGrid
+          dataType="products"
+          products={products!.data as unknown as Product[]}
+        />
       </div>
       <div className="my-10">
         <SpotlightGrid />

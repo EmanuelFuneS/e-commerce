@@ -22,7 +22,9 @@ const Page = async () => {
         </div>
       </Card>
       <div>
-        <ProductTable data={products?.data} />
+        <ProductTable
+          data={Array.isArray(products?.data) ? products.data : []}
+        />
       </div>
     </div>
   );

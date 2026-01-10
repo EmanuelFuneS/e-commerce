@@ -1,6 +1,6 @@
 "use client";
 
-import { useUser } from "@auth0/nextjs-auth0";
+//import { useUser } from "@auth0/nextjs-auth0";
 import { Button, Input, ScrollArea, Skeleton } from "@workspace/ui/components";
 import {
   NavigationMenu,
@@ -32,7 +32,7 @@ import ProfilePicture from "../profile/profile-picture";
 import ThemeToggle from "../theme-toggle";
 
 const NavBar = () => {
-  const { user, isLoading } = useUser();
+  //const { user, isLoading } = useUser();
   const { categories } = useCategories();
   const { favorites } = useFavoritesProducts();
 
@@ -46,10 +46,10 @@ const NavBar = () => {
               <NavigationMenuTrigger>Products</NavigationMenuTrigger>
 
               <NavigationMenuContent className="relative z-50">
-                <ul className="grid w-[400px] gap-2 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                <ul className="grid w-100 gap-2 md:w-125 md:grid-cols-2 lg:w-150">
                   {categories.map((cat: Category, index: number) => (
                     <ListItem
-                      key={cat.id}
+                      key={index}
                       title={cat.name}
                       href={`/products/${ProductHelper.generateSlug(cat.name || "")}`}
                       imageAlt={cat.name || ""}
@@ -92,9 +92,9 @@ const NavBar = () => {
                 <Heart size={20} />
               </NavigationMenuTrigger>
               <NavigationMenuContent className="relative z-50">
-                <ul className="grid w-[200px]">
+                <ul className="grid w-50">
                   <li>
-                    <ScrollArea className="h-[280px]">
+                    <ScrollArea className="h-70">
                       {favorites?.map((el: Product, idx: number) => (
                         <NavigationMenuLink key={idx} asChild>
                           <ListProductCard item={el} />
@@ -118,7 +118,7 @@ const NavBar = () => {
                 <Cart size={20} />
               </NavigationMenuTrigger>
               <NavigationMenuContent className="relative z-50">
-                <ul className="grid w-[200px]">
+                <ul className="grid w-50">
                   <li>
                     <ScrollArea className="h-[280]">
                       {favorites?.map((el: Product, idx: number) => (
@@ -144,7 +144,7 @@ const NavBar = () => {
                 <ProfilePicture />
               </NavigationMenuTrigger>
               <NavigationMenuContent className="relative z-50">
-                <ul className="grid w-[200px] gap-4">
+                <ul className="grid w-50 gap-4">
                   <li>
                     <NavigationMenuLink asChild>
                       <Link
@@ -204,7 +204,7 @@ const NavBar = () => {
                 <Menu />
               </NavigationMenuTrigger>
               <NavigationMenuContent className="relative z-50">
-                <ul className="grid w-[300px] gap-4">
+                <ul className="grid w-75 gap-4">
                   <li>
                     <NavigationMenuLink asChild>
                       <Link href="#">

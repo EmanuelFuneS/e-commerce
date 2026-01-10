@@ -32,7 +32,7 @@ export class ProductHelper {
   }
 
   static formatDBImages(images: string[]): ImageItem[] {
-    return images.map((el, idx) => ({
+    return images.map((el) => ({
       type: "url",
       url: el,
     }));

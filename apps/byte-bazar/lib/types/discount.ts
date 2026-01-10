@@ -8,7 +8,7 @@ export interface Discount {
   discountValue: number;
   startDate: Date;
   endDate: Date;
-  isActive: Boolean;
+  isActive: boolean;
   reason: string;
   createdAt: Date;
   updateAt: Date;

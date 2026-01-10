@@ -21,8 +21,8 @@ const MovementTable = ({ movements }: MovementTableProps) => {
         <TableCaption>A list of products</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">ID</TableHead>
-            <TableHead className="w-[100px]">Type</TableHead>
+            <TableHead className="w-25">ID</TableHead>
+            <TableHead className="w-25">Type</TableHead>
             <TableHead>Create At</TableHead>
             <TableHead>Quantity</TableHead>
             <TableHead className="">Reason</TableHead>
@@ -32,7 +32,7 @@ const MovementTable = ({ movements }: MovementTableProps) => {
         <TableBody>
           {movements.map((el, idx) => {
             return (
-              <TableRow>
+              <TableRow key={idx}>
                 <TableCell className="font-medium">{el.id}</TableCell>
                 <TableCell className="font-medium">
                   {StockMovementType[el.type]}

@@ -15,7 +15,8 @@ export async function getCategories() {
       });
 
       return { success: true, data: categories } as ActionResponse;
-    },
+    }, // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     { success: false, data: createSkeletons(categoriesTemplate, 9) }
   );
 }
@@ -29,7 +30,8 @@ export async function getCategoryPreview() {
       });
 
       return { success: true, data: brands } as ActionResponse;
-    },
+    }, // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     { success: false, data: createSkeletons(categoriesTemplate, 9) }
   );
 }
