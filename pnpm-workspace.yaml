@@ -6,14 +6,6 @@ packages:
 allowBuilds:
   better-sqlite3: true
   esbuild: true
-  "@parcel/watcher": false
+  "@parcel/watcher": false # ignora silenciosamente (equivalente a ignored)
   "@swc/core": false
   sharp: false
-onlyBuiltDependencies:
-  - better-sqlite3
-  - esbuild
-ignoredBuiltDependencies:
-  - "@parcel/watcher"
-  - "@swc/core"
-neverBuiltDependencies:
-  - sharp
