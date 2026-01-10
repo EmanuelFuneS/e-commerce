@@ -5,6 +5,7 @@
   "types": "./src/index.ts",
   "scripts": {
     "db:generate": "prisma generate",
+    "postinstall": "prisma generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
     "db:migrate:deploy": "prisma migrate deploy",
@@ -16,7 +17,7 @@
     "@prisma/extension-accelerate": "^3.0.1"
   },
   "devDependencies": {
-    "@types/node": "^25.0.3",
+    "@types/node": "^25.0.5",
     "prisma": "^5.0.0"
   }
 }
