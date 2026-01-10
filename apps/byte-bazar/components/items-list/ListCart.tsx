@@ -22,7 +22,10 @@ const ListCart = (props: Props) => {
       <CardContent className="mt-10 space-y-10 space-x-5">
         {cartItems.map((item, idx) => {
           return (
-            <div className="w-full h-10 flex justify-between border-b-2 pb-10 mt-4 gap-6">
+            <div
+              key={idx}
+              className="w-full h-10 flex justify-between border-b-2 pb-10 mt-4 gap-6"
+            >
               <p>name product</p>
               <p>999</p>
               <p className="mx-7">12</p>

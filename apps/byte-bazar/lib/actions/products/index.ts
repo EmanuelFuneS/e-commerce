@@ -48,8 +48,8 @@ export interface ProductFilters {
 }
 
 export async function getProducts(
-  page: number = 1,
-  pageSize: number = 10,
+  page?: number,
+  pageSize?: number,
   filters: ProductFilters = {}
 ) {
   return safeDbOperation<ActionResponse>(
@@ -101,6 +101,19 @@ export async function getProducts(
         }
       }
 
+      const hasPagination =
+        Number.isInteger(page) &&
+        Number.isInteger(pageSize) &&
+        page! > 0 &&
+        pageSize! > 0;
+      let pagination = {};
+      if (hasPagination) {
+        pagination = {
+          skip: page! * pageSize!,
+          take: pageSize!,
+        };
+      }
+
       const [totalProducts, products] = await prisma.$transaction([
         prisma.product.count({ where: whereClause }),
         prisma.product.findMany({
@@ -121,8 +134,7 @@ export async function getProducts(
               select: { stockMovements: true },
             },
           },
-          skip: page * pageSize,
-          take: pageSize,
+          ...pagination,
         }),
       ]);
 
@@ -134,7 +146,7 @@ export async function getProducts(
         pagination: {
           page,
           pageSize,
-          totalPages: Math.ceil(totalProducts / pageSize),
+          totalPages: Math.ceil(totalProducts / (pageSize || 1)),
           totalItems: products.length,
         },
       } as ActionResponse;
@@ -143,8 +155,8 @@ export async function getProducts(
       success: false,
       data: createSkeletons(productTemplate, 8),
       pagination: {
-        page,
-        pageSize,
+        page: page || 1,
+        pageSize: pageSize || 10,
         totalPages: 0,
         totalItems: 0,
       },

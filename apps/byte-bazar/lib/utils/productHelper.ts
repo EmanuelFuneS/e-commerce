@@ -37,4 +37,13 @@ export class ProductHelper {
       url: el,
     }));
   }
+
+  static shortenId(id: string): string {
+    const shortId = id.slice(-8);
+    return shortId.toLowerCase();
+  }
+
+  static roundPrice(price: number): number {
+    return Math.round(price * 100) / 100;
+  }
 }
