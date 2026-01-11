@@ -1,7 +1,7 @@
 "use server";
 
+import { prisma, safeDbOperation } from "@workspace/database";
 import { revalidatePath } from "next/cache";
-import prisma, { safeDbOperation } from "../../prisma";
 
 import brandSchema, { BrandSchema } from "../../schemas/brand/brand.schema";
 import { brandTemplate, createSkeletons } from "../../skeleton-templates";
@@ -47,6 +47,8 @@ export async function getBrands(page: number = 1, pageSize: number = 10) {
     },
     {
       success: false,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       data: createSkeletons(brandTemplate, 6),
       pagination: {
         page,
@@ -86,7 +88,8 @@ export async function getBrandPreview() {
       });
 
       return { success: true, data: brands } as ActionResponse;
-    },
+    }, // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     { success: true, data: createSkeletons(brandTemplate, 6) }
   );
 }

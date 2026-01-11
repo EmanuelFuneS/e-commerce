@@ -42,6 +42,7 @@ const PaginationGrid = ({
           <PaginationItem>
             {pages.map((_, idx: number) => (
               <PaginationLink
+                key={idx}
                 isActive={idx === page}
                 onClick={() => changePage(idx)}
               >

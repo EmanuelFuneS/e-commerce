@@ -14,14 +14,18 @@ import Link from "next/link";
 
 interface ProductCardProps {
   data: Product;
+  onSelect?: (productId: string, price: number) => void;
 }
 
-const ProductCard = ({ data }: ProductCardProps) => {
+const ProductCard = ({ data, onSelect }: ProductCardProps) => {
   const image = data.images!.length && data.images![0];
   //console.log(data.brand);
   const isSkeleton = !data.id || !data.name;
   return (
-    <Card className="rounded-lg shadow-lg hover:scale-105 transform transition-transform duration-300">
+    <Card
+      className="rounded-lg shadow-lg hover:scale-105 transform transition-transform duration-300"
+      onClick={() => onSelect && onSelect(data.id!, Number(data.price!))}
+    >
       <CardHeader className="w-full flex justify-end">
         <Heart className="hover:text-slate-400" />
         {/*  <HeartSolid className="hidden hover:block" /> */}

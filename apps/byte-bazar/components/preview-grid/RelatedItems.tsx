@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import PreviewGrid from ".";
 import { getRelatedProducts } from "../../lib/actions";
 import { useCategoriesStore } from "../../lib/store";
+import { Product } from "../../lib/types";
 
 interface RelatedItemsProps {
   categoryName: string | undefined;
@@ -11,7 +12,7 @@ interface RelatedItemsProps {
 
 const RelatedItems = ({ categoryName }: RelatedItemsProps) => {
   const { categories } = useCategoriesStore(); // Sin await - es síncrono
-  const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
+  const [relatedProducts, setRelatedProducts] = useState<Product[] | []>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -30,7 +31,7 @@ const RelatedItems = ({ categoryName }: RelatedItemsProps) => {
           const result = await getRelatedProducts(matchedCategory.id);
 
           if (result?.data) {
-            setRelatedProducts(result.data);
+            setRelatedProducts(result.data as unknown as Product[]);
           }
         }
       } catch (error) {

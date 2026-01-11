@@ -2,7 +2,7 @@ import Footer from "../../components/footer";
 import NavBar from "../../components/nav-bar";
 import NavigationBreadCrumb from "../../components/navigation-breadcrumb";
 
-export default function MainLayout({
+export default function SettingLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -10,7 +10,7 @@ export default function MainLayout({
   return (
     <>
       <NavBar />
-      <main className="max-w-7xl mx-auto md:px-4">
+      <main className="w-full max-w-6xl mx-auto md:px-4">
         <NavigationBreadCrumb />
         {children}
       </main>

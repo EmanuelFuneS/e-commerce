@@ -57,7 +57,7 @@ export function createSkeleton<T>(sampleObject: T): T {
   if (typeof sampleObject === "object") {
     const skeleton = {} as T;
     for (const key in sampleObject) {
-      if (sampleObject.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(sampleObject, key)) {
         skeleton[key] = createSkeleton(sampleObject[key]);
       }
     }

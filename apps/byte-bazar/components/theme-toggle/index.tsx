@@ -1,19 +1,33 @@
 "use client";
 import { Moon, SunDim } from "@workspace/ui/lib";
-import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 interface ThemeToggleProps {
   size?: number;
 }
 
 const ThemeToggle = ({ size }: ThemeToggleProps) => {
-  const { theme, setTheme } = useTheme();
+  const [theme, setTheme] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const saveTheme = localStorage.getItem("theme");
+    if (saveTheme) {
+      setTheme(saveTheme);
+      setMounted(true);
+    } else {
+      setTheme("light");
+    }
+  }, []);
 
   const changeTheme = () => {
-    if (theme === "dark") {
-      setTheme("light");
-    } else setTheme("dark");
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+    document.documentElement.classList.toggle("dark");
   };
+
+  if (!mounted) return <div className="w-[37px] h-[37px]" />;
 
   return (
     <div onClick={changeTheme} className="">

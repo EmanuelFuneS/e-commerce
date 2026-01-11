@@ -10,7 +10,8 @@ const useCategories = () => {
     const fetchData = async () => {
       try {
         const response = await getCategoryPreview();
-
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         setCategories(response!.data);
       } catch (error) {
         setError(error);

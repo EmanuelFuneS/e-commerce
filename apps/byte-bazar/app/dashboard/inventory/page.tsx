@@ -15,14 +15,16 @@ const Page = async () => {
       <Card className="flex flex-row justify-between px-4 items-center ">
         <SearchItems />
         <div>
-          <Link href="/dashboard/inventory/view-movements" className="mr-4">
-            View Movements
+          <Link href="/dashboard/inventory/movements" className="mr-4">
+            Movements
           </Link>
           <Link href="/dashboard/inventory/products">Add Product</Link>
         </div>
       </Card>
       <div>
-        <ProductTable data={products?.data} />
+        <ProductTable
+          data={Array.isArray(products?.data) ? products.data : []}
+        />
       </div>
     </div>
   );

@@ -1,9 +1,9 @@
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = Record<string, unknown>> {
   success: boolean;
   data?: T;
   error?: string;
   message?: string;
-  details?: any;
+  details?: Record<string, unknown>;
   total?: number;
   pagination?: Pagination;
 }
@@ -15,4 +15,4 @@ interface Pagination {
   totalItems: number;
 }
 
-export interface ActionResponse extends ApiResponse {}
+export type ActionResponse<T = Record<string, unknown>> = ApiResponse<T>;

@@ -14,6 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@workspace/ui/components";
+import Link from "next/link";
 import { Product } from "../../../lib/types";
 
 interface ProductTableProps {
@@ -27,7 +28,7 @@ const ProductTable = ({ data }: ProductTableProps) => {
         <TableCaption>A list of products</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">Name</TableHead>
+            <TableHead className="w-25">Name</TableHead>
             <TableHead>Price</TableHead>
             <TableHead>Stock</TableHead>
             <TableHead>isActive</TableHead>
@@ -38,7 +39,7 @@ const ProductTable = ({ data }: ProductTableProps) => {
         <TableBody>
           {data.map((el, idx) => {
             return (
-              <TableRow>
+              <TableRow key={idx}>
                 <TableCell className="font-medium">{el.name}</TableCell>
                 <TableCell className="">{el.price}</TableCell>
                 <TableCell>{el.stock}</TableCell>
@@ -53,7 +54,11 @@ const ProductTable = ({ data }: ProductTableProps) => {
                       <DropdownMenuContent className="w-12">
                         <DropdownMenuGroup>
                           <DropdownMenuItem>View</DropdownMenuItem>
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <Link href={`inventory/products/${el.slug}`}>
+                              Edit
+                            </Link>
+                          </DropdownMenuItem>
                           <DropdownMenuItem>Disable</DropdownMenuItem>
                         </DropdownMenuGroup>
                       </DropdownMenuContent>

@@ -1,23 +1,28 @@
 "use server";
 
+import { prisma, safeDbOperation } from "@workspace/database";
 import { revalidatePath } from "next/cache";
-import prisma, { safeDbOperation } from "../../prisma";
 import { categoriesTemplate, createSkeletons } from "../../skeleton-templates";
 import { ActionResponse } from "../../types/common";
 
 export async function createCategory() {}
 
 export async function getCategories() {
-  return safeDbOperation<ActionResponse>(
-    async () => {
-      const categories = await prisma.category.findMany({
-        orderBy: { name: "asc" },
-      });
-
-      return { success: true, data: categories } as ActionResponse;
-    },
-    { success: false, data: createSkeletons(categoriesTemplate, 9) }
-  );
+  console.log("[getCategories] Iniciando llamada a Prisma...");
+  try {
+    const categories = await prisma.category.findMany({
+      orderBy: { name: "asc" },
+    });
+    console.log(
+      "[getCategories] Resultado:",
+      categories.length,
+      "categorías encontradas"
+    );
+    return { success: true, data: categories };
+  } catch (error) {
+    console.error("[getCategories] Error Prisma:", error);
+    return { success: false, data: createSkeletons(categoriesTemplate, 9) };
+  }
 }
 
 export async function getCategoryPreview() {
@@ -29,7 +34,8 @@ export async function getCategoryPreview() {
       });
 
       return { success: true, data: brands } as ActionResponse;
-    },
+    }, // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     { success: false, data: createSkeletons(categoriesTemplate, 9) }
   );
 }

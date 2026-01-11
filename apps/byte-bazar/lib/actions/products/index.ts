@@ -2,8 +2,8 @@
 
 import { z } from "zod";
 
+import { prisma, safeDbOperation } from "@workspace/database";
 import { revalidatePath } from "next/cache";
-import prisma, { safeDbOperation } from "../../prisma";
 import {
   ProductsSchema,
   productsSchema,
@@ -48,14 +48,14 @@ export interface ProductFilters {
 }
 
 export async function getProducts(
-  page: number = 1,
-  pageSize: number = 10,
+  page?: number,
+  pageSize?: number,
   filters: ProductFilters = {}
 ) {
   return safeDbOperation<ActionResponse>(
     async () => {
       // Construir el where clause dinámicamente
-      const whereClause: any = { isActive: true };
+      const whereClause: Record<string, unknown> = { isActive: true };
 
       // Filtro por categoría
       if (filters.category) {
@@ -70,16 +70,17 @@ export async function getProducts(
       // Filtro por precio
       if (filters.minPrice !== undefined || filters.maxPrice !== undefined) {
         whereClause.price = {};
+        const priceFilter = whereClause.price as Record<string, number>;
         if (filters.minPrice !== undefined) {
-          whereClause.price.gte = filters.minPrice;
+          priceFilter.gte = filters.minPrice;
         }
         if (filters.maxPrice !== undefined) {
-          whereClause.price.lte = filters.maxPrice;
+          priceFilter.lte = filters.maxPrice;
         }
       }
 
       // Construir el orderBy dinámicamente
-      let orderBy: any = { name: "asc" }; // Default
+      let orderBy: Record<string, string> = { name: "asc" }; // Default
 
       if (filters.sort) {
         switch (filters.sort) {
@@ -99,6 +100,19 @@ export async function getProducts(
             orderBy = { createdAt: "desc" };
             break;
         }
+      }
+
+      const hasPagination =
+        Number.isInteger(page) &&
+        Number.isInteger(pageSize) &&
+        page! > 0 &&
+        pageSize! > 0;
+      let pagination = {};
+      if (hasPagination) {
+        pagination = {
+          skip: page! * pageSize!,
+          take: pageSize!,
+        };
       }
 
       const [totalProducts, products] = await prisma.$transaction([
@@ -121,8 +135,7 @@ export async function getProducts(
               select: { stockMovements: true },
             },
           },
-          skip: page * pageSize,
-          take: pageSize,
+          ...pagination,
         }),
       ]);
 
@@ -134,17 +147,17 @@ export async function getProducts(
         pagination: {
           page,
           pageSize,
-          totalPages: Math.ceil(totalProducts / pageSize),
+          totalPages: Math.ceil(totalProducts / (pageSize || 1)),
           totalItems: products.length,
         },
       } as ActionResponse;
     },
     {
       success: false,
-      data: createSkeletons(productTemplate, 8),
+      data: { skeletons: createSkeletons(productTemplate, 8) },
       pagination: {
-        page,
-        pageSize,
+        page: page || 1,
+        pageSize: pageSize || 10,
         totalPages: 0,
         totalItems: 0,
       },
@@ -172,7 +185,32 @@ export async function SearchByProductName(name: string) {
 
       return { success: true, data: serializedData[0] } as ActionResponse;
     },
-    { success: false, data: [] }
+    { success: false, data: {} }
+  );
+}
+
+export async function getProductBySlug(slug: string) {
+  return safeDbOperation<ActionResponse>(
+    async () => {
+      const product = await prisma.product.findMany({
+        where: {
+          isActive: true,
+          slug: { contains: slug, mode: "insensitive" },
+        },
+        orderBy: { name: "asc" },
+        take: 1,
+      });
+
+      const serializedData = serializeDecimals(product);
+      if (product.length === 0) {
+        return { success: false, error: "product not found" };
+      }
+      return { success: true, data: serializedData[0] } as ActionResponse;
+    },
+    {
+      success: false,
+      data: {},
+    }
   );
 }
 
@@ -211,7 +249,7 @@ export async function getProductPreview(params?: {
 }) {
   return safeDbOperation<ActionResponse>(
     async () => {
-      const where: any = { isActive: true };
+      const where: Record<string, unknown> = { isActive: true };
 
       if (params?.search) {
         where.name = { contains: params.search, mode: "insensitive" };
@@ -247,7 +285,7 @@ export async function getProductPreview(params?: {
 
       return { success: true, data: serializedData } as ActionResponse;
     },
-    { success: true, data: createSkeletons(productTemplate, 6) }
+    { success: true, data: { skeletons: createSkeletons(productTemplate, 6) } }
   );
 }
 
@@ -271,7 +309,7 @@ export async function getRelatedProducts(categoryId: string) {
 
       return { success: true, data: serializedData } as ActionResponse;
     },
-    { success: true, data: createSkeletons(productTemplate, 6) }
+    { success: true, data: { skeletons: createSkeletons(productTemplate, 6) } }
   );
 }
 

@@ -1,6 +1,4 @@
-interface ClientTableProps {}
-
-const ClientTable = ({}: ClientTableProps) => {
+const ClientTable = () => {
   return <div>ClientTable</div>;
 };
 

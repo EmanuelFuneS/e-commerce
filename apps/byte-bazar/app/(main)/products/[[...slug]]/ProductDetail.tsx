@@ -15,7 +15,7 @@ export default async function ProductDetail({ params }: Params) {
   const decodeCategory = decodeURIComponent(slug[0] || "");
 
   const productResponse = await SearchByProductName(decodeName);
-  const product: Product = productResponse!.data;
+  const product: Product = productResponse!.data as unknown as Product;
 
   //console.log("PRODUCT", product);
 
