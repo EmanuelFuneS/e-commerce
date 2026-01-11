@@ -206,7 +206,7 @@ importers:
   packages/database:
     dependencies:
       '@prisma/client':
-        specifier: ^5.0.0
+        specifier: ^5.22.0
         version: 5.22.0(prisma@5.22.0)
       '@prisma/extension-accelerate':
         specifier: ^3.0.1
@@ -216,7 +216,7 @@ importers:
         specifier: ^25.0.5
         version: 25.0.5
       prisma:
-        specifier: ^5.0.0
+        specifier: ^5.22.0
         version: 5.22.0
 
   packages/eslint-config:

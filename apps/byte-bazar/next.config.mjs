@@ -1,7 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   transpilePackages: ["@workspace/ui"],
-  serverExternalPackages: ["database", "@prisma/client", "@prisma/engines"],
+  serverExternalPackages: [
+    "@workspace/database",
+    "@prisma/client",
+    "@prisma/engines",
+  ],
 
   images: {
     remotePatterns: [
@@ -19,21 +23,12 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     unoptimized: process.env.NODE_ENV === "development",
   },
-  /* webpack: (config, { isServer }) => {
-    if (isServer) {
-      config.resolve = config.resolve || {};
-      config.resolve.alias = config.resolve.alias || {};
-
-      config.resolve.alias[".prisma/client/index-browser"] =
-        "./node_modules/.prisma/client/index-browser.js";
-      return config;
-    }
-  }, */
 
   outputFileTracingIncludes: {
-    "**/*": [
-      "./node_modules/.prisma/client/**/*",
-      "./node_modules/@prisma/engines/**/*",
+    "/**/*": [
+      "../../node_modules/.prisma/client/**/*",
+      "../../packages/database/src/generated/prisma/client/**/*",
+      "../../node_modules/@prisma/engines/**/*",
     ],
   },
 };
