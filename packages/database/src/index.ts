@@ -1,5 +1,5 @@
-import { PrismaClient } from "@prisma/client";
 import { withAccelerate } from "@prisma/extension-accelerate";
+import { PrismaClient } from "./generated/prisma/client";
 
 const globalForPrisma = globalThis as unknown as {
   prisma: ReturnType<typeof createPrismaClient> | undefined;
@@ -57,4 +57,4 @@ export async function safeDbOperation<T>(
   }
 }
 
-export * from "@prisma/client";
+export * from "./generated/prisma/client";
