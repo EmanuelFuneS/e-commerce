@@ -9,11 +9,7 @@ import BuildPcForm from "../../../components/forms/build-pc-form";
 import { getCategories, getProducts } from "../../../lib/actions";
 import { Category } from "../../../lib/types";
 
-export default async function BuildPcPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
+export default async function BuildPcPage() {
   const queryClient = new QueryClient();
   const categories = await getCategories();
 
@@ -32,7 +28,7 @@ export default async function BuildPcPage({
   return (
     <Suspense fallback={<div>Cargando página...</div>}>
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <BuildPcForm initialSearchParams={searchParams} />
+        <BuildPcForm />
       </HydrationBoundary>
     </Suspense>
   );

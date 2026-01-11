@@ -29,6 +29,13 @@ const nextConfig = {
       return config;
     }
   }, */
+
+  outputFileTracingIncludes: {
+    "**/*": [
+      "./node_modules/.prisma/client/**/*",
+      "./node_modules/@prisma/engines/**/*",
+    ],
+  },
 };
 
 export default nextConfig;

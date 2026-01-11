@@ -4,10 +4,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Card, CardContent, Label } from "@workspace/ui/components/";
 import {
   redirect,
+  usePathname,
+  useRouter,
   /* useRouter, */
   useSearchParams,
 } from "next/navigation";
-import { use, useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { Trash } from "../../../../../packages/ui/src/lib";
@@ -29,15 +31,9 @@ const customPCOrder: Record<string, number> = {
   //'accessories': 8,
 };
 
-interface BuildPcForm {
-  initialSearchParams: Promise<{
-    [key: string]: string | string[] | undefined;
-  }>;
-}
-
-const BuildPcForm = ({ initialSearchParams }: BuildPcForm) => {
-  //const router = useRouter();
-  const pathname = use(initialSearchParams);
+const BuildPcForm = () => {
+  const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const {
@@ -53,6 +49,7 @@ const BuildPcForm = ({ initialSearchParams }: BuildPcForm) => {
 
   const [continueStep, setContinueStep] = useState(0);
   const [step, setStep] = useState(0);
+  const hasHydrated = useRef(false);
 
   const categoriesNames = useMemo(
     () => categories?.map((category) => category.name.toLowerCase()),
@@ -116,6 +113,7 @@ const BuildPcForm = ({ initialSearchParams }: BuildPcForm) => {
 
   //Hydration from URL params
   useEffect(() => {
+    if (!categories || hasHydrated.current) return;
     if (!categories) return;
 
     const params = new URLSearchParams(searchParams);
@@ -123,7 +121,10 @@ const BuildPcForm = ({ initialSearchParams }: BuildPcForm) => {
 
     params.forEach((shortId, shortCat) => {
       if (shortCat === "step") {
-        setStep(Number(shortId));
+        const newStep = Number(shortId);
+        if (newStep !== step) {
+          setStep(newStep);
+        }
         return;
       }
 
@@ -144,6 +145,7 @@ const BuildPcForm = ({ initialSearchParams }: BuildPcForm) => {
       form.reset(formValues);
     }
     updateParams();
+    hasHydrated.current = true;
   }, [categories, form, getComponentByShortId, updateParams, searchParams]);
 
   useEffect(() => {
