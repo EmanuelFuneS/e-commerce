@@ -25,10 +25,20 @@ const nextConfig = {
   },
 
   outputFileTracingIncludes: {
+    "/api/**/*": [
+      "../../node_modules/.prisma/client/**/*",
+      "../../node_modules/@prisma/engines/**/*",
+      "../../node_modules/@prisma/client/**/*",
+    ],
+    "/products/**/*": [
+      "../../node_modules/.prisma/client/**/*",
+      "../../node_modules/@prisma/engines/**/*",
+      "../../node_modules/@prisma/client/**/*",
+    ],
     "/**/*": [
       "../../node_modules/.prisma/client/**/*",
-      "../../packages/database/src/generated/prisma/client/**/*",
       "../../node_modules/@prisma/engines/**/*",
+      "../../node_modules/@prisma/client/**/*",
     ],
   },
 };
