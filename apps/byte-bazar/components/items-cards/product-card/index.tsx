@@ -19,7 +19,6 @@ interface ProductCardProps {
 
 const ProductCard = ({ data, onSelect }: ProductCardProps) => {
   const image = data.images!.length && data.images![0];
-  //console.log(data.brand);
   const isSkeleton = !data.id || !data.name;
   return (
     <Card

@@ -61,7 +61,6 @@ const Filter = ({ filter, searchParams }: FilterProps) => {
   });
 
   useEffect(() => {}, [formFilter]);
-  console.log(formFilter.watch());
 
   const onSubmit = (data: FilterFormData) => {
     const params = new URLSearchParams();
@@ -103,7 +102,7 @@ const Filter = ({ filter, searchParams }: FilterProps) => {
   };
 
   return (
-    <Card className="w-[350px] mt-4 rounded-lg shadow-2xl bg-card dark:bg-card ">
+    <Card className="w-87.5 mt-4 rounded-lg shadow-2xl bg-card dark:bg-card ">
       <CardHeader>
         <Label className="text-2xl font-bold mb-4">Filters</Label>{" "}
       </CardHeader>

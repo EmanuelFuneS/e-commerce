@@ -24,20 +24,25 @@ const CategoryShowcase = () => {
     Autoplay({ delay: 4000, stopOnInteraction: true })
   );
 
-  const { categories } = useCategories();
-  //console.log(categories);
+  const { data: categories, isLoading } = useCategories();
 
   return (
-    <section className="flex flex-col md:flex-row h-[400px] my-10 space-x-4 ">
+    <section className="flex flex-col md:flex-row h-100 my-10 space-x-4 ">
       {/* categories section */}
       <div className="w-full md:w-2/7">
         <Card className="flex h-full p-4">
           <ul className=" flex flex-wrap justify-center md:flex-col gap-2">
-            {categories.map((cat: Category, index) => (
-              <li key={index}>
-                <CategoryLink cat={cat} idx={index} />
-              </li>
-            ))}
+            {!isLoading && categories?.length
+              ? categories.map((cat: Category, index) => (
+                  <li key={index}>
+                    <CategoryLink cat={cat} idx={index} />
+                  </li>
+                ))
+              : new Array(7)
+                  .fill("")
+                  .map((_, index) => (
+                    <Skeleton className="h-10 w-full" key={index} />
+                  ))}
           </ul>
         </Card>
       </div>
@@ -52,7 +57,7 @@ const CategoryShowcase = () => {
         >
           <CarouselContent className="h-full">
             <CarouselItem className="h-full">
-              <div className="h-[310px] md:h-[400px] rounded-xl flex justify-center items-center bg-black">
+              <div className="h-77.5 md:h-100 rounded-xl flex justify-center items-center bg-black">
                 <Image
                   src={steamDeck}
                   alt="Banner"
@@ -61,7 +66,7 @@ const CategoryShowcase = () => {
               </div>
             </CarouselItem>
             <CarouselItem className="h-full">
-              <div className="h-[310px] md:h-[400px] rounded-xl flex justify-center items-center bg-black">
+              <div className="h-77.5 md:h-100 rounded-xl flex justify-center items-center bg-black">
                 <Image
                   src={steamMachine}
                   alt="Banner"
@@ -70,7 +75,7 @@ const CategoryShowcase = () => {
               </div>
             </CarouselItem>
             <CarouselItem className="h-full">
-              <div className="h-[310px] md:h-[400px] rounded-xl flex justify-center items-center bg-black">
+              <div className="h-77.5 md:h-100 rounded-xl flex justify-center items-center bg-black">
                 <Image
                   src={steamController}
                   alt="Banner"
@@ -93,7 +98,7 @@ export function CategoryLink({ cat, idx }: { cat: Category; idx: number }) {
         <div className="p-1 flex items-center space-x-2 ">
           <Skeleton className="h-6 w-8  bg-slate-400 " />
           <Skeleton
-            className={`${idx % 2 === 1 ? "w-[100px]" : "w-[120px]"} h-4 bg-slate-400 `}
+            className={`${idx % 2 === 1 ? "w-25" : "w-30"} h-4 bg-slate-400 `}
           />
         </div>
       ) : (
