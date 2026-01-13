@@ -16,3 +16,13 @@ interface Pagination {
 }
 
 export type ActionResponse<T = Record<string, unknown>> = ApiResponse<T>;
+
+export type OptionalParams<T> = T | undefined;
+
+export interface ProductFilters {
+  category?: string;
+  brand?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  sort?: string;
+}
