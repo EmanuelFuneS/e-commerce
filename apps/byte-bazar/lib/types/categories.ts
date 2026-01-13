@@ -1,12 +1,5 @@
-import { Product } from "./products";
+import { Category as CategoryDbType } from "@workspace/database";
 
-interface Category {
-  id?: string;
-  name?: string;
-  imageUrl?: string;
-  createAt?: Date;
-  updateAt?: Date;
-  products?: Product[];
-}
+interface Category extends CategoryDbType {}
 
 export type { Category };

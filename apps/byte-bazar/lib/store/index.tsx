@@ -1,6 +1,7 @@
+import { getBrands } from "src/actions/brand.actions";
+import { getCategories } from "src/actions/category.actions";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { getBrands, getCategories } from "../actions";
 import { Brand, Category } from "../types";
 import { ProductHelper } from "../utils/productHelper";
 
@@ -27,15 +28,11 @@ export const useCategoriesStore = create<{
     if (isInitialized) return;
 
     const current = await getCategories();
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const result = current?.data.map((cat: Category) => ({
+    const result = current?.map((cat: Category) => ({
       id: cat.id,
       name: cat.name,
     }));
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    if (current?.success && current.data.length > 0) {
+    if (current && current?.length > 0) {
       set({ categories: result, isInitialized: true });
     }
   },
@@ -54,15 +51,12 @@ export const useBrandsStore = create<{
     if (isInitialized) return;
 
     const current = await getBrands();
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const result = current?.data.map((brand: Brand) => ({
+    const result = current?.map((brand: Brand) => ({
       id: brand.id,
       name: brand.name,
     }));
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    if (current?.success && current.data.length > 0) {
+
+    if (current && current?.length > 0) {
       set({ brands: result, isInitialized: true });
     }
   },
