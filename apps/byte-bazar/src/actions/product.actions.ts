@@ -3,7 +3,6 @@
 import { Prisma, safeDbOperation } from "@workspace/database";
 import { revalidatePath } from "next/cache";
 import { ProductsSchema } from "../../lib/schemas/products/products.schema";
-import { createSkeletons, productTemplate } from "../../lib/skeleton-templates";
 import { ActionResponse, ProductFilters } from "../../lib/types";
 import { ProductService } from "../services/product.service";
 
@@ -20,46 +19,31 @@ export const getProducts = async (
       }
     | undefined
 ) => {
-  return safeDbOperation<ActionResponse>(
-    async () => {
+  return safeDbOperation(async () => {
+    console.log("parameter", filters, pagination);
+    try {
       const service = productService();
-      const result = await service.getProducts(filters, pagination);
-      return {
-        success: true,
-        products: result,
-        pagination: {
-          page: pagination?.page || 1,
-          pageSize: pagination?.pageSize || 10,
-          totalPages: Math.ceil(result.length / (pagination?.pageSize || 1)),
-          totalItems: result.length,
-        },
-      };
-    },
-    {
-      success: false,
-      data: { skeletons: createSkeletons(productTemplate, 8) },
+      return await service.getProducts(filters, pagination);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      throw new Error("Products not found");
     }
-  );
+  }, [] as any);
 };
 
 export const getProduct = async (
   id: Prisma.ProductWhereUniqueInput,
   incrementView = false
 ) => {
-  return safeDbOperation<ActionResponse>(
-    async () => {
+  return safeDbOperation(async () => {
+    try {
       const service = productService();
-      const result = await service.getProduct(id, incrementView);
-      return {
-        success: true,
-        data: result,
-      };
-    },
-    {
-      success: false,
-      data: {},
+      return await service.getProduct(id, incrementView);
+    } catch (error) {
+      console.error("Error fetching product:", error);
+      throw new Error("Product not found");
     }
-  );
+  }, [] as any);
 };
 
 export const createProduct = async (data: any, tenantId: string) => {

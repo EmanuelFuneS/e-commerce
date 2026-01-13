@@ -1,10 +1,14 @@
 import { Prisma } from "@workspace/database";
 
 import { ProductsSchema } from "../../lib/schemas/products/products.schema";
-import { OptionalParams, ProductFilters } from "../../lib/types";
+import {
+  OptionalParams,
+  ProductFilters,
+  ProductResponse,
+} from "../../lib/types";
 import {
   ProductRepository,
-  ProductWithRelations,
+  ProductWithRelationsSerialized,
 } from "../repositories/product.repository";
 
 export class ProductService {
@@ -14,7 +18,7 @@ export class ProductService {
     this.repository = new ProductRepository();
   }
 
-  private calculateFinalPrice(product: ProductWithRelations) {
+  private calculateFinalPrice(product: ProductWithRelationsSerialized) {
     const price = Number(product.price);
     const discount = product.discounts[0];
     if (!discount?.isActive) {
@@ -66,7 +70,7 @@ export class ProductService {
       page?: number;
       pageSize?: number;
     }
-  ) {
+  ): Promise<ProductResponse> {
     //MANEJAR TENANT_ID
     // Construir el orderBy dinámicamente
     let orderBy: Record<string, string> = { name: "asc" }; // Default
@@ -110,12 +114,12 @@ export class ProductService {
             orderBy = { name: "desc" };
             break;
           case "relevance":
-            orderBy = { createdAt: "desc" };
+            orderBy = { createdAt: "asc" };
             break;
         }
       }
     }
-    const { page, pageSize } = pagination;
+    const { page, pageSize } = pagination ?? {};
     let paginationObj = {};
 
     if (page && pageSize) {
@@ -131,16 +135,25 @@ export class ProductService {
         };
       }
     }
-
+    console.log("where", whereClause, orderBy, paginationObj);
     const products = await this.repository.findMany(
       whereClause,
       paginationObj,
       orderBy
     );
-    return products.map((product: ProductWithRelations) => ({
-      ...product,
-      finalPrice: this.calculateFinalPrice(product),
-    }));
+    return {
+      success: true,
+      products: products.map((product: ProductWithRelationsSerialized) => ({
+        ...product,
+        finalPrice: this.calculateFinalPrice(product),
+      })),
+      pagination: {
+        page: page || 1,
+        pageSize: pageSize || 10,
+        totalPages: Math.ceil(products.length / (pageSize || 10)),
+        totalItems: products.length,
+      },
+    };
   }
 
   async createProduct(data: ProductsSchema, tenantId: string) {
