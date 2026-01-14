@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import PreviewGrid from ".";
-import { getRelatedProducts } from "../../lib/actions";
 import { useCategoriesStore } from "../../lib/store";
-import { Product } from "../../lib/types";
+import { Product, ProductResponse } from "../../lib/types";
+import { getProducts } from "../../src/actions/product.actions";
 
 interface RelatedItemsProps {
   categoryName: string | undefined;
@@ -27,11 +27,16 @@ const RelatedItems = ({ categoryName }: RelatedItemsProps) => {
         );
 
         if (matchedCategory) {
-          //console.log("CATEGORIES", categories);
-          const result = await getRelatedProducts(matchedCategory.id);
+          const result: ProductResponse = await getProducts(
+            { category: matchedCategory.id, sort: "relevance" },
+            {
+              pageSize: 6,
+            }
+          );
+          console.log("result", result);
 
-          if (result?.data) {
-            setRelatedProducts(result.data as unknown as Product[]);
+          if (result?.products) {
+            setRelatedProducts(result.products as Product[]);
           }
         }
       } catch (error) {

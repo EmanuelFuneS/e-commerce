@@ -32,11 +32,9 @@ import ProfilePicture from "../profile/profile-picture";
 import ThemeToggle from "../theme-toggle";
 
 const NavBar = () => {
-  //const { user, isLoading } = useUser();
-  const { categories } = useCategories();
+  const { data: categories, isLoading } = useCategories();
   const { favorites } = useFavoritesProducts();
 
-  //console.log(favorites);
   return (
     <>
       <nav className="hidden md:block w-full mx-auto max-w-fit py-4 ">
@@ -47,15 +45,19 @@ const NavBar = () => {
 
               <NavigationMenuContent className="relative z-50">
                 <ul className="grid w-100 gap-2 md:w-125 md:grid-cols-2 lg:w-150">
-                  {categories.map((cat: Category, index: number) => (
-                    <ListItem
-                      key={index}
-                      title={cat.name}
-                      href={`/products/${ProductHelper.generateSlug(cat.name || "")}`}
-                      imageAlt={cat.name || ""}
-                      imageUrl={cat.imageUrl || ""}
-                    ></ListItem>
-                  ))}
+                  {!isLoading && categories?.length ? (
+                    categories.map((cat: Category, index: number) => (
+                      <ListItem
+                        key={index}
+                        title={cat.name}
+                        href={`/products/${ProductHelper.generateSlug(cat.name || "")}`}
+                        imageAlt={cat.name || ""}
+                        imageUrl={cat.imageUrl || ""}
+                      ></ListItem>
+                    ))
+                  ) : (
+                    <Skeleton />
+                  )}
                 </ul>
               </NavigationMenuContent>
             </NavigationMenuItem>

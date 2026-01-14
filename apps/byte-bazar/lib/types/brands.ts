@@ -1,10 +1,5 @@
-interface Brand {
-  id?: string;
-  name: string;
-  logo?: string | null | undefined;
-  website?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
+import { Brand as BrandDbType } from "@workspace/database";
+
+interface Brand extends BrandDbType {}
 
 export type { Brand };

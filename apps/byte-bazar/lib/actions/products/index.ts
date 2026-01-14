@@ -9,7 +9,7 @@ import {
   productsSchema,
 } from "../../schemas/products/products.schema";
 import { createSkeletons, productTemplate } from "../../skeleton-templates";
-import { ActionResponse } from "../../types/common";
+import { ActionResponse, ProductFilters } from "../../types/common";
 import { serializeDecimals } from "../../utils";
 
 export async function createProduct(
@@ -37,14 +37,6 @@ export async function createProduct(
       error: "Failed to create product",
     } as ActionResponse;
   }
-}
-
-export interface ProductFilters {
-  category?: string;
-  brand?: string;
-  minPrice?: number;
-  maxPrice?: number;
-  sort?: string;
 }
 
 export async function getProducts(

@@ -60,12 +60,11 @@ async function determineFilterType(
   slug: string
 ): Promise<{ type: "brand" | "category"; value: string; id: string }> {
   const filterData = await getCachedFilterData();
-
   if (!filterData) {
     throw new Error("Filter data not available");
   }
 
-  const normalizedSlug = slug.toLowerCase();
+  const normalizedSlug = slug.toLowerCase().replace("-", " ");
 
   const brand = filterData.brands.find(
     (b: Brand) => b.name.toLocaleLowerCase() === normalizedSlug

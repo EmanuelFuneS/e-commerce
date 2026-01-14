@@ -8,16 +8,11 @@ import { ActionResponse } from "../../types/common";
 export async function createCategory() {}
 
 export async function getCategories() {
-  console.log("[getCategories] Iniciando llamada a Prisma...");
   try {
     const categories = await prisma.category.findMany({
       orderBy: { name: "asc" },
     });
-    console.log(
-      "[getCategories] Resultado:",
-      categories.length,
-      "categorías encontradas"
-    );
+
     return { success: true, data: categories };
   } catch (error) {
     console.error("[getCategories] Error Prisma:", error);

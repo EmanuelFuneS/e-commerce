@@ -59,7 +59,6 @@ const Page = ({ params }: PageProps) => {
   });
 
   const previewDbImages = form.watch("images");
-  console.log(previewDbImages);
 
   useEffect(() => {
     startTransition(async () => {
@@ -75,7 +74,6 @@ const Page = ({ params }: PageProps) => {
           );
         }
       }
-      console.log(response);
     });
   }, [form, params]);
 
