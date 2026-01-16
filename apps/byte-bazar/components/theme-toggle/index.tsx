@@ -27,7 +27,7 @@ const ThemeToggle = ({ size }: ThemeToggleProps) => {
     document.documentElement.classList.toggle("dark");
   };
 
-  if (!mounted) return <div className="w-[37px] h-[37px]" />;
+  if (!mounted) return <div className="w-9.25 h-9.25" />;
 
   return (
     <div onClick={changeTheme} className="">
