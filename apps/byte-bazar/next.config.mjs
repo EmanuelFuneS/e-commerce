@@ -23,6 +23,15 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     unoptimized: process.env.NODE_ENV === "development",
   },
+
+  async rewrites() {
+    return [
+      {
+        source: "/auth/:path*",
+        destination: "http://127.0.0.1:3005/auth/:path*",
+      },
+    ];
+  },
 };
 
 export default nextConfig;
