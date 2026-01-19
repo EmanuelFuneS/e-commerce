@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from "react";
 import { Moon, SunDim } from "../lib";
 
@@ -8,14 +9,16 @@ interface ThemeToggleProps {
 const ThemeToggle = ({ size }: ThemeToggleProps) => {
   const [theme, setTheme] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
-  
+
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const isDark = theme === "dark" || 
-   (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
-   
+  const isDark =
+    theme === "dark" ||
+    (theme === "system" &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches);
+
   useEffect(() => {
     const saveTheme = localStorage.getItem("theme");
     if (saveTheme) {
@@ -25,7 +28,6 @@ const ThemeToggle = ({ size }: ThemeToggleProps) => {
       setTheme("light");
     }
   }, []);
-
 
   const changeTheme = () => {
     const newTheme = theme === "dark" ? "light" : "dark";
