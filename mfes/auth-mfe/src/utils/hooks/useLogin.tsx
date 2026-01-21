@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { LoginSchema } from "../schemas/register.schema";
+import { LoginSchema } from "../schemas/form.schema";
 import services from "../services";
 
 const useLogin = () => {

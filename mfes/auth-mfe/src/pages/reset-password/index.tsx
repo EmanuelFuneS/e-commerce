@@ -6,7 +6,7 @@ import ValidateTokenForm from "../../components/validate-token-form";
 import {
   ResetPasswordSchema,
   resetPasswordSchema,
-} from "../../utils/schemas/register.schema";
+} from "../../utils/schemas/form.schema";
 
 type Props = {};
 

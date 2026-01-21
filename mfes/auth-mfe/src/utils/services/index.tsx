@@ -4,7 +4,7 @@ import {
   LoginSchema,
   RegisterSchema,
   ResetPasswordSchema,
-} from "../schemas/register.schema";
+} from "../schemas/form.schema";
 
 export default {
   registerPost: async (data: RegisterSchema) => {

@@ -17,7 +17,7 @@ import useRecoveryPassword from "../../utils/hooks/useRecoveryPassword";
 import {
   recoveryPasswordSchema,
   RecoveryPasswordSchema,
-} from "../../utils/schemas/register.schema";
+} from "../../utils/schemas/form.schema";
 import ButtonUI from "../ui/button";
 
 const RecoveryPasswordForm = () => {

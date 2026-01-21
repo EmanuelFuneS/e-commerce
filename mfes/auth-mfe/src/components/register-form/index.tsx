@@ -17,7 +17,7 @@ import useRegister from "../../utils/hooks/useRegister";
 import {
   RegisterSchema,
   registerSchema,
-} from "../../utils/schemas/register.schema";
+} from "../../utils/schemas/form.schema";
 import ButtonUI from "../ui/button";
 
 const RegisterForm = () => {

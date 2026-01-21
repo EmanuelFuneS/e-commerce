@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { ResetPasswordSchema } from "../schemas/register.schema";
+import { ResetPasswordSchema } from "../schemas/form.schema";
 import services from "../services";
 
 const useResetPassword = () => {

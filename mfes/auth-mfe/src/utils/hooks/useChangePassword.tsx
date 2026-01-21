@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { ChangePasswordSchema } from "../schemas/register.schema";
+import { ChangePasswordSchema } from "../schemas/form.schema";
 import services from "../services";
 
 const useChangePassword = () => {

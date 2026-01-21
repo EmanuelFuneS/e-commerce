@@ -16,7 +16,7 @@ import useChangePassword from "../../utils/hooks/useChangePassword";
 import {
   changePasswordSchema,
   ChangePasswordSchema,
-} from "../../utils/schemas/register.schema";
+} from "../../utils/schemas/form.schema";
 import ButtonUI from "../ui/button";
 
 const ChangePasswordForm = () => {

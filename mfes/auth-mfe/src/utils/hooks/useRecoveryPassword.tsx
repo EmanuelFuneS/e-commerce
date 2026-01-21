@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { RecoveryPasswordSchema } from "../schemas/register.schema";
+import { RecoveryPasswordSchema } from "../schemas/form.schema";
 import services from "../services";
 
 const useRecoveryPassword = () => {

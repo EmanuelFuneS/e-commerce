@@ -15,7 +15,7 @@ import { BrandFacebook, BrandGoogle } from "@workspace/ui/lib/index";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
 import useLogin from "../../utils/hooks/useLogin";
-import { loginSchema, LoginSchema } from "../../utils/schemas/register.schema";
+import { loginSchema, LoginSchema } from "../../utils/schemas/form.schema";
 import ButtonUI from "../ui/button";
 
 const LoginForm = () => {
