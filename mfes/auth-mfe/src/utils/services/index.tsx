@@ -1,7 +1,7 @@
 import {
   ChangePasswordSchema,
-  ForgotPasswordSchema,
   LoginSchema,
+  RecoveryPasswordSchema,
   RegisterSchema,
   ResetPasswordSchema,
 } from "../schemas/form.schema";
@@ -76,7 +76,7 @@ export default {
     }
     return response.json();
   },
-  recoveryPasswordPost: async (data: ForgotPasswordSchema) => {
+  recoveryPasswordPost: async (data: RecoveryPasswordSchema) => {
     const response = await fetch(
       `${import.meta.env.VITE_AUTH_API_URL}/recovery-password`,
       {
