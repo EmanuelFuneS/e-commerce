@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import type { Role } from '@workspace/database';
+import type { Prisma, Role } from '@workspace/database';
 import bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { User, UserRegister, UserRole } from './types';
@@ -13,14 +13,17 @@ export class UsersService {
   constructor(private prismaService: PrismaService) {}
 
   async updateUser(
-    id: string,
+    where: Prisma.UserWhereUniqueInput,
     data: {
-      password: string;
+      password?: string;
+      isVerified?: boolean;
+      resetPasswordToken?: string;
+      resetPasswordExpires?: Date;
       updatedAt: Date;
     },
   ) {
     return (await this.prismaService.client.user.update({
-      where: { id },
+      where: { ...where },
       data: {
         ...data,
       },
@@ -46,6 +49,9 @@ export class UsersService {
         },
       },
     })) as User;
+    if (!userFound) {
+      throw new NotFoundException('User not found');
+    }
     const roles = userFound.userRoles.map((ur: UserRole) => ur.role.name);
 
     return { ...userFound, roles: roles };
@@ -76,6 +82,12 @@ export class UsersService {
       ...userFound,
       roles: roles,
     };
+  }
+
+  async findUserByToken(token: string) {
+    return (await this.prismaService.client.user.findUnique({
+      where: { resetPasswordToken: token },
+    })) as User;
   }
 
   async createWithDefaultRole(userRegister: UserRegister) {

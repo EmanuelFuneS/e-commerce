@@ -1,27 +1,16 @@
 import { Prisma } from '@workspace/database';
 
-export interface User {
-  id: string;
-  email: string;
-  password?: string;
-  name?: string;
-  isActive: boolean;
-  isVerified: boolean;
-  verificationToken?: string;
-  resetPasswordToken?: string;
-  resetPasswordExpires?: Date;
-  lastLogin: Date;
-  loginAttempts: number;
-  lockUntil: Date;
-  createdAt: Date;
-  updateAt: Date;
-  //relations
-  userRoles: UserRole[];
-  refreshToken: any;
-  orders: any;
-  stockMovements?: any;
-  couponUsages: any;
-}
+export const userWithRelations = Prisma.validator<Prisma.UserDefaultArgs>()({
+  include: {
+    userRoles: {
+      include: {
+        role: true,
+      },
+    },
+  },
+});
+
+export type User = Prisma.UserGetPayload<typeof userWithRelations>;
 
 export interface UserRole {
   id: string;
