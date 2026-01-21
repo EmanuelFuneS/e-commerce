@@ -2,7 +2,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Card,
   CardContent,
-  CardFooter,
   CardHeader,
   Field,
   FieldError,
@@ -12,6 +11,8 @@ import {
   Separator,
 } from "@workspace/ui/components";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
+import useChangePassword from "../../utils/hooks/useChangePassword";
 import {
   changePasswordSchema,
   ChangePasswordSchema,
@@ -19,6 +20,8 @@ import {
 import ButtonUI from "../ui/button";
 
 const ChangePasswordForm = () => {
+  const navigate = useNavigate();
+  const changePassword = useChangePassword();
   const form = useForm<ChangePasswordSchema>({
     resolver: zodResolver(changePasswordSchema),
     defaultValues: {
@@ -28,8 +31,20 @@ const ChangePasswordForm = () => {
     },
   });
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const onSubmit = async (data: any) => {
+    try {
+      console.log(data);
+      const result = await changePassword.mutateAsync(data, {
+        onSuccess: (data) => {
+          setTimeout(() => {
+            navigate("/login");
+          }, 2000);
+        },
+      });
+      // redirect to user settings
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -91,10 +106,6 @@ const ChangePasswordForm = () => {
           <ButtonUI type="submit">Update Password</ButtonUI>
         </form>
       </CardContent>
-      <CardFooter className="flex flex-col gap-4">
-        <Separator />
-        <p>password requirements</p>
-      </CardFooter>
     </Card>
   );
 };

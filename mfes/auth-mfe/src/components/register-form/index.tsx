@@ -13,6 +13,7 @@ import {
 } from "@workspace/ui/components";
 import { BrandFacebook, BrandGoogle } from "@workspace/ui/lib/index";
 import { useForm } from "react-hook-form";
+import useRegister from "../../utils/hooks/useRegister";
 import {
   RegisterSchema,
   registerSchema,
@@ -20,6 +21,7 @@ import {
 import ButtonUI from "../ui/button";
 
 const RegisterForm = () => {
+  const register = useRegister();
   const form = useForm<RegisterSchema>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -30,9 +32,19 @@ const RegisterForm = () => {
     },
   });
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const onSubmit = async (data: any) => {
+    try {
+      console.log(data);
+
+      const result = await register.mutateAsync(data);
+      console.log(result);
+      //redirect to home
+    } catch (error) {
+      console.error(error);
+    }
   };
+
+  console.log(form.formState.errors);
 
   return (
     <Card className="w-75 py-6 text-gray-800 dark:text-muted-foreground">
@@ -97,7 +109,7 @@ const RegisterForm = () => {
             <Input
               id=""
               aria-invalid={!!form.formState.errors.password}
-              {...form.register("password")}
+              {...form.register("confirmPassword")}
               placeholder="Confirm password"
             />
             <FieldError className="text-xs h-1">

@@ -1,5 +1,4 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
+import { Controller } from "react-hook-form";
 import {
   Card,
   CardContent,
@@ -13,26 +12,17 @@ import {
   Label,
   Separator,
 } from "../../../../../packages/ui/src/components";
-import {
-  validateTokenSchema,
-  ValidateTokenSchema,
-} from "../../utils/schemas/register.schema";
 import ButtonUI from "../ui/button";
 
-type Props = {};
+interface TokenResetFormProps {
+  form: any;
+  setStep: (step: number) => void;
+}
 
-const ValidateTokenForm = (props: Props) => {
-  const form = useForm<ValidateTokenSchema>({
-    resolver: zodResolver(validateTokenSchema),
-    defaultValues: {
-      token: "",
-    },
-  });
-
-  const onSubmit = (data: any) => {
-    console.log(data);
+const ValidateTokenForm = ({ form, setStep }: TokenResetFormProps) => {
+  const nextStep = () => {
+    setStep(2);
   };
-
   return (
     <Card className=" w-75 py-6 text-gray-800 dark:text-muted-foreground">
       <CardHeader>
@@ -42,11 +32,7 @@ const ValidateTokenForm = (props: Props) => {
         </Label>
       </CardHeader>
       <CardContent>
-        <form
-          id="validate-token"
-          className="space-y-4"
-          onSubmit={form.handleSubmit(onSubmit)}
-        >
+        <form className="space-y-4">
           <Field>
             <Controller
               name="token"
@@ -78,7 +64,7 @@ const ValidateTokenForm = (props: Props) => {
           </Field>
 
           <Separator />
-          <ButtonUI type="submit">Valide</ButtonUI>
+          <ButtonUI onClick={nextStep}>Reset Password</ButtonUI>
         </form>
       </CardContent>
     </Card>

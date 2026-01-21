@@ -13,10 +13,14 @@ import {
 } from "@workspace/ui/components";
 import { BrandFacebook, BrandGoogle } from "@workspace/ui/lib/index";
 import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router";
+import useLogin from "../../utils/hooks/useLogin";
 import { loginSchema, LoginSchema } from "../../utils/schemas/register.schema";
 import ButtonUI from "../ui/button";
 
 const LoginForm = () => {
+  const navigate = useNavigate();
+  const login = useLogin();
   const form = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -25,8 +29,20 @@ const LoginForm = () => {
     },
   });
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const onSubmit = async (data: any) => {
+    try {
+      console.log(data);
+      const result = await login.mutateAsync(
+        data /* {
+        onSuccess: (data) => {
+          window.location.href = "/";
+        },
+      } */,
+      );
+      //redirect to home
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -34,8 +50,7 @@ const LoginForm = () => {
       <CardHeader>
         <Label className="text-lg">Login</Label>
         <Label className="text-xs font-normal">
-          Please enter your email address and a secure password to register for
-          an account.
+          Please enter your email and password to access your account
         </Label>
       </CardHeader>
       <CardContent>
@@ -70,6 +85,10 @@ const LoginForm = () => {
               {form.formState.errors.password?.message}
             </FieldError>
           </Field>
+
+          <Link className=" text-xs font-medium" to="/recovery-password">
+            Forgot Password ?
+          </Link>
           <Separator />
           <ButtonUI type="submit">Login</ButtonUI>
         </form>

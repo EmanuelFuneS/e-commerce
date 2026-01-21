@@ -12,28 +12,42 @@ import {
   Separator,
 } from "@workspace/ui/components";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
+import useRecoveryPassword from "../../utils/hooks/useRecoveryPassword";
 import {
-  forgotPasswordSchema,
-  ForgotPasswordSchema,
+  recoveryPasswordSchema,
+  RecoveryPasswordSchema,
 } from "../../utils/schemas/register.schema";
 import ButtonUI from "../ui/button";
 
-const ForgotPasswordForm = () => {
-  const form = useForm<ForgotPasswordSchema>({
-    resolver: zodResolver(forgotPasswordSchema),
+const RecoveryPasswordForm = () => {
+  const navigate = useNavigate();
+  const recoveryPassword = useRecoveryPassword();
+  const form = useForm<RecoveryPasswordSchema>({
+    resolver: zodResolver(recoveryPasswordSchema),
     defaultValues: {
       email: "",
     },
   });
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const onSubmit = async (formData: any) => {
+    try {
+      await recoveryPassword.mutateAsync(formData, {
+        onSuccess: (data) => {
+          setTimeout(() => {
+            navigate("/reset-password");
+          }, 2000);
+        },
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
     <Card className="w-75 py-6 text-gray-800 dark:text-muted-foreground">
       <CardHeader className="text-center">
-        <Label className="text-lg w-full">Forgot Password</Label>
+        <Label className="text-lg w-full">Recovery Password</Label>
         <Label className="text-xs font-normal">
           Enter the email address associated with your account and we'll send
           you a link to reset your password
@@ -41,7 +55,7 @@ const ForgotPasswordForm = () => {
       </CardHeader>
       <CardContent>
         <form
-          id="forgot-password"
+          id="Recovery-password"
           className="space-y-4"
           onSubmit={form.handleSubmit(onSubmit)}
         >
@@ -67,4 +81,4 @@ const ForgotPasswordForm = () => {
   );
 };
 
-export default ForgotPasswordForm;
+export default RecoveryPasswordForm;
