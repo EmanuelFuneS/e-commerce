@@ -1,17 +1,20 @@
 import {
   Body,
   Controller,
-  Get,
   HttpCode,
   HttpStatus,
   Post,
-  Request,
+  Req,
+  Res,
+  UseInterceptors,
 } from '@nestjs/common';
+import type { Request, Response } from 'express';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
 import { Public } from './Decorator/public.decorator';
+import { SetAuthCookie } from './Decorator/set-auth-cookie.decorator';
+import { AuthCookieInterceptor } from './Interceptors/auth.cookie.interceptor';
 import type { AuthRequest } from './types';
-
 class RegisterDto {
   email: string;
   name: string;
@@ -32,7 +35,15 @@ class RefreshDto {
   id: string;
 }
 
+class ResetPasswordDto {
+  email: string;
+  token: string;
+  password: string;
+  confirmPassword: string;
+}
+
 @Controller('auth')
+@UseInterceptors(AuthCookieInterceptor)
 export class AuthController {
   constructor(
     private authService: AuthService,
@@ -40,33 +51,42 @@ export class AuthController {
   ) {}
   @Public()
   @Post('/register')
-  async register(@Body() body: RegisterDto) {
-    return this.authService.register(body);
+  @SetAuthCookie()
+  async register(
+    @Body() body: RegisterDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const result = await this.authService.register(body);
+
+    return result;
   }
 
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('/login')
-  async login(@Body() body: LoginDto) {
-    return this.authService.login(body);
-  }
+  @SetAuthCookie()
+  async login(
+    @Body() body: LoginDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const result = await this.authService.login(body);
 
-  @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;
+    return result;
   }
 
   @Post('refresh')
+  @SetAuthCookie()
   refresh(@Body() body: RefreshDto) {
     const { id } = body;
-    return this.authService.refreshToken(id);
+    return this.authService.refreshAuthToken(id);
   }
 
   @Post('change-password')
   async changePassword(
-    @Request() req: AuthRequest,
+    @Res() response: Response,
+    @Req() req: Request & AuthRequest,
     @Body() body: ChangePasswordDto,
-  ): Promise<{ message: string }> {
+  ) {
     const { odlPassword, newPassword, confirmedPassword } = body;
     const { userId } = req.user;
     if (newPassword && confirmedPassword && userId) {
@@ -76,27 +96,54 @@ export class AuthController {
         newPassword,
       );
       if (changedPassword) {
-        return {
-          message: 'changed password',
-        };
+        return response.status(200).json({ message: 'password changed' });
       }
     }
-    return {
-      message: 'its no possible change password',
-    };
+    return response.status(400).json({ message: 'password not changed' });
   }
 
   @Post('logout')
-  async logout(): Promise<{ message: string }> {
-    //method logout
+  async logout(
+    @Res({ passthrough: true }) response: Response,
+    @Req() request: Request,
+  ) {
+    const token = request.cookies['token'] as string;
+    if (token) {
+      await this.authService.logout(token);
+
+      response.clearCookie('token', { path: '/' });
+      response.clearCookie('userId', { path: '/' });
+    }
     return {
-      message: '',
+      message: 'logout',
     };
   }
 
-  @Post('forgot-password')
-  async forgotPassword() {
-    //forgotPassword method
-    return;
+  @Public()
+  @Post('verify-email')
+  async verifyEmail(@Body() body: { id: string }) {
+    await this.authService.verifyEmail(body.id);
+  }
+
+  @Public()
+  @Post('recovery-password')
+  async recoveryPassword(
+    @Body() body: { email: string },
+    @Res() response: Response,
+  ) {
+    await this.authService.recoveryPassword(body.email);
+
+    response.status(200).json({ message: 'email sent' });
+  }
+
+  @Public()
+  @Post('reset-password')
+  async resetPassword(@Body() body: ResetPasswordDto) {
+    return await this.authService.resetPassword(
+      body.email,
+      body.token,
+      body.password,
+      body.confirmPassword,
+    );
   }
 }

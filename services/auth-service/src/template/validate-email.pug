@@ -1,0 +1,10 @@
+extends layout
+
+block content
+  .header
+    h1 Verify your email
+  .content
+    p To ensure the security of your account and complete the registration process, please confirm your email address by clicking on the button below:
+    a.button(href=verifyUrl) Verify Email Address
+    p(style="margin-top: 30px; font-size: 13px; color: #64748b;") If the button doesn't work, copy and paste this link in your browser: #{verifyUrl}
+

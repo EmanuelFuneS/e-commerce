@@ -33,7 +33,8 @@
         "CLOUDINARY_API_ENV",
         "DATABASE_URL",
         "DIRECT_URL",
-        "NODE_ENV"
+        "NODE_ENV",
+        "RESEND_API_KEY"
       ]
     },
     "lint": {

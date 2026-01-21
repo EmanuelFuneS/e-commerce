@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  # micro front ends
+  auth-mfe:
+    build:
+      context: .
+      dockerfile: Docker/mfe/auth-mfe.dockerfile
+    ports:
+      - "3005:80"
+    environment:
+      - NODE_ENV=production
+
+  # services
+  auth-service:
+    build:
+      context: .
+      dockerfile: Docker/services/auth-service.dockerfile
+    ports:
+      - "3010:3010"
+    environment:
+      - NODE_ENV=development

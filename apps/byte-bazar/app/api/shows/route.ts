@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
-import { auth0 } from "../../../lib/auth0";
+/* import { NextResponse } from "next/server";
+import { auth0 } from "../../../lib/auth";
 
 export const GET = async function shows() {
   try {
@@ -23,12 +23,13 @@ export const GET = async function shows() {
   } catch (error) {
     return NextResponse.json(
       { error: (error as Error).message }
-      /* {
+       {
         status:
           typeof error === "object" && error !== null && "status" in error
             ? (error as Error).name
             : 500,
-      } */
+      } 
     );
   }
 };
+ */

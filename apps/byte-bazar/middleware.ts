@@ -1,12 +1,27 @@
 import type { NextRequest } from "next/server";
-import { auth0 } from "./lib/auth0";
+import { NextResponse } from "next/server";
 
-export async function middleware(request: NextRequest) {
-  return await auth0.middleware(request);
-}
+const protectedRoutes = ["/dashboard", "/orders", "checkout", "/settings"];
+
+const authRoutes = ["/login", "/register"];
+
+export const middleware = (request: NextRequest) => {
+  const token = request.cookies.get("token");
+  const { pathname } = request.nextUrl;
+
+  if (protectedRoutes.some((route) => pathname.startsWith(route)) && !token) {
+    const url = new URL("auth/login", request.url);
+    url.searchParams.set("callbackUrl", pathname);
+    return NextResponse.redirect(url);
+  }
+
+  if (authRoutes.some((route) => pathname.startsWith(route)) && token) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
+  return NextResponse.next();
+};
 
 export const config = {
-  matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };

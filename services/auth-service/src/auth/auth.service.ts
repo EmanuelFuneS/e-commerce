@@ -1,25 +1,34 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { InjectRedis } from '@nestjs-modules/ioredis';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import Redis from 'ioredis';
+import { MailService } from '../mail/mail.service';
 import { UserRegister } from '../users/types';
 import { UsersService } from '../users/users.service';
-
-interface JwtPayload {
+interface PayloadJwt {
+  username: string;
   sub: string;
-  email: string;
-  role?: string[];
+  roles: string[];
 }
-
+interface DecodedJwt {
+  exp: number;
+}
 interface Login {
   email: string;
   password: string;
 }
-
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UsersService,
     private jwtService: JwtService,
+    private mailService: MailService,
+    @InjectRedis() private readonly redis: Redis,
   ) {}
 
   async validateUser(username: string, password: string) {
@@ -70,12 +79,20 @@ export class AuthService {
       ...userRegister,
       roleName: 'user',
     } as UserRegister);
-    if (userCreated) {
-      const payload = {
+    if (userCreated && userCreated.name) {
+      const payload: PayloadJwt = {
         username: userCreated.name,
         sub: userCreated.id,
         roles: userCreated.roles,
       };
+
+      await this.mailService.RegisterEmail({
+        to: userCreated.email,
+        context: {
+          name: userCreated.name,
+        },
+      });
+
       return {
         access_token: this.jwtService.sign(payload),
         user: {
@@ -88,11 +105,11 @@ export class AuthService {
     }
     return null;
   }
-
-  async refreshToken(id: string) {
+  //--------------------------------------------
+  async refreshAuthToken(id: string) {
     const user = await this.userService.findById(id);
-    if (user && user.id) {
-      const payload = {
+    if (user && user.id && user.name) {
+      const payload: PayloadJwt = {
         username: user.name,
         sub: user.id,
         roles: user.roles,
@@ -109,7 +126,7 @@ export class AuthService {
     }
     return null;
   }
-
+  //-------------------------------------------
   async changePassword(id: string, password: string, newPassword: string) {
     const userFound = await this.userService.findById(id);
     if (userFound.password) {
@@ -120,14 +137,113 @@ export class AuthService {
 
       if (isPasswordValid) {
         const hashedNewPassword = await bcrypt.hash(newPassword, 10);
-        const updateUser = await this.userService.updateUser(id, {
-          password: hashedNewPassword,
-          updatedAt: new Date(),
-        });
+        const updateUser = await this.userService.updateUser(
+          { id: id },
+          {
+            password: hashedNewPassword,
+            updatedAt: new Date(),
+          },
+        );
         if (updateUser) {
           return userFound;
         }
       }
+    }
+  }
+
+  async logout(token: string) {
+    try {
+      const decoded: DecodedJwt = this.jwtService.decode(token);
+      const timeLeft = decoded.exp * 1000 - Date.now();
+
+      if (timeLeft > 0) {
+        await this.redis.set(`blacklist:${token}`, '1', 'PX', timeLeft + 10000);
+      }
+    } catch (error) {
+      throw new Error(`Token not found: ${(error as Error).message} `);
+    }
+  }
+  //-------------------------------------------
+  // verify email
+  async verifyEmail(id: string) {
+    const userFound = await this.userService.findById(id);
+    if (userFound) {
+      const updateUser = await this.userService.updateUser(
+        { id: id },
+        {
+          isVerified: true,
+          updatedAt: new Date(),
+        },
+      );
+      //think of a better way
+      if (updateUser) {
+        return userFound;
+      }
+    }
+  }
+  //-------------------------------------------
+  async recoveryPassword(email: string) {
+    const userValid = await this.userService.findByEmail(email);
+
+    const recoveryToken = Math.floor(
+      100000 + Math.random() * 900000,
+    ).toString();
+
+    await this.redis.set(
+      `reset_password:${userValid.email}`,
+      recoveryToken,
+      'EX',
+      600,
+    );
+
+    await this.mailService.recoveryPasswordEmail({
+      to: userValid.email,
+      context: {
+        email,
+        token: recoveryToken,
+      },
+    });
+  }
+
+  async resetPassword(
+    email: string,
+    RecoveryToken: string,
+    newPassword: string,
+    confirmPassword: string,
+  ) {
+    const userFound = await this.userService.findByEmail(email);
+    if (!userFound) {
+      throw new BadRequestException('Incorrect Email');
+    }
+
+    const storedToken = await this.redis.get(`reset_password:${email}`);
+    if (!storedToken) {
+      throw new BadRequestException('Token Expired');
+    }
+    if (RecoveryToken !== storedToken) {
+      throw new BadRequestException('Invalid token');
+    }
+
+    if (newPassword !== confirmPassword) {
+      throw new BadRequestException('Passwords do not match');
+    }
+    try {
+      const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+      await this.userService.updateUser(
+        { id: userFound.id },
+        {
+          password: hashedNewPassword,
+          updatedAt: new Date(),
+        },
+      );
+
+      await this.redis.del(`reset_password:${email}`);
+
+      return {
+        message: 'password reset successfully',
+      };
+    } catch (error) {
+      throw new BadRequestException('Error resetting password');
     }
   }
 }

@@ -9,12 +9,14 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
 } from "@workspace/ui/components/navigation-menu";
 import {
   Cart,
   Cog,
   Heart,
   InboxArchive,
+  Logout,
   Menu,
   Search,
   User,
@@ -28,10 +30,11 @@ import { Product } from "../../lib/types";
 import { Category } from "../../lib/types/categories";
 import { ProductHelper } from "../../lib/utils/productHelper";
 import ListProductCard from "../items-cards/list-product-card";
+import ProfileAuth from "../profile/profile-auth";
 import ProfilePicture from "../profile/profile-picture";
 import ThemeToggle from "../theme-toggle";
 
-const NavBar = () => {
+const NavBar = ({ isAuth }: { isAuth: boolean }) => {
   const { data: categories, isLoading } = useCategories();
   const { favorites } = useFavoritesProducts();
 
@@ -142,52 +145,70 @@ const NavBar = () => {
               </NavigationMenuContent>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <NavigationMenuTrigger>
-                <ProfilePicture />
-              </NavigationMenuTrigger>
-              <NavigationMenuContent className="relative z-50">
-                <ul className="grid w-50 gap-4">
-                  <li>
-                    <NavigationMenuLink asChild>
-                      <Link
-                        href="/settings/account"
-                        className="flex-row items-center gap-2"
+              {isAuth ? (
+                <NavigationMenuTrigger>
+                  <ProfilePicture />
+                </NavigationMenuTrigger>
+              ) : (
+                <ProfileAuth />
+              )}
+              {isAuth && (
+                <NavigationMenuContent className="relative z-50">
+                  <ul className="grid w-50 gap-4">
+                    <li>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          href="/settings/account"
+                          className="flex-row items-center gap-2"
+                        >
+                          <User />
+                          Manage My Account
+                        </Link>
+                      </NavigationMenuLink>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          href="/settings/order"
+                          className="flex-row items-center gap-2"
+                        >
+                          <InboxArchive />
+                          My Orders
+                        </Link>
+                      </NavigationMenuLink>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          href="/settings/order/canceled"
+                          className="flex-row items-center gap-2"
+                        >
+                          <XCircle />
+                          My Cancellations
+                        </Link>
+                      </NavigationMenuLink>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          href="/settings"
+                          className="flex-row items-center gap-2"
+                        >
+                          <Cog />
+                          Settings
+                        </Link>
+                      </NavigationMenuLink>
+
+                      <NavigationMenuLink
+                        asChild
+                        className={navigationMenuTriggerStyle()}
                       >
-                        <User />
-                        Manage My Account
-                      </Link>
-                    </NavigationMenuLink>
-                    <NavigationMenuLink asChild>
-                      <Link
-                        href="/settings/order"
-                        className="flex-row items-center gap-2"
-                      >
-                        <InboxArchive />
-                        My Orders
-                      </Link>
-                    </NavigationMenuLink>
-                    <NavigationMenuLink asChild>
-                      <Link
-                        href="/settings/order/canceled"
-                        className="flex-row items-center gap-2"
-                      >
-                        <XCircle />
-                        My Cancellations
-                      </Link>
-                    </NavigationMenuLink>
-                    <NavigationMenuLink asChild>
-                      <Link
-                        href="/settings"
-                        className="flex-row items-center gap-2"
-                      >
-                        <Cog />
-                        Settings
-                      </Link>
-                    </NavigationMenuLink>
-                    {/*  {user && <ProfileAuth />} */}
-                  </li>
-                </ul>
-              </NavigationMenuContent>
+                        <Link
+                          href={"/auth/logout"}
+                          className="flex-row items-center gap-2"
+                        >
+                          <Logout />
+                          Logout
+                        </Link>
+                      </NavigationMenuLink>
+                    </li>
+                  </ul>
+                </NavigationMenuContent>
+              )}
             </NavigationMenuItem>
 
             {/* {!user && (
