@@ -4,7 +4,6 @@ import PreviewGrid from "@/components/preview-grid";
 import SpotlightGrid from "@/components/spotlight-grid";
 import { getBrandPreview, getProductPreview } from "@/lib/actions";
 import { Brand, Product } from "lib/types";
-import AIChat from "../../components/ai-chat";
 
 export default async function Page() {
   const products = await getProductPreview();
@@ -26,7 +25,7 @@ export default async function Page() {
           dataType="products"
           products={products!.data as unknown as Product[]}
         />
-        <AIChat />
+        {/* <AIChat /> */}
       </div>
       <div className="my-10">
         <SpotlightGrid />
