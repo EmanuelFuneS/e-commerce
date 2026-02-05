@@ -1,4 +1,4 @@
-import { Prisma } from "@workspace/database";
+import { DiscountType, Prisma } from "@workspace/database";
 
 import { ProductsSchema } from "../../lib/schemas/products/products.schema";
 import {
@@ -14,7 +14,7 @@ import {
 export class ProductService {
   private repository: ProductRepository;
 
-  constructor() {
+  constructor(private readonly adminId: string) {
     this.repository = new ProductRepository();
   }
 
@@ -29,7 +29,7 @@ export class ProductService {
 
     if (percentOff < 0 || percentOff > 100) {
       console.error(
-        `Invalid discount value: ${percentOff}%, productId: ${product.id}`
+        `Invalid discount value: ${percentOff}%, productId: ${product.id}`,
       );
       return price;
     }
@@ -69,7 +69,7 @@ export class ProductService {
     pagination?: {
       page?: number;
       pageSize?: number;
-    }
+    },
   ): Promise<ProductResponse> {
     //MANEJAR TENANT_ID
     // Construir el orderBy dinámicamente
@@ -139,7 +139,7 @@ export class ProductService {
     const products = await this.repository.findMany(
       whereClause,
       paginationObj,
-      orderBy
+      orderBy,
     );
     return {
       success: true,
@@ -156,12 +156,12 @@ export class ProductService {
     };
   }
 
-  async createProduct(data: ProductsSchema, tenantId: string) {
+  async createProduct(data: ProductsSchema) {
     if (data.price <= 0) {
       throw new Error("Price must be greater than 0");
     }
 
-    return await this.repository.create(data);
+    return await this.repository.create(data, this.adminId);
   }
 
   async updateProduct(data: ProductsSchema) {
@@ -177,5 +177,31 @@ export class ProductService {
 
   async deleteProduct(id: string) {
     return await this.repository.delete({ id });
+  }
+
+  async incrementViews(id: Prisma.ProductWhereUniqueInput) {
+    return await this.repository.incrementViews(id);
+  }
+
+  async incrementStock(
+    id: Prisma.ProductWhereUniqueInput,
+    quantity: number,
+    adminId: string,
+  ) {
+    return await this.repository.incrementStock(id, quantity, adminId);
+  }
+
+  async applyDiscount(productId: string, type: DiscountType) {
+    return await this.repository.applyDiscount(
+      productId,
+      type,
+      "test",
+      new Date(),
+      new Date(),
+    );
+  }
+
+  async disableDiscount(id: string) {
+    return await this.repository.disableDiscount(id);
   }
 }

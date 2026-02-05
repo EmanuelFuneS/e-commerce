@@ -1,4 +1,11 @@
-import { Decimal, Prisma, prisma } from "@workspace/database";
+import {
+  Decimal,
+  DiscountType,
+  OrderItem,
+  Prisma,
+  prisma,
+  StockMovementType,
+} from "@workspace/database";
 import { ProductsSchema } from "../../lib/schemas/products/products.schema";
 
 const productWithRelations = Prisma.validator<Prisma.ProductDefaultArgs>()({
@@ -59,14 +66,14 @@ export class ProductRepository {
           return value.toString();
         }
         return value;
-      })
+      }),
     ) as Serialized<T>;
   }
 
   async findMany(
     where?: Prisma.ProductWhereInput,
     pagination?: Prisma.ProductFindManyArgs,
-    orderBy?: Prisma.ProductMinOrderByAggregateInput
+    orderBy?: Prisma.ProductMinOrderByAggregateInput,
   ): Promise<ProductWithRelationsSerialized[]> {
     const products = await prisma.product.findMany({
       where: {
@@ -83,7 +90,7 @@ export class ProductRepository {
   }
 
   async findById(
-    id: Prisma.ProductWhereUniqueInput
+    id: Prisma.ProductWhereUniqueInput,
   ): Promise<ProductWithRelationsSerialized> {
     const product = await prisma.product.findUnique({
       where: {
@@ -106,13 +113,35 @@ export class ProductRepository {
     });
   } */
 
-  async create(data: ProductsSchema): Promise<ProductWithRelations> {
-    return await prisma.product.create({ ...data, tenantID: this.tenantID });
+  async create(
+    data: ProductsSchema,
+    adminId: string,
+  ): Promise<ProductWithRelations> {
+    const newProduct = await prisma.product.create({
+      ...data,
+      tenantID: this.tenantID,
+    });
+
+    if (!newProduct) {
+      throw new Error("Product not created");
+    }
+
+    await prisma.stockMovement.create({
+      productId: newProduct.id,
+      typeMovement: StockMovementType.IN,
+      quantity: data.stock,
+      reason: "Initial stock",
+      reference: "PO-2024-001",
+      userId: adminId,
+      tenantID: this.tenantID,
+    });
+
+    return newProduct;
   }
 
   async update(
     id: Prisma.ProductWhereUniqueInput,
-    data: Prisma.ProductUpdateInput
+    data: Prisma.ProductUpdateInput,
   ): Promise<ProductWithRelations> {
     return await prisma.product.update({
       where: { ...id, tenantID: this.tenantID },
@@ -137,12 +166,23 @@ export class ProductRepository {
     });
   }
 
-  async updateStock(
+  async incrementStock(
     id: Prisma.ProductWhereUniqueInput,
     quantity: number,
-    typeMovement: string
+    adminId: string,
   ) {
-    //here need create stock movement
+    await prisma.stockMovement.create({
+      data: {
+        productId: id,
+        typeMovement: StockMovementType.ADJUST,
+        quantity: quantity,
+        reason: "Re stock",
+        reference: "PO-2024-001",
+        tenantID: this.tenantID,
+        userId: adminId,
+      },
+    });
+
     return await prisma.product.update({
       where: {
         id,
@@ -152,6 +192,76 @@ export class ProductRepository {
         stock: {
           increment: quantity,
         },
+      },
+    });
+  }
+
+  async decreaseStockBatch(
+    data: OrderItem[],
+    adminId: string,
+    orderId: string,
+  ) {
+    if (!data || data.length === 0) {
+      throw new Error("No items found");
+    }
+
+    return await prisma.$transaction(async (tx) => {
+      const updates = await Promise.all(
+        data.map(async (item) => {
+          const product = await tx.product.update({
+            where: { id: item.productId },
+            data: {
+              stock: {
+                decrement: item.quantity,
+              },
+            },
+          });
+
+          await tx.stockMovement.create({
+            data: {
+              productId: product.id,
+              typeMovement: StockMovementType.OUT,
+              quantity: item.quantity,
+              reason: "Sold out",
+              reference: `ORDER-${orderId}`,
+              userId: adminId,
+              tenantID: this.tenantID,
+            },
+          });
+          return product;
+        }),
+      );
+      return updates;
+    });
+  }
+
+  async applyDiscount(
+    productId: string,
+    type: DiscountType,
+    reason: string,
+    startDate: Date,
+    endDate: Date,
+  ) {
+    return await prisma.discount.create({
+      data: {
+        productId,
+        discountType: DiscountType[type],
+        discountValue: 10,
+        startDate: startDate,
+        endDate: endDate,
+        isActive: true,
+        reason: reason,
+      },
+    });
+  }
+
+  async disableDiscount(id: string) {
+    return await prisma.discount.update({
+      where: {
+        id,
+      },
+      data: {
+        isActive: false,
       },
     });
   }
