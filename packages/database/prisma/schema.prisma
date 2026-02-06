@@ -46,6 +46,29 @@ enum DiscountType {
   @@map("discount_type")
 }
 
+enum PaymentType {
+  CARD
+  PAYPAL
+  MERCADO_PAGO
+  CRYPTO
+}
+
+enum PaymentProvider {
+  STRIPE
+  PAYPAL
+  MERCADOPAGO
+}
+
+enum CardBrand {
+  VISA
+  MASTERCARD
+  AMEX
+  DISCOVER
+  DINERS
+  MAESTRO
+  OTHER
+}
+
 // ============================================
 // AUTH MODELS (del auth-service)
 // ============================================
@@ -55,6 +78,7 @@ model User {
   email                String    @unique
   password             String
   name                 String?
+  photo                String?
   tenantId             String    @default("BYTE_BAZAR") @map("tenant_id")
   isActive             Boolean   @default(true) @map("is_active")
   isVerified           Boolean   @default(false) @map("is_verified")
@@ -65,8 +89,17 @@ model User {
   loginAttempts        Int       @default(0) @map("login_attempts")
   lockedUntil          DateTime? @map("locked_until")
 
+  //customer ids 
+  stripeCustomerId      String? @unique @map("stripe_customer_id")
+  mercadopagoCustomerId String? @unique @map("mercadopago_customer_id")
+  paypalCustomerId      String? @unique @map("paypal_customer_id")
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+
+  //Relaciones Payment
+  shippingAddress ShippingAddress[]
+  paymentMethods  PaymentMethod[]
 
   // Relaciones auth
   userRoles     UserRole[]
@@ -80,6 +113,88 @@ model User {
 
   @@index([email])
   @@map("users")
+}
+
+model ShippingAddress {
+  id     String @id @default(cuid())
+  userId String @map("user_id")
+
+  //Información Destinatario
+  recipientName String @map("recipient_name")
+  phoneNumber   String @map("phone_number")
+
+  //Dirección
+  addressLine1  String  @map("address_line1")
+  addressLine2  String? @map("address_line2")
+  city          String
+  stateProvince String? @map("state_province")
+  postalCode    String  @map("postal_code")
+  countryCode   String  @map("country_code")
+
+  //metadata
+  isDefault Boolean @default(false) @map("is_default")
+  label     String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user                  User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  paymentMethodsBilling PaymentMethod[] @relation("BillingAddress")
+
+  @@index([userId])
+  @@index([userId, isDefault])
+  @@map("shipping_addresses")
+}
+
+model PaymentMethod {
+  id     String @id @default(cuid())
+  userId String @map("user_id")
+
+  //Tipo Proveedor
+  paymentType PaymentType     @map("Payment_type")
+  provider    PaymentProvider
+
+  //Stripe
+  stripePaymentMethodId String? @map("stripe_payment_method_id")
+
+  //MP
+  mercadopagoCardId  String? @map("mercadopago_card_id")
+  mercadopagoPayerId String? @map("mercadopago_payer_id")
+
+  //PAYPAL
+  paypalBillingToken String? @map("paypal_billing_token")
+  paypalPayerId      String? @map("paypal_payer_id")
+  paypalEmail        String? @map("paypal_email")
+
+  //metadata card
+  cardLast4      String? @map("card_last4")
+  cardBrand      String? @map("card_brand")
+  cardExpMonth   Int?    @map("card_exp_month")
+  cardExpYear    Int?    @map("card_ext_year")
+  cardholderName String? @map("cardholder_name")
+
+  //Billing Address
+  billingAddressId String?          @map("billing_address_id")
+  billingAddress   ShippingAddress? @relation("BillingAddress", fields: [billingAddressId], references: [id], onDelete: SetNull)
+
+  //metadata
+  isDefault  Boolean @default(false) @map("is_default")
+  isVerified Boolean @default(false) @map("is_verified")
+  nickname   String? @db.VarChar(100)
+
+  //Verificación del method 
+  isActive  Boolean   @default(true) @map("is_active")
+  deletedAt DateTime? @map("deleted_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  User User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([userId, isDefault, isActive])
+  @@index([provider])
+  @@map("payment_methods")
 }
 
 model Role {
