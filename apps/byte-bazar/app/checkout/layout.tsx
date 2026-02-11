@@ -1,4 +1,4 @@
-import Footer from "../../components/footer";
+import Footer from "../../components/layout/footer";
 import NavBar from "../../components/nav-bar";
 import NavigationBreadCrumb from "../../components/navigation-breadcrumb";
 

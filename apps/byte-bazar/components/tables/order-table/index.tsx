@@ -19,9 +19,10 @@ import { Order, OrderStatus } from "../../../lib/types";
 
 interface OrderTableProps {
   orders: Order[];
+  rol: "admin" | "customer";
 }
 
-const OrderTable = ({ orders }: OrderTableProps) => {
+const OrderTable = ({ orders, rol }: OrderTableProps) => {
   return (
     <Card className="p-2 h-fit">
       <Table className="">
@@ -58,9 +59,11 @@ const OrderTable = ({ orders }: OrderTableProps) => {
                       <DropdownMenuContent className="w-12">
                         <DropdownMenuGroup>
                           <DropdownMenuItem>Details</DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <Link href={""}>Edit</Link>
-                          </DropdownMenuItem>
+                          {rol === "admin" && (
+                            <DropdownMenuItem>
+                              <Link href={""}>Edit</Link>
+                            </DropdownMenuItem>
+                          )}
                           {/* <DropdownMenuItem>Disable</DropdownMenuItem> */}
                         </DropdownMenuGroup>
                       </DropdownMenuContent>

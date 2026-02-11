@@ -1,6 +1,7 @@
-import Footer from "../../components/footer";
+import Footer from "../../components/layout/footer";
 import NavBar from "../../components/nav-bar";
 import NavigationBreadCrumb from "../../components/navigation-breadcrumb";
+import ProfileSidebar from "../../components/side-bars/profile-sidebar";
 
 export default function SettingLayout({
   children,
@@ -9,11 +10,11 @@ export default function SettingLayout({
 }) {
   return (
     <>
-      <NavBar />
-      <main className="w-full max-w-6xl mx-auto md:px-4">
-        <NavigationBreadCrumb />
+      <NavBar isAuth />
+      <ProfileSidebar subHeader={<NavigationBreadCrumb />}>
         {children}
-      </main>
+      </ProfileSidebar>
+
       <Footer />
     </>
   );

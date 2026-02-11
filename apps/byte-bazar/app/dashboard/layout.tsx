@@ -6,7 +6,7 @@ import {
   SidebarTrigger,
 } from "../../../../packages/ui/src/components/sidebar";
 import NavigationBreadCrumb from "../../components/navigation-breadcrumb";
-import AdminSidebar from "../../components/side-bar";
+import AdminSidebar from "../../components/side-bars/admin-sidebar";
 
 export default /* withPageAuthRequired( */ function DashboardLayout({
   children,

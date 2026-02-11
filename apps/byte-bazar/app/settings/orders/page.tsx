@@ -1,9 +1,9 @@
-import ProfileSettings from "../../components/profile/profile-settings";
+import ProfileOrders from "../../../components/profile/profile-orders";
 
 const Page = () => {
   return (
     <div className="h-screen">
-      <ProfileSettings />
+      <ProfileOrders />
     </div>
   );
 };

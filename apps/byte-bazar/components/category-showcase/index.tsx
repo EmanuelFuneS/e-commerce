@@ -1,29 +1,13 @@
 "use client";
-import {
-  Card,
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  Label,
-  Skeleton,
-} from "@workspace/ui/components/";
+import { Card, Label, Skeleton } from "@workspace/ui/components/";
 
-import steamMachine from "@/public/img/SteamMachine.webp";
-import steamController from "@/public/img/steam-controller.webp";
-import steamDeck from "@/public/img/steamdeck.webp";
-
-import Autoplay from "embla-carousel-autoplay";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 import useCategories from "../../lib/hooks/useCategories";
 import { Category } from "../../lib/types/categories";
+import BannerCarousel from "../banners/banner-carousel";
 
 const CategoryShowcase = () => {
-  const plugin = React.useRef(
-    Autoplay({ delay: 4000, stopOnInteraction: true })
-  );
-
   const { data: categories, isLoading } = useCategories();
 
   return (
@@ -46,46 +30,7 @@ const CategoryShowcase = () => {
           </ul>
         </Card>
       </div>
-
-      {/* Carousel section */}
-      <Card className="w-full md:w-4/5 p-0">
-        <Carousel
-          className="w-full h-full" // Cambiar de max-w-xs a w-full h-full
-          plugins={[plugin.current]}
-          onMouseEnter={plugin.current.stop}
-          onMouseLeave={plugin.current.reset}
-        >
-          <CarouselContent className="h-full">
-            <CarouselItem className="h-full">
-              <div className="h-77.5 md:h-100 rounded-xl flex justify-center items-center bg-black">
-                <Image
-                  src={steamDeck}
-                  alt="Banner"
-                  className=" h-full w-full object-contain "
-                />
-              </div>
-            </CarouselItem>
-            <CarouselItem className="h-full">
-              <div className="h-77.5 md:h-100 rounded-xl flex justify-center items-center bg-black">
-                <Image
-                  src={steamMachine}
-                  alt="Banner"
-                  className=" h-full w-full object-scale-down "
-                />
-              </div>
-            </CarouselItem>
-            <CarouselItem className="h-full">
-              <div className="h-77.5 md:h-100 rounded-xl flex justify-center items-center bg-black">
-                <Image
-                  src={steamController}
-                  alt="Banner"
-                  className=" h-4/6 w-4/6 object-contain "
-                />
-              </div>
-            </CarouselItem>
-          </CarouselContent>
-        </Carousel>
-      </Card>
+      <BannerCarousel />
     </section>
   );
 };

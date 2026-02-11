@@ -13,8 +13,8 @@ import {
 import { Calendar, Home, Inbox } from "@workspace/ui/lib";
 import { Settings } from "lucide-react";
 import Link from "next/link";
-import ProfilePicture from "../profile/profile-picture";
-import ThemeToggle from "../theme-toggle";
+import ProfilePicture from "../../profile/profile-picture";
+import ThemeToggle from "../../theme-toggle";
 
 const itemsTest = [
   {

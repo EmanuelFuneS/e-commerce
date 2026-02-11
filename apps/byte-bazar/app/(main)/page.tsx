@@ -1,7 +1,7 @@
+import BannerGrid from "@/components/banners/banner-grid";
 import CategoryShowcase from "@/components/category-showcase";
 import PreviewGrid from "@/components/preview-grid";
 
-import SpotlightGrid from "@/components/spotlight-grid";
 import { getBrandPreview, getProductPreview } from "@/lib/actions";
 import { Brand, Product } from "lib/types";
 
@@ -28,7 +28,7 @@ export default async function Page() {
         {/* <AIChat /> */}
       </div>
       <div className="my-10">
-        <SpotlightGrid />
+        <BannerGrid />
       </div>
     </div>
   );
