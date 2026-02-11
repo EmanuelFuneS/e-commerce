@@ -1,5 +1,6 @@
 "use client";
 
+import { Category } from "@prisma/client";
 //import { useUser } from "@auth0/nextjs-auth0";
 import { Button, Input, ScrollArea, Skeleton } from "@workspace/ui/components";
 import {
@@ -20,19 +21,17 @@ import {
   Menu,
   Search,
   User,
-  XCircle,
 } from "@workspace/ui/lib";
 import NextImage from "next/image";
 import Link from "next/link";
-import useCategories from "../../lib/hooks/useCategories";
-import useFavoritesProducts from "../../lib/hooks/useFavoritesProducts";
-import { Product } from "../../lib/types";
-import { Category } from "../../lib/types/categories";
-import { ProductHelper } from "../../lib/utils/productHelper";
-import ListProductCard from "../items-cards/list-product-card";
-import ProfileAuth from "../profile/profile-auth";
-import ProfilePicture from "../profile/profile-picture";
-import ThemeToggle from "../theme-toggle";
+import useCategories from "../../../lib/hooks/useCategories";
+import useFavoritesProducts from "../../../lib/hooks/useFavoritesProducts";
+import { Product } from "../../../lib/types";
+import { ProductHelper } from "../../../lib/utils";
+import ListProductCard from "../../items-cards/list-product-card";
+import ProfileAuth from "../../profile/profile-auth";
+import ProfilePicture from "../../profile/profile-picture";
+import ThemeToggle from "../../theme-toggle";
 
 const NavBar = ({ isAuth }: { isAuth: boolean }) => {
   const { data: categories, isLoading } = useCategories();
@@ -167,22 +166,14 @@ const NavBar = ({ isAuth }: { isAuth: boolean }) => {
                       </NavigationMenuLink>
                       <NavigationMenuLink asChild>
                         <Link
-                          href="/settings/order"
+                          href="/settings/orders"
                           className="flex-row items-center gap-2"
                         >
                           <InboxArchive />
                           My Orders
                         </Link>
                       </NavigationMenuLink>
-                      <NavigationMenuLink asChild>
-                        <Link
-                          href="/settings/order/canceled"
-                          className="flex-row items-center gap-2"
-                        >
-                          <XCircle />
-                          My Cancellations
-                        </Link>
-                      </NavigationMenuLink>
+
                       <NavigationMenuLink asChild>
                         <Link
                           href="/settings"

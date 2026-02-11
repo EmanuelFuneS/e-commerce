@@ -1,3 +1,4 @@
+"use server";
 import { UserService } from "../services/user.service";
 
 const userService = () => {

@@ -14,7 +14,7 @@ const page = () => {
         <div></div>
       </Card>
       <section>
-        <OrderTable orders={ordersExample} />
+        <OrderTable orders={ordersExample} rol={"admin"} />
       </section>
     </div>
   );

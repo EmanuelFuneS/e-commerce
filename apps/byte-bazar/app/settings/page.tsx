@@ -1,11 +1,5 @@
-import ProfileSettings from "../../components/profile/profile-settings";
-
 const Page = () => {
-  return (
-    <div className="h-screen">
-      <ProfileSettings />
-    </div>
-  );
+  return <div className="h-screen"></div>;
 };
 
 export default Page;

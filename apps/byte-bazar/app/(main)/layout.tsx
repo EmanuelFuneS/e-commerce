@@ -1,5 +1,5 @@
 import Footer from "../../components/layout/footer";
-import NavBar from "../../components/nav-bar";
+import NavBar from "../../components/layout/nav-bar";
 import NavigationBreadCrumb from "../../components/navigation-breadcrumb";
 import { isLogged } from "../../lib/auth";
 

@@ -2,7 +2,7 @@ import ProfileOrders from "../../../components/profile/profile-orders";
 
 const Page = () => {
   return (
-    <div className="h-screen">
+    <div className="mb-10">
       <ProfileOrders />
     </div>
   );

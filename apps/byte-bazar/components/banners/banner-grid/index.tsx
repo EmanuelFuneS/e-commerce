@@ -114,8 +114,11 @@ const BannerGrid = ({ data }: BannerGridProps) => {
           )}
 
           <div className="w-full h-full grid grid-cols-2 gap-2">
-            {restItems.slice(0, 2).map((item) => (
-              <Card className="relative h-full shadow-lg bg-black p-0">
+            {restItems.slice(0, 2).map((item, idx) => (
+              <Card
+                key={idx}
+                className="relative h-full shadow-lg bg-black p-0"
+              >
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="w-3/6 h-3/6 rounded-full bg-[#D9D9D9] blur-3xl opacity-100 " />
                 </div>

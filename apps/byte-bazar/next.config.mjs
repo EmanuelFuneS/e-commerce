@@ -28,11 +28,11 @@ const nextConfig = {
     return [
       {
         source: "/api-service/:path*",
-        destination: "http://127.0.0.1:3010/auth/:path*",
+        destination: `${process.env.AUTH_SERVICE_URL}/:path*`,
       },
       {
         source: "/auth/:path*",
-        destination: "http://127.0.0.1:3005/auth/:path*",
+        destination: `${process.env.AUTH_APP_URL}/:path*`,
       },
     ];
   },
