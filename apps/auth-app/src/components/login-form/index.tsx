@@ -39,7 +39,7 @@ const LoginForm = () => {
         },
       } */,
       );
-      //redirect to home
+      navigate("/");
     } catch (error) {
       console.error(error);
     }
