@@ -6,7 +6,12 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "docker:up": "turbo run docker:up --filter=auth-app --filter=auth-service",
+    "docker:down": "turbo run docker:down --filter=auth-app --filter=auth-service",
+    "docker:rebuild": "turbo run docker:rebuild --filter=auth-app --filter=auth-service",
+    "docker:rebuild:auth-app": "cd apps/auth-app && docker compose up -d --build",
+    "docker:rebuild:auth-service": "cd apps/auth-service && docker compose up -d --build"
   },
   "devDependencies": {
     "@workspace/eslint-config": "workspace:*",
