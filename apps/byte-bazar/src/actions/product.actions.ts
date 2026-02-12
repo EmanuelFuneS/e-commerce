@@ -4,14 +4,15 @@ import { DiscountType, Prisma, safeDbOperation } from "@workspace/database";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { ProductsSchema } from "../../lib/schemas/products/products.schema";
-import { ActionResponse, ProductFilters } from "../../lib/types";
+import { ProductFilters } from "../../lib/types";
 import { ProductService } from "../services/product.service";
 
 const productService = async () => {
   const cookiesStore = await cookies();
-  const adminId = cookiesStore.get("adminId")?.value;
+  const adminId = cookiesStore.get("userId")?.value;
+  const role = cookiesStore.get("roles")?.value;
 
-  return new ProductService(adminId!);
+  return new ProductService(adminId!, role!);
 };
 
 export const getProducts = async (
@@ -51,41 +52,13 @@ export const getProduct = async (
 };
 
 export const createProduct = async (data: any) => {
-  try {
-    const service = await productService();
-    const result = await service.createProduct(data);
-
-    return {
-      success: true,
-      data: result,
-    };
-  } catch (error) {
-    return {
-      message: (error as Error).message,
-      success: false,
-      data: {},
-    };
-  }
+  const service = await productService();
+  return await service.createProduct(data);
 };
 
-export const updateProduct = async (
-  data: ProductsSchema,
-): Promise<ActionResponse> => {
-  //no safe db
-  try {
-    const service = await productService();
-    const result = await service.updateProduct(data);
-    return {
-      success: true,
-      data: result,
-    };
-  } catch (error) {
-    return {
-      message: (error as Error).message,
-      success: false,
-      data: {},
-    };
-  }
+export const updateProduct = async (data: ProductsSchema) => {
+  const service = await productService();
+  return await service.updateProduct(data);
 };
 
 export const deleteProduct = async (id: string) => {

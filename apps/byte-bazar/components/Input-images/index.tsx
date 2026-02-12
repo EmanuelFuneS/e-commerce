@@ -31,13 +31,13 @@ function InputImages({ setStateForm, dbImages }: InputImagesProps) {
         file,
       }));
       const newPreviews = acceptedFiles.map((file) =>
-        URL.createObjectURL(file)
+        URL.createObjectURL(file),
       );
 
       setStateForm((prev) => [...prev, ...newItems]);
       setPreview((prev) => [...prev, ...newPreviews]);
     },
-    [setStateForm]
+    [setStateForm],
   );
 
   const removeImages = (index: number) => {
@@ -122,7 +122,7 @@ function InputImages({ setStateForm, dbImages }: InputImagesProps) {
           onClick={handleAddURL}
           disabled={preview.length > 3 ? true : false}
         >
-          Guardar
+          Add
         </Button>
       </div>
     </Card>

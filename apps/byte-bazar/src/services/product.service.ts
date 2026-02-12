@@ -12,10 +12,16 @@ import {
 } from "../repositories/product.repository";
 
 export class ProductService {
+  private authorizedRoles = process.env.AUTHORIZED_ROLES!.split(",");
   private repository: ProductRepository;
 
-  constructor(private readonly adminId: string) {
+  constructor(
+    private readonly adminId: string,
+    private readonly role: string,
+  ) {
     this.repository = new ProductRepository();
+    this.adminId = adminId;
+    this.role = role;
   }
 
   private calculateFinalPrice(product: ProductWithRelationsSerialized) {
@@ -135,7 +141,6 @@ export class ProductService {
         };
       }
     }
-    console.log("where", whereClause, orderBy, paginationObj);
     const products = await this.repository.findMany(
       whereClause,
       paginationObj,
@@ -160,6 +165,9 @@ export class ProductService {
     if (data.price <= 0) {
       throw new Error("Price must be greater than 0");
     }
+    if (!this.authorizedRoles.includes(this.role)) {
+      throw new Error("Unauthorized");
+    }
 
     return await this.repository.create(data, this.adminId);
   }
@@ -170,12 +178,19 @@ export class ProductService {
     const product = await this.repository.findById({ id });
 
     if (product) {
+      if (!this.authorizedRoles.includes(this.role)) {
+        throw new Error("Unauthorized");
+      }
       return await this.repository.update({ id: product.id }, data);
     }
     throw new Error("Product not found");
   }
 
   async deleteProduct(id: string) {
+    if (!this.authorizedRoles.includes(this.role)) {
+      throw new Error("Unauthorized");
+    }
+
     return await this.repository.delete({ id });
   }
 

@@ -1,5 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import {
@@ -15,10 +16,15 @@ import {
   Textarea,
 } from "../../../../../../packages/ui/src/components";
 import InputImages from "../../../../components/Input-images";
+import useProductMutation from "../../../../lib/hooks/useProductMutation";
 import {
   ProductsSchema,
   productsSchema,
 } from "../../../../lib/schemas/products/products.schema";
+import {
+  deleteImagesAction,
+  uploadImagesAction,
+} from "../../../../lib/services/cloudinary/actions";
 import { useBrandsStore, useCategoriesStore } from "../../../../lib/store";
 import { ImageItem, ProductHelper } from "../../../../lib/utils/productHelper";
 
@@ -28,6 +34,7 @@ const Page = () => {
   const { categories } = useCategoriesStore();
   const { brands } = useBrandsStore();
   const [images, setImages] = useState<ImageItem[]>([]);
+  const createProduct = useProductMutation();
 
   const form = useForm<ProductsSchema>({
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -45,7 +52,7 @@ const Page = () => {
       tags: [],
       sku: "",
       slug: "",
-      Views: 0,
+      views: 0,
     },
   });
 
@@ -55,7 +62,7 @@ const Page = () => {
         if (value.brandId && value.categoryId) {
           const newSku = ProductHelper.generateSKU(
             value.categoryId,
-            value.brandId
+            value.brandId,
           );
           form.setValue("sku", newSku);
         }
@@ -71,7 +78,7 @@ const Page = () => {
         if (value.name && value.description) {
           const newTags = ProductHelper.generateTags(
             value.name,
-            value.description
+            value.description,
           );
           const slug = ProductHelper.generateSlug(value.name);
           setSlug(slug);
@@ -85,7 +92,33 @@ const Page = () => {
     return unsubscribe;
   }, [form, setRenderTag]);
 
-  const onSubmit: SubmitHandler<ProductsSchema> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<ProductsSchema> = async (data) => {
+    try {
+      let productData = { ...data };
+
+      const imagesToUpload = images;
+      const imagePaths = await uploadImagesAction(imagesToUpload);
+
+      if (imagePaths.length > 0) {
+        productData.images = imagePaths;
+        const result = await createProduct.mutateAsync(productData);
+
+        if (result) {
+          form.reset();
+          setImages([]);
+          setRenderTag([]);
+          setSlug("");
+
+          redirect("/dashboard/inventory/");
+        } else {
+          await deleteImagesAction(imagePaths);
+        }
+      }
+    } catch (error) {
+      console.error("Error creating product: ", error);
+      throw error;
+    }
+  };
 
   return (
     <section className="min-h-full">
@@ -93,7 +126,7 @@ const Page = () => {
         onSubmit={form.handleSubmit(
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          onSubmit
+          onSubmit,
         )}
       >
         <section className="h-full p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4  [&>*:first-child]:mb-8">

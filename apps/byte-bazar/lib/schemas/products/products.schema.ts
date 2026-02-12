@@ -22,7 +22,7 @@ export const productsSchema = z.object({
     .array(z.string().min(1, { message: "Tag cannot be empty" }))
     .default([]), // Generados: desde name, description, category
   slug: z.string(), // Generado: desde name (ej: "Product Name" -> "product-name")
-  Views: z.number().default(0), // Inicializado en 0
+  views: z.number().default(0), // Inicializado en 0
 });
 
 export type ProductsSchema = z.infer<typeof productsSchema>;

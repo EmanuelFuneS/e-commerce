@@ -117,24 +117,38 @@ export class ProductRepository {
     data: ProductsSchema,
     adminId: string,
   ): Promise<ProductWithRelations> {
+    if (!adminId) {
+      throw new Error("Admin id is required");
+    }
     const newProduct = await prisma.product.create({
-      ...data,
-      tenantID: this.tenantID,
+      data: {
+        ...data,
+        tenantID: this.tenantID,
+      },
     });
 
     if (!newProduct) {
       throw new Error("Product not created");
     }
 
-    await prisma.stockMovement.create({
-      productId: newProduct.id,
-      typeMovement: StockMovementType.IN,
-      quantity: data.stock,
-      reason: "Initial stock",
-      reference: "PO-2024-001",
-      userId: adminId,
-      tenantID: this.tenantID,
+    const stockMovement = await prisma.stockMovement.create({
+      data: {
+        productId: newProduct.id,
+        type: StockMovementType.IN,
+        quantity: data.stock,
+        reason: "Initial stock",
+        reference: "PO-2024-001",
+        userId: adminId,
+        tenantID: this.tenantID,
+      },
     });
+
+    if (!stockMovement) {
+      this.delete({ id: newProduct.id });
+      throw new Error(
+        "Stock movement not created, product creation rolled back",
+      );
+    }
 
     return newProduct;
   }
@@ -142,14 +156,21 @@ export class ProductRepository {
   async update(
     id: Prisma.ProductWhereUniqueInput,
     data: Prisma.ProductUpdateInput,
+    adminId?: string,
   ): Promise<ProductWithRelations> {
+    if (!adminId) {
+      throw new Error("Admin id is required");
+    }
     return await prisma.product.update({
       where: { ...id, tenantID: this.tenantID },
       data,
     });
   }
 
-  async delete(id: Prisma.ProductWhereUniqueInput) {
+  async delete(id: Prisma.ProductWhereUniqueInput, adminId?: string) {
+    if (!adminId) {
+      throw new Error("Admin id is required");
+    }
     return await prisma.product.delete({
       where: { ...id, tenantID: this.tenantID },
     });
@@ -171,6 +192,9 @@ export class ProductRepository {
     quantity: number,
     adminId: string,
   ) {
+    if (!adminId) {
+      throw new Error("Admin id is required");
+    }
     await prisma.stockMovement.create({
       data: {
         productId: id,
@@ -241,7 +265,11 @@ export class ProductRepository {
     reason: string,
     startDate: Date,
     endDate: Date,
+    adminId?: string,
   ) {
+    if (!adminId) {
+      throw new Error("Admin id is required");
+    }
     return await prisma.discount.create({
       data: {
         productId,
@@ -255,7 +283,10 @@ export class ProductRepository {
     });
   }
 
-  async disableDiscount(id: string) {
+  async disableDiscount(id: string, adminId?: string) {
+    if (!adminId) {
+      throw new Error("Admin id is required");
+    }
     return await prisma.discount.update({
       where: {
         id,
