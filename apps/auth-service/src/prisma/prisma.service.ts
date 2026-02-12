@@ -1,5 +1,6 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { prisma, type Role, type RolePermission } from '@workspace/database';
+import bcrypt from 'bcrypt';
 
 @Injectable()
 @Injectable()
@@ -26,10 +27,8 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
   ];
 
   onModuleInit() {
-    // Con Accelerate, normalmente NO necesitas $connect manual
-    // porque usa conexión pool vía HTTP. Pero si quieres mantenerlo:
-    // await this.client.$connect();
     console.log('Prisma Client ready (with Accelerate)');
+    /* this.seed(); */
   }
 
   async onModuleDestroy() {
@@ -40,11 +39,11 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
     try {
       console.log('🌱 Checking seed data...');
 
-      const userRole = (await this.client.role.upsert({
-        where: { name: 'user' },
+      const customerRole = (await this.client.role.upsert({
+        where: { name: 'customer' },
         update: {},
         create: {
-          name: 'user',
+          name: 'customer',
         },
       })) as Role;
 
@@ -56,11 +55,11 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
         },
       })) as Role;
 
-      const moderatorRole = (await this.client.role.upsert({
-        where: { name: 'moderator' },
+      const superAdminRole = (await this.client.role.upsert({
+        where: { name: 'super-admin' },
         update: {},
         create: {
-          name: 'moderator',
+          name: 'super-admin',
         },
       })) as Role;
 
@@ -79,42 +78,42 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
         createdPermissions.push(permission);
       }
 
-      const userPermissions = createdPermissions.filter(
+      const customerPermissions = createdPermissions.filter(
         (p) => p.action === 'read',
       );
-      for (const permission of userPermissions) {
+      for (const permission of customerPermissions) {
         await this.client.roleHasPermission.upsert({
           where: {
             roleId_rolePermissionId: {
-              roleId: userRole.id,
+              roleId: customerRole.id,
               rolePermissionId: permission.id,
             },
           },
           update: {},
           create: {
-            roleId: userRole.id,
+            roleId: customerRole.id,
             rolePermissionId: permission.id,
           },
         });
       }
 
-      const moderatorPermissions = createdPermissions.filter(
+      const superAdminPermissions = createdPermissions.filter(
         (p) =>
           p.action === 'read' ||
           (p.action === 'create' && p.subject !== 'users') ||
           (p.action === 'update' && p.subject !== 'users'),
       );
-      for (const permission of moderatorPermissions) {
+      for (const permission of superAdminPermissions) {
         await this.client.roleHasPermission.upsert({
           where: {
             roleId_rolePermissionId: {
-              roleId: moderatorRole.id,
+              roleId: superAdminRole.id,
               rolePermissionId: permission.id,
             },
           },
           update: {},
           create: {
-            roleId: moderatorRole.id,
+            roleId: superAdminRole.id,
             rolePermissionId: permission.id,
           },
         });
@@ -135,6 +134,43 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
           },
         });
       }
+      const defaultAdminEmail = 'admin@example.com';
+      const defaultSuperAdminEmail = 'super-admin@example.com';
+
+      const adminPassword: string = await bcrypt.hash('admin123', 10);
+      await this.client.user.upsert({
+        where: { email: defaultAdminEmail },
+        update: {},
+        create: {
+          email: defaultAdminEmail,
+          password: adminPassword,
+          name: 'Default Admin',
+          userRoles: {
+            create: {
+              roleId: adminRole.id,
+            },
+          },
+        },
+      });
+
+      const superAdminPassword: string = await bcrypt.hash(
+        'super-admin123',
+        10,
+      );
+      await this.client.user.upsert({
+        where: { email: defaultSuperAdminEmail },
+        update: {},
+        create: {
+          email: defaultSuperAdminEmail,
+          password: superAdminPassword,
+          name: 'Default Super Admin',
+          userRoles: {
+            create: {
+              roleId: superAdminRole.id,
+            },
+          },
+        },
+      });
 
       console.log('✅ Seed data checked/created successfully');
     } catch (error) {

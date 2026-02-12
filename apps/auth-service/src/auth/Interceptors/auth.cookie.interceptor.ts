@@ -31,6 +31,12 @@ export class AuthCookieInterceptor implements NestInterceptor {
             maxAge: 3600000,
             path: '/',
           });
+          res.cookie('roles', data?.user.roles[0], {
+            httpOnly: true,
+            sameSite: 'lax',
+            maxAge: 3600000,
+            path: '/',
+          });
         }
         return data;
       }),

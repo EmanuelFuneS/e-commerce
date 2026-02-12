@@ -100,7 +100,7 @@ export class UsersService {
         throw new ConflictException('User already exist');
       }
 
-      const roleName = userRegister.roleName || 'user';
+      const roleName = userRegister.roleName || 'customer';
       const role: Role = await this.prismaService.client.role.findUnique({
         where: { name: roleName },
       });

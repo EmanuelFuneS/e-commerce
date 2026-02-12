@@ -113,6 +113,7 @@ export class AuthController {
 
       response.clearCookie('token', { path: '/' });
       response.clearCookie('userId', { path: '/' });
+      response.clearCookie('roles', { path: '/' });
     }
     return {
       message: 'logout',
