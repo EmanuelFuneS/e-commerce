@@ -2,13 +2,13 @@ import { useQuery } from "@tanstack/react-query";
 import { getClientById } from "../../src/actions/user.actions";
 
 interface UseClientProps {
-  id: string;
+  userId: string;
 }
 
-const useClient = ({ id }: UseClientProps) => {
+const useClient = ({ userId }: UseClientProps) => {
   return useQuery({
-    queryKey: ["client", `${id}`],
-    queryFn: () => getClientById(id),
+    queryKey: ["client", `${userId}`],
+    queryFn: () => getClientById(userId),
     staleTime: 5 * 60 * 1000,
   });
 };

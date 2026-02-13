@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { Button, Label } from "../../../../../packages/ui/src/components";
-import useClients from "../../../lib/hooks/useClients";
 import { User } from "../../../lib/types";
 import ProfilePicture from "../profile-picture";
 
@@ -10,9 +9,7 @@ interface ProfileSettingsProps {
 }
 
 const ProfileSettings = ({ data }: ProfileSettingsProps) => {
-  const { data: clients } = useClients();
-
-  console.log("ProfileSettings data:", clients);
+  console.log("data", data);
 
   const shippingData = data?.shippingAddress[0] || {
     addressLine1: "123 Main St, City, Country",
@@ -41,14 +38,10 @@ const ProfileSettings = ({ data }: ProfileSettingsProps) => {
       </div>
       <Label className="text-2xl">Shipping Address</Label>
       <div className="bg-card min-h-40 rounded-md p-4 flex flex-wrap gap-10">
-        <Label>
-          Address 1: {shippingData.addressLine1 || "123 Main St, City, Country"}
-        </Label>
-        <Label>Phone Number: {shippingData.phoneNumber || "+1234567890"}</Label>
-        <Label>City: {shippingData.city || "Default City"}</Label>
-        <Label>
-          Postal Code: {shippingData.postalCode || "Default Postal Code"}
-        </Label>
+        <Label>Address 1: {shippingData.addressLine1 || "Not Defined"}</Label>
+        <Label>Phone Number: {shippingData.phoneNumber || "Not Defined"}</Label>
+        <Label>City: {shippingData.city || "Not Defined"}</Label>
+        <Label>Postal Code: {shippingData.postalCode || "Not Defined"}</Label>
       </div>
       <Label className="text-xl">Security </Label>
       <div className="bg-card rounded-md p-4 space-y-4">
