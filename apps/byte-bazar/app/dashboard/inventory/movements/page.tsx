@@ -1,10 +1,14 @@
+"use client";
 import { Card, Label } from "../../../../../../packages/ui/src/components";
 import SearchItems from "../../../../components/search-items";
 import MovementTable from "../../../../components/tables/movement-table";
-
-import { stockMovements } from "../../../../lib/types";
+import useStockMovements from "../../../../lib/hooks/useStockMovements";
 
 const Page = () => {
+  const { data: stockMovements } = useStockMovements();
+
+  if (!stockMovements) return <div>Loading...</div>;
+
   return (
     <div className="w-full h-full space-y-4 p-2">
       <div className="my-4">

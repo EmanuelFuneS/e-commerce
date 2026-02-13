@@ -8,13 +8,19 @@ import {
   TableHeader,
   TableRow,
 } from "../../../../../packages/ui/src/components";
-import { StockMovement, StockMovementType } from "../../../lib/types";
+import {
+  StockMovement,
+  StockMovementType,
+  StockMovementTypeLabels,
+} from "../../../lib/types";
 
 interface MovementTableProps {
   movements: StockMovement[];
 }
 
 const MovementTable = ({ movements }: MovementTableProps) => {
+  console.log("movements", movements);
+
   return (
     <Card className="p-2 h-fit">
       <Table className="">
@@ -35,14 +41,18 @@ const MovementTable = ({ movements }: MovementTableProps) => {
               <TableRow key={idx}>
                 <TableCell className="font-medium">{el.id}</TableCell>
                 <TableCell className="font-medium">
-                  {StockMovementType[el.type]}
+                  {StockMovementTypeLabels[StockMovementType[el.type]]}
                 </TableCell>
                 <TableCell className="">
-                  {el.createAt.toLocaleDateString()}
+                  {new Intl.DateTimeFormat("en-GB", {
+                    year: "numeric",
+                    month: "long",
+                    day: "2-digit",
+                  }).format(el.createAt)}
                 </TableCell>
                 <TableCell>{el.quantity}</TableCell>
                 <TableCell>{el.reason}</TableCell>
-                <TableCell className="">{el.productId}</TableCell>
+                <TableCell className="">{el.product.name}</TableCell>
                 <TableCell>
                   {/* <div>
                     <DropdownMenu>
