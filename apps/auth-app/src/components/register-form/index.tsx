@@ -13,6 +13,7 @@ import {
 } from "@workspace/ui/components";
 import { BrandFacebook, BrandGoogle } from "@workspace/ui/lib/index";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
 import useRegister from "../../utils/hooks/useRegister";
 import {
   RegisterSchema,
@@ -21,6 +22,7 @@ import {
 import ButtonUI from "../ui/button";
 
 const RegisterForm = () => {
+  const navigate = useNavigate();
   const register = useRegister();
   const form = useForm<RegisterSchema>({
     resolver: zodResolver(registerSchema),
@@ -39,6 +41,7 @@ const RegisterForm = () => {
       const result = await register.mutateAsync(data);
       console.log(result);
       //redirect to home
+      window.location.href = import.meta.env.VITE_NEXT_PUBLIC_APP_URL;
     } catch (error) {
       console.error(error);
     }

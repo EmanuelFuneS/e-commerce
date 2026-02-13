@@ -55,6 +55,14 @@
     "docker:up": {
       "cache": false,
       "persistent": true
+    },
+    "docker:down": {
+      "cache": false,
+      "persistent": true
+    },
+    "docker:rebuild": {
+      "cache": false,
+      "persistent": true
     }
   }
 }

@@ -39,7 +39,7 @@ const LoginForm = () => {
         },
       } */,
       );
-      navigate("/");
+      window.location.href = import.meta.env.VITE_NEXT_PUBLIC_APP_URL;
     } catch (error) {
       console.error(error);
     }
