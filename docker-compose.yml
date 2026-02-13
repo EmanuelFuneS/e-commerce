@@ -1,22 +1,24 @@
-version: "3.8"
-
 services:
-  # micro front ends
-  auth-mfe:
+  auth-app:
     build:
       context: .
-      dockerfile: Docker/mfe/auth-mfe.dockerfile
+      dockerfile: apps/auth-app/Dockerfile
+    container_name: auth-app
     ports:
-      - "3005:80"
+      - "3005:3005"
+    env_file:
+      - apps/auth-app/.env
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
+    restart: unless-stopped
 
-  # services
   auth-service:
     build:
       context: .
-      dockerfile: Docker/services/auth-service.dockerfile
+      dockerfile: apps/auth-service/Dockerfile
+    container_name: auth-service
     ports:
       - "3010:3010"
-    environment:
-      - NODE_ENV=development
+    env_file:
+      - apps/auth-service/.env
+    restart: unless-stopped

@@ -1,12 +1,16 @@
 FROM node:20-alpine
 
+RUN npm install -g pnpm
+
 WORKDIR /app
 
-COPY package.json ./
+COPY pnpm-lock.yaml package.json pnpm-workspace.yaml ./
+COPY packages/ ./packages/
+COPY apps/auth-service/ ./apps/auth-service/
 
-RUN pnpm install -g pnpm
+RUN pnpm install --frozen-lockfile --shamefully-hoist
 
-COPY . .
+WORKDIR /app/apps/auth-service
 
 EXPOSE 3010
 

@@ -1,12 +1,16 @@
 FROM node:20-alpine
 
+RUN npm install -g pnpm
+
 WORKDIR /app
 
-COPY package.json ./
+COPY pnpm-lock.yaml package.json pnpm-workspace.yaml ./
+COPY packages/ ./packages/
+COPY apps/auth-app/ ./apps/auth-app/
 
-RUN pnpm install -g pnpm
+RUN pnpm install
 
-COPY . .
+WORKDIR /app/apps/auth-app
 
 EXPOSE 3005
 

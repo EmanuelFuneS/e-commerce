@@ -1,5 +1,5 @@
 {
-  "name": "@workspace/auth-service",
+  "name": "auth-service",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -18,9 +18,9 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "docker:up": "docker compose up -d",
-    "docker:down": "docker compose down",
-    "docker:rebuild": "docker compose up -d --build"
+    "docker:up": "cd ../.. && docker compose up auth-service -d",
+    "docker:down": "cd ../.. && docker compose down auth-service",
+    "docker:rebuild": "cd ../.. && docker compose up auth-service -d --build"
   },
   "dependencies": {
     "@nestjs-modules/ioredis": "^2.0.2",

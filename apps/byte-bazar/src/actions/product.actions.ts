@@ -62,41 +62,21 @@ export const updateProduct = async (data: ProductsSchema) => {
 };
 
 export const deleteProduct = async (id: string) => {
-  try {
-    const service = await productService();
-    const result = service.deleteProduct(id);
-    return {
-      success: true,
-      data: result,
-    };
-  } catch (error) {
-    return {
-      message: (error as Error).message,
-      success: false,
-      data: {},
-    };
-  }
+  const service = await productService();
+  return await service.deleteProduct(id);
 };
 
 export const incrementViews = async (id: string) => {
-  try {
-    const service = await productService();
-    return service.incrementViews({ id });
-  } catch (error) {
-    console.error("Error incrementing views:", error);
-  }
+  const service = await productService();
+  return service.incrementViews({ id });
 };
 
 export const applyDiscount = async (
   productId: string,
   discountType: DiscountType,
 ) => {
-  try {
-    const service = await productService();
-    return service.applyDiscount(productId, discountType);
-  } catch (error) {
-    console.error("Error applying discount:", error);
-  }
+  const service = await productService();
+  return service.applyDiscount(productId, discountType);
 };
 
 /* export const disableDiscount = () => {}; */

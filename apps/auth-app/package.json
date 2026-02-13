@@ -1,5 +1,5 @@
 {
-  "name": "@workspace/auth-app",
+  "name": "auth-app",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -8,9 +8,9 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "docker:up": "docker compose up -d",
-    "docker:down": "docker compose down",
-    "docker:rebuild": "docker compose up -d --build"
+    "docker:up": "cd ../.. && docker compose up auth-app -d",
+    "docker:down": "cd ../.. && docker compose down auth-app",
+    "docker:rebuild": "cd ../.. && docker compose up auth-app -d --build"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
