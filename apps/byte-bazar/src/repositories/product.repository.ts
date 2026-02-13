@@ -118,11 +118,12 @@ export class ProductRepository {
     adminId: string,
   ): Promise<ProductWithRelations> {
     if (!adminId) {
-      throw new Error("Admin id is required");
+      throw new Error("Unauthorized User");
     }
     const newProduct = await prisma.product.create({
       data: {
         ...data,
+        price: new Prisma.Decimal(data.price as string),
         tenantID: this.tenantID,
       },
     });
@@ -156,23 +157,39 @@ export class ProductRepository {
   async update(
     id: Prisma.ProductWhereUniqueInput,
     data: Prisma.ProductUpdateInput,
-    adminId?: string,
-  ): Promise<ProductWithRelations> {
+    adminId: string,
+  ) {
     if (!adminId) {
-      throw new Error("Admin id is required");
+      throw new Error("Unauthorized User");
     }
-    return await prisma.product.update({
+    await prisma.product.update({
       where: { ...id, tenantID: this.tenantID },
-      data,
+      data: {
+        ...data,
+        price: new Prisma.Decimal(data.price as string),
+      },
     });
+    return true;
   }
 
   async delete(id: Prisma.ProductWhereUniqueInput, adminId?: string) {
     if (!adminId) {
-      throw new Error("Admin id is required");
+      throw new Error("Unauthorized User");
     }
     return await prisma.product.delete({
       where: { ...id, tenantID: this.tenantID },
+    });
+  }
+
+  async findStockMovements(adminId?: string) {
+    if (!adminId) {
+      throw new Error("Unauthorized User");
+    }
+    return await prisma.stockMovement.findMany({
+      where: { tenantID: this.tenantID },
+      include: {
+        product: true,
+      },
     });
   }
 
@@ -193,7 +210,7 @@ export class ProductRepository {
     adminId: string,
   ) {
     if (!adminId) {
-      throw new Error("Admin id is required");
+      throw new Error("Unauthorized User");
     }
     await prisma.stockMovement.create({
       data: {
@@ -268,7 +285,7 @@ export class ProductRepository {
     adminId?: string,
   ) {
     if (!adminId) {
-      throw new Error("Admin id is required");
+      throw new Error("Unauthorized User");
     }
     return await prisma.discount.create({
       data: {
@@ -285,7 +302,7 @@ export class ProductRepository {
 
   async disableDiscount(id: string, adminId?: string) {
     if (!adminId) {
-      throw new Error("Admin id is required");
+      throw new Error("Unauthorized User");
     }
     return await prisma.discount.update({
       where: {

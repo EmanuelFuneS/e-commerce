@@ -162,11 +162,11 @@ export class ProductService {
   }
 
   async createProduct(data: ProductsSchema) {
-    if (data.price <= 0) {
+    if (Number(data.price) <= 0) {
       throw new Error("Price must be greater than 0");
     }
     if (!this.authorizedRoles.includes(this.role)) {
-      throw new Error("Unauthorized");
+      throw new Error("Unauthorized Role");
     }
 
     return await this.repository.create(data, this.adminId);
@@ -179,16 +179,27 @@ export class ProductService {
 
     if (product) {
       if (!this.authorizedRoles.includes(this.role)) {
-        throw new Error("Unauthorized");
+        throw new Error("Unauthorized Role");
       }
-      return await this.repository.update({ id: product.id }, data);
+      return await this.repository.update(
+        { id: product.id },
+        data,
+        this.adminId,
+      );
     }
     throw new Error("Product not found");
   }
 
+  async getStockMovements() {
+    if (!this.authorizedRoles.includes(this.role)) {
+      throw new Error("Unauthorized Role");
+    }
+    return await this.repository.findStockMovements(this.adminId);
+  }
+
   async deleteProduct(id: string) {
     if (!this.authorizedRoles.includes(this.role)) {
-      throw new Error("Unauthorized");
+      throw new Error("Unauthorized Role");
     }
 
     return await this.repository.delete({ id });

@@ -66,6 +66,11 @@ export const deleteProduct = async (id: string) => {
   return await service.deleteProduct(id);
 };
 
+export const getStockMovements = async () => {
+  const service = await productService();
+  return await service.getStockMovements();
+};
+
 export const incrementViews = async (id: string) => {
   const service = await productService();
   return service.incrementViews({ id });

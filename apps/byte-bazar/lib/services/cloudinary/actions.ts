@@ -7,13 +7,14 @@ export async function uploadImagesAction(
   imageItems: ImageItem[],
 ): Promise<string[]> {
   try {
-    console.log("uploading images to cloudinary: ", imageItems);
     const imageUrls = imageItems
       .filter((item) => item.type === "url")
       .map((item) => item.url);
+    console.log("existing image urls: ", imageUrls);
     const imageFiles = imageItems
       .filter((item) => item.type === "file")
       .map((item) => item.file);
+    console.log("uploading images to cloudinary: ", imageFiles);
 
     const imageResult = await uploadImages(imageFiles);
     return [...imageUrls, ...imageResult];
@@ -25,9 +26,11 @@ export async function uploadImagesAction(
 
 export async function deleteImagesAction(publicIds: string[]): Promise<void> {
   try {
+    console.log("deleting images from cloudinary: ", publicIds);
     const uploadedImages = publicIds.filter((id) =>
       id.startsWith("https://res.cloudinary.com/"),
     );
+    console.log("uploaded images to delete: ", uploadedImages);
     if (uploadedImages.length > 0) {
       await deleteImages(uploadedImages);
       console.log("images deleted");
