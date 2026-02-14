@@ -76,6 +76,7 @@ export class ProductService {
       page?: number;
       pageSize?: number;
     },
+    ids: string[] = [],
   ): Promise<ProductResponse> {
     //MANEJAR TENANT_ID
     // Construir el orderBy dinámicamente
@@ -141,6 +142,13 @@ export class ProductService {
         };
       }
     }
+
+    if (ids.length > 0) {
+      whereClause.id = {
+        in: ids,
+      };
+    }
+
     const products = await this.repository.findMany(
       whereClause,
       paginationObj,

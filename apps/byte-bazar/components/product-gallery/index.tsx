@@ -1,7 +1,9 @@
 "use client";
-import { Card, Label } from "@workspace/ui/components";
+import { Button, Card, Label } from "@workspace/ui/components";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
+import { useStoreCart } from "../../lib/store";
 import { Product } from "../../lib/types";
 
 interface ProductGalleryProps {
@@ -10,6 +12,9 @@ interface ProductGalleryProps {
 
 const ProductGallery = ({ product }: ProductGalleryProps) => {
   const [selectedImage, setSelectedImage] = useState(product.images![0]);
+  const { cart, addToCart, removeToCart } = useStoreCart();
+
+  console.log("cart", cart);
 
   const handleChangeImage = (imageUrl: string) => {
     setSelectedImage(imageUrl);
@@ -59,27 +64,40 @@ const ProductGallery = ({ product }: ProductGalleryProps) => {
           {product.description}
         </Label>
         <div className="my-4 flex items-center gap-2">
-          <Label className="text-2xl font-bold">{product.price}</Label>
-          <Label className="text-sm text-muted-foreground line-through">
-            {/*  {typeof product.price === "number" &&
+          <Label className="text-2xl font-bold">${product.price}</Label>
+          {/* <Label className="text-sm text-muted-foreground line-through">
+             {typeof product.price === "number" &&
             typeof product.discountPercentage === "number"
               ? product.price - product.discountPercentage
-              : ""} */}{" "}
+              : ""}
             Discount
           </Label>
           <Label className="text-sm text-green-500">
-            {/*  {product.discountPercentage === 0
+             {product.discountPercentage === 0
               ? ""
-              : product.discountPercentage + "% off"} */}{" "}
+              : product.discountPercentage + "% off"}
             Discount
+          </Label> */}
+          <Label className="text-sm text-muted-foreground">
+            {product.stock === 0 ? "Out of Stock" : "In Stock"}
           </Label>
         </div>
-        <div className="my-4 flex flex-col gap-2">
-          <div className="flex items-center gap-2">
-            <Label className="text-sm text-muted-foreground">
-              {product.stock === 0 ? "Out of Stock" : product.stock}
-            </Label>
-          </div>
+        <div className="my-4 flex items-center gap-2">
+          {cart.includes(product.id) ? (
+            <Button
+              variant={"outline"}
+              onClick={() => removeToCart(product.id)}
+            >
+              Remove To Cart
+            </Button>
+          ) : (
+            <Button variant={"outline"} onClick={() => addToCart(product.id)}>
+              Add To Cart
+            </Button>
+          )}
+          <Button variant={"outline"} onClick={() => addToCart(product.id)}>
+            <Link href={"/cart"}>Buy Now</Link>
+          </Button>
         </div>
       </div>
     </section>

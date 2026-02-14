@@ -23,12 +23,13 @@ export const getProducts = async (
         pageSize?: number;
       }
     | undefined,
+  ids: string[] = [],
 ) => {
   return safeDbOperation(async () => {
     console.log("parameter", filters, pagination);
     try {
       const service = await productService();
-      return await service.getProducts(filters, pagination);
+      return await service.getProducts(filters, pagination, ids);
     } catch (error) {
       console.error("Error fetching products:", error);
       throw new Error("Products not found");

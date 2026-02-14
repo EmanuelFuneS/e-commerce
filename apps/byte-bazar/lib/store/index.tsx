@@ -2,7 +2,8 @@ import { getBrands } from "src/actions/brand.actions";
 import { getCategories } from "src/actions/category.actions";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { Brand, Category } from "../types";
+import { getProducts } from "../../src/actions/product.actions";
+import { Brand, Category, Product } from "../types";
 import { ProductHelper } from "../utils/productHelper";
 
 export interface StoreCategory {
@@ -98,7 +99,7 @@ export const useBuilderStore = create<PCBuilderState>()(
           };
 
           const exists = state.builderState.some(
-            (component) => component.componentId === id
+            (component) => component.componentId === id,
           );
           if (exists) {
             return state;
@@ -125,7 +126,7 @@ export const useBuilderStore = create<PCBuilderState>()(
             builderState: state.builderState.map((build) =>
               build.componentId === oldId
                 ? { ...build, componentId: newId }
-                : build
+                : build,
             ),
             totalPrice: ProductHelper.roundPrice(state.totalPrice + priceDiff),
           };
@@ -145,7 +146,7 @@ export const useBuilderStore = create<PCBuilderState>()(
 
           return {
             builderState: state.builderState.filter(
-              (buildStored) => buildStored.componentId !== id
+              (buildStored) => buildStored.componentId !== id,
             ),
             totalPrice: Math.abs(newTotal) < 0.01 ? 0 : newTotal,
           };
@@ -155,12 +156,42 @@ export const useBuilderStore = create<PCBuilderState>()(
         const state = get();
         return state.builderState.find(
           (build) =>
-            build.componentId.slice(-8).toLowerCase() === shortId.toLowerCase()
+            build.componentId.slice(-8).toLowerCase() === shortId.toLowerCase(),
         )?.componentId;
       },
     }),
     {
       name: "builder-store",
-    }
-  )
+    },
+  ),
 );
+
+interface CartState {
+  cart: string[];
+  addToCart: (id: string) => void;
+  removeToCart: (id: string) => void;
+  clearCart: () => void;
+  cartProducts: () => Promise<Product[]>;
+}
+export const useStoreCart = create<CartState>((set, get) => ({
+  cart: [],
+  addToCart: (id: string) => {
+    const { cart } = get();
+    set({ cart: [...cart, id] });
+  },
+  removeToCart: (id: string) => {
+    set((state) => ({
+      cart: state.cart.filter((itemId) => itemId !== id),
+    }));
+  },
+  clearCart: () => set({ cart: [] }),
+  cartProducts: async () => {
+    const { cart } = get();
+    if (cart.length === 0) return [];
+
+    const result = await getProducts({}, undefined, cart);
+    console.log("result", result);
+
+    return result.products;
+  },
+}));
