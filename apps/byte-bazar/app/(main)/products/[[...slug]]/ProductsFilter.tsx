@@ -41,6 +41,9 @@ export default function ProductFilter({
   const buildFilters = useCallback((): ProductFilters => {
     const categoryFromParams = searchParams.category as string;
     const brandFromParams = searchParams.brand as string;
+    const minPrice = searchParams.minPrice as string;
+    const maxPrice = searchParams.maxPrice as string;
+    const sort = searchParams.sort as string;
 
     // --- MODIFIED LOGIC ---
     let category: string | undefined;
@@ -66,6 +69,9 @@ export default function ProductFilter({
     return {
       category: category !== "all" ? category : undefined,
       brand: brand !== "all" ? brand : undefined,
+      minPrice: minPrice ? Number(minPrice) : undefined,
+      maxPrice: maxPrice ? Number(maxPrice) : undefined,
+      sort,
       // ...
     };
   }, [searchParams, filter]);
@@ -88,7 +94,7 @@ export default function ProductFilter({
   const changePage = useCallback(
     (newPage: number) => {
       const params = new URLSearchParams(
-        searchParams as Record<string, string>
+        searchParams as Record<string, string>,
       );
       Object.entries(searchParams).forEach(([key, value]) => {
         if (filter && key === filter.type) {
@@ -104,7 +110,7 @@ export default function ProductFilter({
       const newUrl = queryString ? `${pathname}?${queryString}` : pathname;
       router.push(newUrl);
     },
-    [pathname, router, searchParams, filter]
+    [pathname, router, searchParams, filter],
   );
 
   if (!products)

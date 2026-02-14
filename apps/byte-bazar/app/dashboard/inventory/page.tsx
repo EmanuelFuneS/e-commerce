@@ -18,6 +18,9 @@ const Page = async () => {
           <Link href="/dashboard/inventory/movements" className="mr-4">
             Movements
           </Link>
+          <Link href="/dashboard/inventory/brands" className="mr-4">
+            Brands
+          </Link>
           <Link href="/dashboard/inventory/products">Add Product</Link>
         </div>
       </Card>

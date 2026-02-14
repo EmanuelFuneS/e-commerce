@@ -43,7 +43,7 @@ const Page = () => {
     defaultValues: {
       name: "",
       description: "",
-      price: 0,
+      price: "",
       categoryId: "",
       brandId: "",
       stock: 0,
@@ -171,6 +171,7 @@ const Page = () => {
             <FieldDescription>Select Brand</FieldDescription>
             <FieldError>{form.formState.errors.brandId?.message}</FieldError>
           </Field>
+
           <Field>
             <FieldLabel htmlFor="name">Name</FieldLabel>
             <Input

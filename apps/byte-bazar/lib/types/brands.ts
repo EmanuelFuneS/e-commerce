@@ -1,5 +1,5 @@
-import { Brand as BrandDbType } from "@workspace/database";
+import { BrandWithRelations } from "../../src/repositories/brand.repository";
 
-interface Brand extends BrandDbType {}
+interface Brand extends BrandWithRelations {}
 
 export type { Brand };
