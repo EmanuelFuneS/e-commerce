@@ -1,3 +1,5 @@
+import { Product } from "./products";
+
 export interface StockMovement {
   id: string;
   productId: string;
@@ -7,6 +9,7 @@ export interface StockMovement {
   reference: string;
   userId: string;
   createAt: Date;
+  product: Product;
 }
 
 export enum StockMovementType {
@@ -15,7 +18,13 @@ export enum StockMovementType {
   ADJUST,
 }
 
-export const stockMovements: StockMovement[] = [
+export const StockMovementTypeLabels: Record<string, string> = {
+  [StockMovementType.IN]: "Stock In",
+  [StockMovementType.OUT]: "Stock Out",
+  [StockMovementType.ADJUST]: "Stock Adjusted",
+};
+
+/* export const stockMovements: StockMovement[] = [
   {
     id: "1",
     productId: "prod-001",
@@ -116,4 +125,4 @@ export const stockMovements: StockMovement[] = [
     userId: "user-789",
     createAt: new Date("2024-01-24T15:00:00Z"),
   },
-];
+]; */

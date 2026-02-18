@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   // output        = "../src/generated/prisma/client"
   binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
@@ -46,6 +46,29 @@ enum DiscountType {
   @@map("discount_type")
 }
 
+enum PaymentType {
+  CARD
+  PAYPAL
+  MERCADO_PAGO
+  CRYPTO
+}
+
+enum PaymentProvider {
+  STRIPE
+  PAYPAL
+  MERCADOPAGO
+}
+
+enum CardBrand {
+  VISA
+  MASTERCARD
+  AMEX
+  DISCOVER
+  DINERS
+  MAESTRO
+  OTHER
+}
+
 // ============================================
 // AUTH MODELS (del auth-service)
 // ============================================
@@ -55,6 +78,8 @@ model User {
   email                String    @unique
   password             String
   name                 String?
+  photo                String?
+  tenantId             String    @default("BYTE_BAZAR") @map("tenant_id")
   isActive             Boolean   @default(true) @map("is_active")
   isVerified           Boolean   @default(false) @map("is_verified")
   verificationToken    String?   @map("verification_token")
@@ -63,28 +88,119 @@ model User {
   lastLogin            DateTime? @map("last_login")
   loginAttempts        Int       @default(0) @map("login_attempts")
   lockedUntil          DateTime? @map("locked_until")
-  
+
+  //customer ids 
+  stripeCustomerId      String? @unique @map("stripe_customer_id")
+  mercadopagoCustomerId String? @unique @map("mercadopago_customer_id")
+  paypalCustomerId      String? @unique @map("paypal_customer_id")
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+
+  //Relaciones Payment
+  shippingAddress ShippingAddress[]
+  paymentMethods  PaymentMethod[]
 
   // Relaciones auth
   userRoles     UserRole[]
   refreshTokens RefreshToken[]
-  
+
   // Relaciones con otros dominios (si las necesitas)
-  orders Order[]
+  orders         Order[]
   stockMovements StockMovement[]
   couponUsages   CouponUsage[]
   // Agrega más según necesites
 
-  @@map("users")
   @@index([email])
+  @@map("users")
+}
+
+model ShippingAddress {
+  id     String @id @default(cuid())
+  userId String @map("user_id")
+
+  //Información Destinatario
+  recipientName String @map("recipient_name")
+  phoneNumber   String @map("phone_number")
+
+  //Dirección
+  addressLine1  String  @map("address_line1")
+  addressLine2  String? @map("address_line2")
+  city          String
+  stateProvince String? @map("state_province")
+  postalCode    String  @map("postal_code")
+  countryCode   String  @map("country_code")
+
+  //metadata
+  isDefault Boolean @default(false) @map("is_default")
+  label     String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user                  User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  paymentMethodsBilling PaymentMethod[] @relation("BillingAddress")
+
+  @@index([userId])
+  @@index([userId, isDefault])
+  @@map("shipping_addresses")
+}
+
+model PaymentMethod {
+  id     String @id @default(cuid())
+  userId String @map("user_id")
+
+  //Tipo Proveedor
+  paymentType PaymentType     @map("Payment_type")
+  provider    PaymentProvider
+
+  //Stripe
+  stripePaymentMethodId String? @map("stripe_payment_method_id")
+
+  //MP
+  mercadopagoCardId  String? @map("mercadopago_card_id")
+  mercadopagoPayerId String? @map("mercadopago_payer_id")
+
+  //PAYPAL
+  paypalBillingToken String? @map("paypal_billing_token")
+  paypalPayerId      String? @map("paypal_payer_id")
+  paypalEmail        String? @map("paypal_email")
+
+  //metadata card
+  cardLast4      String? @map("card_last4")
+  cardBrand      String? @map("card_brand")
+  cardExpMonth   Int?    @map("card_exp_month")
+  cardExpYear    Int?    @map("card_ext_year")
+  cardholderName String? @map("cardholder_name")
+
+  //Billing Address
+  billingAddressId String?          @map("billing_address_id")
+  billingAddress   ShippingAddress? @relation("BillingAddress", fields: [billingAddressId], references: [id], onDelete: SetNull)
+
+  //metadata
+  isDefault  Boolean @default(false) @map("is_default")
+  isVerified Boolean @default(false) @map("is_verified")
+  nickname   String? @db.VarChar(100)
+
+  //Verificación del method 
+  isActive  Boolean   @default(true) @map("is_active")
+  deletedAt DateTime? @map("deleted_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  User User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([userId, isDefault, isActive])
+  @@index([provider])
+  @@map("payment_methods")
 }
 
 model Role {
-  id        String   @id @default(cuid())
-  name      String   @unique
-  
+  id   String @id @default(cuid())
+  name String @unique
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -113,7 +229,7 @@ model RoleHasPermission {
   id               String @id @default(cuid())
   roleId           String @map("role_id")
   rolePermissionId String @map("role_permission_id")
-  
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -145,14 +261,14 @@ model RefreshToken {
   userId    String   @map("user_id")
   expiresAt DateTime @map("expires_at")
   isRevoked Boolean  @default(false) @map("is_revoked")
-  
+  tenantId  String   @default("BYTE_BAZAR") @map("tenant_id")
   createdAt DateTime @default(now()) @map("created_at")
-  
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("refresh_tokens")
   @@index([userId])
   @@index([token])
+  @@map("refresh_tokens")
 }
 
 // ============================================
@@ -163,6 +279,7 @@ model Category {
   id        String    @id @default(cuid())
   name      String
   imageUrl  String?   @map("image_url")
+  tenantId  String    @default("BYTE_BAZAR") @map("tenant_id")
   products  Product[]
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
@@ -174,6 +291,7 @@ model Brand {
   id        String    @id @default(cuid())
   name      String    @unique
   logo      String?
+  tenantId  String    @default("BYTE_BAZAR") @map("tenant_id")
   website   String?
   products  Product[]
   createdAt DateTime  @default(now()) @map("created_at")
@@ -186,6 +304,8 @@ model Product {
   id             String          @id @default(cuid())
   name           String
   description    String          @db.Text
+  tenantId       String          @default("BYTE_BAZAR") @map("tenant_id")
+  spec           Json?
   sku            String          @unique
   price          Decimal         @db.Decimal(10, 2)
   stock          Int             @default(0)
@@ -204,11 +324,11 @@ model Product {
   createdAt      DateTime        @default(now()) @map("created_at")
   updatedAt      DateTime        @updatedAt @map("updated_at")
 
-  @@map("products")
   @@index([categoryId])
   @@index([brandId])
   @@index([slug])
   @@index([isActive])
+  @@map("products")
 }
 
 // ===== DESCUENTOS =====
@@ -217,7 +337,7 @@ model Discount {
   productId     String       @map("product_id")
   product       Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
   discountType  DiscountType @map("discount_type")
-  discountValue Decimal      @map("discount_value") @db.Decimal(10, 2)
+  discountValue Decimal      @map("discount_value") @db.Decimal(5, 2)
   startDate     DateTime     @map("start_date")
   endDate       DateTime     @map("end_date")
   isActive      Boolean      @default(true) @map("is_active")
@@ -225,10 +345,10 @@ model Discount {
   createdAt     DateTime     @default(now()) @map("created_at")
   updatedAt     DateTime     @updatedAt @map("updated_at")
 
-  @@map("discounts")
   @@index([productId])
   @@index([isActive])
   @@index([startDate, endDate])
+  @@map("discounts")
 }
 
 // ===== GESTIÓN DE STOCK =====
@@ -242,18 +362,20 @@ model StockMovement {
   reference String?
   userId    String            @map("user_id")
   user      User              @relation(fields: [userId], references: [id])
+  tenantId  String            @default("BYTE_BAZAR") @map("tenant_id")
   createdAt DateTime          @default(now()) @map("created_at")
 
-  @@map("stock_movements")
   @@index([productId])
   @@index([userId])
   @@index([createdAt])
+  @@map("stock_movements")
 }
 
 // ===== ÓRDENES Y VENTAS =====
 model Order {
   id              String        @id @default(cuid())
   orderNumber     String        @unique @map("order_number")
+  tenantId        String        @default("BYTE_BAZAR") @map("tenant_id")
   userId          String?       @map("user_id")
   user            User?         @relation(fields: [userId], references: [id])
   customerName    String        @map("customer_name")
@@ -276,11 +398,11 @@ model Order {
   shippedAt       DateTime?     @map("shipped_at")
   deliveredAt     DateTime?     @map("delivered_at")
 
-  @@map("orders")
   @@index([userId])
   @@index([orderNumber])
   @@index([status])
   @@index([createdAt])
+  @@map("orders")
 }
 
 model OrderItem {
@@ -293,9 +415,9 @@ model OrderItem {
   unitPrice Decimal @map("unit_price") @db.Decimal(10, 2)
 
   @@unique([orderId, productId])
-  @@map("order_items")
   @@index([orderId])
   @@index([productId])
+  @@map("order_items")
 }
 
 // ===== CUPONES Y DESCUENTOS =====
@@ -315,12 +437,13 @@ model Coupon {
   startDate      DateTime      @map("start_date")
   endDate        DateTime      @map("end_date")
   usages         CouponUsage[]
+  tenantId       String        @default("BYTE_BAZAR") @map("tenant_id")
   createdAt      DateTime      @default(now()) @map("created_at")
   updatedAt      DateTime      @updatedAt @map("updated_at")
 
-  @@map("coupons")
   @@index([code])
   @@index([isActive])
+  @@map("coupons")
 }
 
 model CouponUsage {
@@ -333,9 +456,8 @@ model CouponUsage {
   order    Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   usedAt   DateTime @default(now()) @map("used_at")
 
-  @@map("coupon_usages")
   @@index([couponId])
   @@index([userId])
   @@index([orderId])
+  @@map("coupon_usages")
 }
-

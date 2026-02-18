@@ -1,7 +1,8 @@
+import { getBrands } from "src/actions/brand.actions";
+import { getCategories } from "src/actions/category.actions";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { getBrands, getCategories } from "../actions";
-import { Brand, Category } from "../types";
+import { Brand, Category, Product } from "../types";
 import { ProductHelper } from "../utils/productHelper";
 
 export interface StoreCategory {
@@ -16,71 +17,74 @@ export interface StoreBrand {
 
 export const useCategoriesStore = create<{
   categories: StoreCategory[];
-  isInitialized: boolean;
   initializeCategories: () => Promise<void>;
-}>((set, get) => ({
-  categories: [],
-  isInitialized: false,
-  initializeCategories: async () => {
-    const { isInitialized } = get();
+  isInitialized: boolean;
+}>()(
+  persist(
+    (set, get) => ({
+      categories: [],
+      isInitialized: false,
+      initializeCategories: async () => {
+        const { isInitialized } = get();
 
-    if (isInitialized) return;
+        if (isInitialized) return;
 
-    const current = await getCategories();
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const result = current?.data.map((cat: Category) => ({
-      id: cat.id,
-      name: cat.name,
-    }));
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    if (current?.success && current.data.length > 0) {
-      set({ categories: result, isInitialized: true });
-    }
-  },
-}));
+        const current = await getCategories();
+        const result = current?.map((cat: Category) => ({
+          id: cat.id,
+          name: cat.name,
+        }));
+        if (current && current?.length > 0) {
+          set({ categories: result, isInitialized: true });
+        }
+      },
+    }),
+    {
+      name: "categories",
+    },
+  ),
+);
 
 export const useBrandsStore = create<{
   brands: StoreBrand[];
   initializeBrands: () => Promise<void>;
   isInitialized: boolean;
-}>((set, get) => ({
-  brands: [],
-  isInitialized: false,
-  initializeBrands: async () => {
-    const { isInitialized } = get();
+}>()(
+  persist(
+    (set, get) => ({
+      brands: [],
+      isInitialized: false,
+      initializeBrands: async () => {
+        const { isInitialized } = get();
 
-    if (isInitialized) return;
+        if (isInitialized) return;
 
-    const current = await getBrands();
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const result = current?.data.map((brand: Brand) => ({
-      id: brand.id,
-      name: brand.name,
-    }));
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    if (current?.success && current.data.length > 0) {
-      set({ brands: result, isInitialized: true });
-    }
-  },
-}));
+        const current = await getBrands();
+        const result = current?.map((brand: Brand) => ({
+          id: brand.id,
+          name: brand.name,
+        }));
 
-interface BuildComponent {
-  categoryName: string;
-  componentId: string;
-  price: number;
-}
+        if (current && current?.length > 0) {
+          set({ brands: result, isInitialized: true });
+        }
+      },
+    }),
+    {
+      name: "brands",
+    },
+  ),
+);
+
 interface PCBuilderState {
-  builderState: BuildComponent[];
+  builderState: Product[];
   totalPrice: number;
-  setComponent: (cat: string, id: string, price: number) => void;
-  replaceComponent: (oldId: string, newId: string, newPrice: number) => void;
+  setComponent: (product: Product) => void;
+  replaceComponent: (oldId: string, newProduct: Product) => void;
   removeComponent: (id: string) => void;
   clearAll: () => void;
   getComponentByShortId: (shortId: string) => string | undefined;
+  transferToCart: () => void;
 }
 
 export const useBuilderStore = create<PCBuilderState>()(
@@ -88,50 +92,38 @@ export const useBuilderStore = create<PCBuilderState>()(
     (set, get) => ({
       builderState: [],
       totalPrice: 0,
-      setComponent: (cat: string, id: string, price: number) =>
+      setComponent: (product: Product) =>
         set((state) => {
-          console.warn("🔍 Debug:", {
-            price,
-            typeOfPrice: typeof price,
-            currentTotal: state.totalPrice,
-            typeOfTotal: typeof state.totalPrice,
-            suma: state.totalPrice + price,
-          });
-          const newComponent = {
-            categoryName: cat,
-            componentId: id,
-            price: price,
-          };
-
           const exists = state.builderState.some(
-            (component) => component.componentId === id
+            (component) => component.id === product.id,
           );
           if (exists) {
             return state;
           }
 
           return {
-            builderState: [...state.builderState, newComponent],
-            totalPrice: ProductHelper.roundPrice(state.totalPrice + price),
+            builderState: [...state.builderState, product],
+            totalPrice: ProductHelper.roundPrice(
+              state.totalPrice + Number(product.price),
+            ),
           };
         }),
-      replaceComponent: (oldId: string, newId: string, newPrice: number) => {
+      replaceComponent: (oldId: string, newProduct: Product) => {
         set((state) => {
           const oldComponent = state.builderState.find((component) => {
-            return component.componentId === oldId;
+            return component.id === oldId;
           });
 
           if (!oldComponent) {
             return state;
           }
 
-          const priceDiff = newPrice - oldComponent.price;
+          const priceDiff =
+            Number(newProduct.price) - Number(oldComponent.price);
 
           return {
             builderState: state.builderState.map((build) =>
-              build.componentId === oldId
-                ? { ...build, componentId: newId }
-                : build
+              build.id === oldId ? newProduct : build,
             ),
             totalPrice: ProductHelper.roundPrice(state.totalPrice + priceDiff),
           };
@@ -139,19 +131,19 @@ export const useBuilderStore = create<PCBuilderState>()(
       },
       removeComponent: (id: string) =>
         set((state) => {
-          const oldComponent = state.builderState.find((component) => {
-            return component.componentId === id;
+          const componentToRemove = state.builderState.find((component) => {
+            return component.id === id;
           });
 
-          if (!oldComponent) {
+          if (!componentToRemove) {
             return state;
           }
 
-          const newTotal = state.totalPrice - oldComponent.price;
+          const newTotal = state.totalPrice - Number(componentToRemove.price);
 
           return {
             builderState: state.builderState.filter(
-              (buildStored) => buildStored.componentId !== id
+              (buildStored) => buildStored.id !== id,
             ),
             totalPrice: Math.abs(newTotal) < 0.01 ? 0 : newTotal,
           };
@@ -160,13 +152,44 @@ export const useBuilderStore = create<PCBuilderState>()(
       getComponentByShortId: (shortId: string) => {
         const state = get();
         return state.builderState.find(
-          (build) =>
-            build.componentId.slice(-8).toLowerCase() === shortId.toLowerCase()
-        )?.componentId;
+          (build) => build.id.slice(-8).toLowerCase() === shortId.toLowerCase(),
+        )?.id;
+      },
+      transferToCart: () => {
+        const { builderState, clearAll } = get();
+        const { addToCart } = useStoreCart.getState();
+        builderState.forEach((product) => addToCart(product));
+        console.log("transfer success");
+        clearAll();
       },
     }),
     {
       name: "builder-store",
-    }
-  )
+    },
+  ),
 );
+
+interface CartState {
+  cart: Product[];
+  addToCart: (product: Product) => void;
+  removeToCart: (id: string) => void;
+  clearCart: () => void;
+}
+export const useStoreCart = create<CartState>((set, get) => ({
+  cart: [],
+  addToCart: (item: Product) => {
+    const { cart } = get();
+    set((state) => {
+      const merged = [...state.cart];
+      const exist = merged.find((i) => i.id === item.id);
+      if (!exist) merged.push(item);
+      return { cart: merged };
+    });
+  },
+  removeToCart: (id: string) => {
+    set((state) => ({
+      cart: state.cart.filter((item) => item.id !== id),
+    }));
+  },
+  clearCart: () => set({ cart: [] }),
+}));

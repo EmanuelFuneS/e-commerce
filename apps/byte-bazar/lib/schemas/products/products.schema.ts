@@ -1,9 +1,10 @@
 import { z } from "zod";
 
 export const productsSchema = z.object({
+  id: z.string().optional(),
   name: z.string().min(1, { message: "Product name is required" }),
   description: z.string().min(1, { message: "Description is required" }),
-  price: z.number().positive({ message: "Price must be a positive number" }),
+  price: z.coerce.string().min(1, { message: "Price is required" }),
   categoryId: z.string().min(1, { message: "Category is required" }),
   brandId: z.string().min(1, { message: "Brand is required" }),
   stock: z.number().int().nonnegative({
@@ -21,7 +22,7 @@ export const productsSchema = z.object({
     .array(z.string().min(1, { message: "Tag cannot be empty" }))
     .default([]), // Generados: desde name, description, category
   slug: z.string(), // Generado: desde name (ej: "Product Name" -> "product-name")
-  Views: z.number().default(0), // Inicializado en 0
+  views: z.number().default(0), // Inicializado en 0
 });
 
 export type ProductsSchema = z.infer<typeof productsSchema>;

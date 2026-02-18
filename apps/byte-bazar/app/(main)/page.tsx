@@ -1,13 +1,15 @@
+import BannerGrid from "@/components/banners/banner-grid";
 import CategoryShowcase from "@/components/category-showcase";
 import PreviewGrid from "@/components/preview-grid";
 
-import SpotlightGrid from "@/components/spotlight-grid";
-import { getBrandPreview, getProductPreview } from "@/lib/actions";
+import { getBrands } from "@/src/actions/brand.actions";
 import { Brand, Product } from "lib/types";
+import { getProducts } from "../../src/actions/product.actions";
 
+export const dynamic = "force-dynamic";
 export default async function Page() {
-  const products = await getProductPreview();
-  const brands = await getBrandPreview();
+  const products = await getProducts(undefined, { page: 1, pageSize: 6 });
+  const brands = await getBrands();
 
   return (
     <div className="">
@@ -17,17 +19,15 @@ export default async function Page() {
       <div className="flex flex-col items-center justify-center my-10 gap-8">
         {/* <h1 className="text-2xl font-bold">Hello World</h1>
         <Button size="sm">Button</Button> */}
-        <PreviewGrid
-          dataType="brands"
-          brands={brands!.data as unknown as Brand[]}
-        />
+        <PreviewGrid dataType="brands" brands={brands! as unknown as Brand[]} />
         <PreviewGrid
           dataType="products"
-          products={products!.data as unknown as Product[]}
+          products={products! as unknown as Product[]}
         />
+        {/* <AIChat /> */}
       </div>
       <div className="my-10">
-        <SpotlightGrid />
+        <BannerGrid />
       </div>
     </div>
   );

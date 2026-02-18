@@ -1,18 +1,5 @@
-import { Order } from "./orders";
+import { ClientWithRelations } from "../../src/repositories/clients.repository";
 
-interface User {
-  id: string;
-  name?: string;
-  email: string;
-  isActive: boolean;
-  roleId: string;
-  role?: Role;
-  lastLogin?: Date;
-  createdAt: Date;
-  updatedAt: Date;
-  orders: Order[];
-}
+export interface User extends ClientWithRelations {}
 
 export type Role = "admin" | "user" | "guest";
-
-export type { User };

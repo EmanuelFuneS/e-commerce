@@ -42,8 +42,8 @@ const BuildPcForm = () => {
     setComponent,
     replaceComponent,
     removeComponent,
-    clearAll,
     getComponentByShortId,
+    clearAll,
   } = useBuilderStore();
   const { categories } = useCategoriesStore();
 
@@ -53,7 +53,7 @@ const BuildPcForm = () => {
 
   const categoriesNames = useMemo(
     () => categories?.map((category) => category.name.toLowerCase()),
-    [categories]
+    [categories],
   );
 
   const sortedCategories = useMemo(() => {
@@ -61,7 +61,7 @@ const BuildPcForm = () => {
     return [...categories].sort(
       (a, b) =>
         customPCOrder[a.name.toLowerCase()]! -
-        customPCOrder[b.name.toLowerCase()]!
+        customPCOrder[b.name.toLowerCase()]!,
     );
   }, [categories]);
 
@@ -81,9 +81,8 @@ const BuildPcForm = () => {
   });
 
   const onSubmit = (data: CustomPcSchema) => {
-    clearAll();
     console.warn(data);
-    redirect("/checkout/preview");
+    redirect("/cart");
   };
 
   const updateParams = useCallback((): void => {
@@ -106,15 +105,14 @@ const BuildPcForm = () => {
       window.history.replaceState(
         {},
         "",
-        `${pathname}?${newParams.toString()}`
+        `${pathname}?${newParams.toString()}`,
       );
     }
   }, [form, pathname, searchParams, step]);
-
   //Hydration from URL params
   useEffect(() => {
     if (!categories || hasHydrated.current) return;
-    if (!categories) return;
+    if (categories.length === 0) return;
 
     const params = new URLSearchParams(searchParams);
     const formValues: Record<string, string> = {};
@@ -129,7 +127,7 @@ const BuildPcForm = () => {
       }
 
       const cat = categories?.find((category) =>
-        category.name.toLowerCase().startsWith(shortCat)
+        category.name.toLowerCase().startsWith(shortCat),
       );
       const fullId = getComponentByShortId(shortId);
 
@@ -160,17 +158,17 @@ const BuildPcForm = () => {
 
   if (!categories) return <div>Loading...</div>;
 
-  const handleSelectItem = (productId: string, price: number) => {
+  const handleSelectItem = (product: Product) => {
     const catKey = sortedCategories[step]!.name.toLowerCase();
     const currentId = form.getValues()[catKey];
 
-    if (currentId && currentId !== productId) {
-      replaceComponent(currentId, productId, price);
+    if (currentId && currentId !== product.id) {
+      replaceComponent(currentId, product);
     } else {
-      setComponent(catKey, productId, price);
+      setComponent(product);
     }
 
-    form.setValue(catKey, productId);
+    form.setValue(catKey, product.id);
     if (continueStep != 0) {
       setStep(continueStep);
       setContinueStep(0);
@@ -206,13 +204,18 @@ const BuildPcForm = () => {
     setStep(step < sortedCategories.length - 1 ? step + 1 : step);
   };
 
+  console.log(
+    "Watch",
+    form.watch(`${sortedCategories[step]?.name.toLowerCase()}`),
+  );
+
   if (!categories) return <div>Loading...</div>;
   return (
     <div>
       <Card className="h-20 border rounded-md mx-4">
         <CardContent className="flex justify-between">
           <Label>SubTotal: {totalPrice.toFixed(2)}</Label>
-          <Button onClick={handleResetForm}>Vaciar</Button>
+          <Button onClick={handleResetForm}>Clean</Button>
           <Button type="submit" form="builderPcForm">
             Comprar
           </Button>
@@ -256,9 +259,14 @@ const BuildPcForm = () => {
                       key={product.id}
                       data={product}
                       onSelect={handleSelectItem}
+                      onSelected={
+                        form.watch(
+                          `${sortedCategories[step]?.name.toLowerCase()}`,
+                        ) === product.id
+                      }
                     />
                   );
-                }
+                },
               )
             ) : (
               <div>Loading products...</div>

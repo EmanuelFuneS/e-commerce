@@ -17,23 +17,29 @@
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**", "build/**"],
       "env": [
-        "API_PORT",
+        "NODE_ENV",
         "PRISMA_LOGS",
-        "APP_BASE_URL",
-        "AUTH0_SECRET",
-        "AUTH0_DOMAIN",
-        "AUTH0_CLIENT_ID",
-        "AUTH0_CLIENT_SECRET",
-        "AUTH0_AUDIENCE",
-        "AUTH0_SCOPE",
-        "AUTH0_SYNC_SECRET",
+
+        "REDIS_URL",
+
+        "API_PORT",
+        "SMTP_HOST",
+        "SMTP_PORT",
+        "USERNAME",
+        "PASSWORD",
+        "MAILTRAP",
+
         "CLOUDINARY_CLOUD_NAME",
         "CLOUDINARY_API_KEY",
         "CLOUDINARY_API_SECRET",
         "CLOUDINARY_API_ENV",
+
         "DATABASE_URL",
         "DIRECT_URL",
-        "NODE_ENV"
+
+        "TENANT_ID_APP",
+        "AUTH_SERVICE_URL",
+        "AUTH_APP_URL"
       ]
     },
     "lint": {
@@ -43,6 +49,18 @@
       "dependsOn": ["^check-types"]
     },
     "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "docker:up": {
+      "cache": false,
+      "persistent": true
+    },
+    "docker:down": {
+      "cache": false,
+      "persistent": true
+    },
+    "docker:rebuild": {
       "cache": false,
       "persistent": true
     }

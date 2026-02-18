@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { getProducts, ProductFilters } from "../actions";
+import { getProducts } from "src/actions/product.actions";
+import { ProductFilters } from "../types";
 
 interface Props {
   page: number | undefined;
@@ -10,7 +11,7 @@ interface Props {
 const useProducts = ({ filter }: Props) => {
   return useQuery({
     queryKey: ["products", filter],
-    queryFn: () => getProducts(undefined, undefined, filter),
+    queryFn: () => getProducts(filter, undefined),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 };

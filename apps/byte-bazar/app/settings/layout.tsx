@@ -1,16 +1,19 @@
-import Footer from "../../components/footer";
-import NavBar from "../../components/nav-bar";
+import Footer from "../../components/layout/footer";
+import NavBar from "../../components/layout/nav-bar";
 import NavigationBreadCrumb from "../../components/navigation-breadcrumb";
+import { isLogged } from "../../lib/auth";
 
-export default function SettingLayout({
+export default async function SettingLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const isAuth: boolean = await isLogged();
   return (
     <>
-      <NavBar />
-      <main className="w-full max-w-6xl mx-auto md:px-4">
+      <NavBar isAuth />
+      {/* <ProfileSidebar subHeader={}></ProfileSidebar> */}
+      <main className="w-full max-w-6xl mx-auto grow">
         <NavigationBreadCrumb />
         {children}
       </main>

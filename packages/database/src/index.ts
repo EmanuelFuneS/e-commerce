@@ -41,7 +41,7 @@ if (process.env.NODE_ENV !== "production") {
 // Helper safe operations
 export async function safeDbOperation<T>(
   operations: () => Promise<T>,
-  fallback?: T
+  fallback: T,
 ): Promise<T | null> {
   try {
     return await operations();
@@ -51,10 +51,12 @@ export async function safeDbOperation<T>(
       error.message.includes("Can't reach database server")
     ) {
       console.warn("Database not available, returning fallback value");
-      return fallback ?? null;
+      return fallback as T;
     }
     throw error;
   }
 }
 
 export * from "@prisma/client";
+export { Prisma, PrismaClient } from "@prisma/client";
+export { Decimal } from "@prisma/client/runtime/library";

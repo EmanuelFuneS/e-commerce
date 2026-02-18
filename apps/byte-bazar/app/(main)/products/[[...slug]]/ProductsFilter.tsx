@@ -1,8 +1,6 @@
 "use client";
 import PaginationGrid from "@/components/pagination-grid";
-import { getProducts, ProductFilters } from "@/lib/actions";
-import { ApiResponse } from "@/lib/types/common";
-import { Product } from "@/lib/types/products";
+import { ProductFilters } from "@/lib/types/common";
 import { usePathname, useRouter } from "next/navigation";
 import {
   Suspense,
@@ -13,6 +11,8 @@ import {
 } from "react";
 import Filter from "../../../../components/filter";
 import { FilterType } from "../../../../lib/services/filterService";
+import { Product, ProductResponse } from "../../../../lib/types";
+import { getProducts } from "../../../../src/actions/product.actions";
 
 interface ProductFilterProps {
   filter?: FilterType;
@@ -26,14 +26,24 @@ export default function ProductFilter({
   const router = useRouter();
   const pathname = usePathname();
 
-  const [page] = useState<number>(0);
-  const [products, setProducts] = useState<ApiResponse<Product[]> | null>(null);
+  const page = Number(searchParams.page || 1) - 1;
+
+  const [products, setProducts] = useState<Product[] | undefined>(undefined);
+  const [pagination, setPagination] = useState<{
+    page: number;
+    pageSize: number;
+    totalItems: number;
+    totalPages: number;
+  }>({ page: 0, pageSize: 0, totalItems: 0, totalPages: 0 });
   const [isPending, startTransition] = useTransition();
   /* const { availableDB } = useHealthDB(); */
 
   const buildFilters = useCallback((): ProductFilters => {
     const categoryFromParams = searchParams.category as string;
     const brandFromParams = searchParams.brand as string;
+    const minPrice = searchParams.minPrice as string;
+    const maxPrice = searchParams.maxPrice as string;
+    const sort = searchParams.sort as string;
 
     // --- MODIFIED LOGIC ---
     let category: string | undefined;
@@ -59,6 +69,9 @@ export default function ProductFilter({
     return {
       category: category !== "all" ? category : undefined,
       brand: brand !== "all" ? brand : undefined,
+      minPrice: minPrice ? Number(minPrice) : undefined,
+      maxPrice: maxPrice ? Number(maxPrice) : undefined,
+      sort,
       // ...
     };
   }, [searchParams, filter]);
@@ -68,15 +81,20 @@ export default function ProductFilter({
     const filters = buildFilters();
 
     startTransition(async () => {
-      const response = await getProducts(page, 10, filters);
-      setProducts(response as ApiResponse<Product[]> | null);
+      const response: ProductResponse = await getProducts(filters, {
+        page,
+        pageSize: 10,
+      });
+
+      setProducts(response.products);
+      setPagination(response.pagination);
     });
   }, [searchParams, buildFilters, page]);
 
   const changePage = useCallback(
     (newPage: number) => {
       const params = new URLSearchParams(
-        searchParams as Record<string, string>
+        searchParams as Record<string, string>,
       );
       Object.entries(searchParams).forEach(([key, value]) => {
         if (filter && key === filter.type) {
@@ -90,10 +108,9 @@ export default function ProductFilter({
       params.set("page", String(newPage + 1));
       const queryString = params.toString();
       const newUrl = queryString ? `${pathname}?${queryString}` : pathname;
-      console.log("Changing page to:", newUrl);
       router.push(newUrl);
     },
-    [pathname, router, searchParams, filter]
+    [pathname, router, searchParams, filter],
   );
 
   if (!products)
@@ -112,12 +129,12 @@ export default function ProductFilter({
         </aside>
         <section className="w-full h-full py-4">
           <Suspense fallback={<div>Loading products...</div>}>
-            {!isPending && products.data && (
+            {!isPending && products && (
               <PaginationGrid
-                data={products.data}
+                data={products}
                 changePage={changePage}
                 page={Number(searchParams.page || 1) - 1}
-                totalPages={products.pagination?.totalPages}
+                totalPages={pagination.totalPages}
               />
             )}
           </Suspense>

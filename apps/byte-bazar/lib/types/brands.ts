@@ -1,10 +1,5 @@
-interface Brand {
-  id?: string;
-  name: string;
-  logo?: string | null | undefined;
-  website?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
+import { BrandWithRelations } from "../../src/repositories/brand.repository";
+
+interface Brand extends BrandWithRelations {}
 
 export type { Brand };

@@ -1,9 +1,10 @@
+import { getProducts } from "@/src/actions/product.actions";
 import { Card, Label } from "@workspace/ui/components";
 import Link from "next/link";
 import SearchItems from "../../../components/search-items";
 import ProductTable from "../../../components/tables/products-table";
-import { getProducts } from "../../../lib/actions";
 
+export const dynamic = "force-dynamic";
 const Page = async () => {
   const products = await getProducts();
 
@@ -17,6 +18,9 @@ const Page = async () => {
         <div>
           <Link href="/dashboard/inventory/movements" className="mr-4">
             Movements
+          </Link>
+          <Link href="/dashboard/inventory/brands" className="mr-4">
+            Brands
           </Link>
           <Link href="/dashboard/inventory/products">Add Product</Link>
         </div>

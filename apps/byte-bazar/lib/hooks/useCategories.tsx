@@ -1,32 +1,12 @@
-import { useEffect, useState } from "react";
-import { getCategoryPreview } from "../actions";
+import { getCategories } from "@/src/actions/category.actions";
+import { useQuery } from "@tanstack/react-query";
 
 const useCategories = () => {
-  const [categories, setCategories] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<unknown>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await getCategoryPreview();
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        setCategories(response!.data);
-      } catch (error) {
-        setError(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-
-  return {
-    categories,
-    isLoading,
-    error,
-  };
+  return useQuery({
+    queryKey: ["categories"],
+    queryFn: () => getCategories(),
+    staleTime: 5 * 60 * 1000,
+  });
 };
 
 export default useCategories;

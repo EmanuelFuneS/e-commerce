@@ -4,10 +4,14 @@ import {
   AvatarImage,
 } from "@workspace/ui/components/avatar";
 
-const ProfilePicture = () => {
+interface ProfilePictureProps {
+  size?: number;
+  src?: string;
+}
+const ProfilePicture = ({ size, src }: ProfilePictureProps) => {
   return (
-    <Avatar>
-      <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+    <Avatar className={size ? `w-${size} h-${size}` : "w-10 h-10"}>
+      <AvatarImage src={src || "https://github.com/shadcn.png"} alt="@shadcn" />
       <AvatarFallback>CN</AvatarFallback>
     </Avatar>
   );

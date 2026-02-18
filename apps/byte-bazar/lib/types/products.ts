@@ -1,28 +1,18 @@
-interface Product {
-  id?: string;
-  name: string;
-  description: string;
-  price?: number;
-  stock?: number;
-  categoryId?: string;
-  brandId?: string;
-  images?: string[];
-  tags?: string[];
-  isActive?: boolean;
-  slug?: string;
-  sku?: string;
-  views?: number;
-  createdAt?: Date;
-  updatedAt?: Date;
-  brand?: {
-    name: string;
+import { ProductWithRelationsSerialized } from "../../src/repositories/product.repository";
+
+interface Product extends ProductWithRelationsSerialized {
+  finalPrice: number;
+}
+
+export interface ProductResponse {
+  success: boolean;
+  products: Product[];
+  pagination: {
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    totalItems: number;
   };
-  category?: {
-    name: string;
-  };
-  //for seed only
-  brandName?: string;
-  categoryName?: string;
 }
 
 export type { Product };

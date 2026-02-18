@@ -1,7 +1,9 @@
 "use client";
+import { getProduct } from "@/src/actions/product.actions";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { redirect } from "next/navigation";
 import { startTransition, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import {
   Badge,
   Button,
@@ -15,11 +17,15 @@ import {
   Textarea,
 } from "../../../../../../../packages/ui/src/components";
 import InputImages from "../../../../../components/Input-images";
-import { getProductBySlug } from "../../../../../lib/actions";
+import useProductUpdate from "../../../../../lib/hooks/useProductUpdate";
 import {
   ProductsSchema,
   productsSchema,
 } from "../../../../../lib/schemas/products/products.schema";
+import {
+  deleteImagesAction,
+  uploadImagesAction,
+} from "../../../../../lib/services/cloudinary/actions";
 import { useBrandsStore, useCategoriesStore } from "../../../../../lib/store";
 import {
   ImageItem,
@@ -36,6 +42,7 @@ const Page = ({ params }: PageProps) => {
   const { categories } = useCategoriesStore();
   const { brands } = useBrandsStore();
   const [images, setImages] = useState<ImageItem[]>([]);
+  const updateProduct = useProductUpdate();
 
   const form = useForm<ProductsSchema>({
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -45,7 +52,7 @@ const Page = ({ params }: PageProps) => {
     defaultValues: {
       name: "",
       description: "",
-      price: 0,
+      price: "",
       categoryId: "",
       brandId: "",
       stock: 0,
@@ -54,28 +61,26 @@ const Page = ({ params }: PageProps) => {
       tags: [],
       sku: "",
       slug: "",
-      Views: 0,
+      views: 0,
     } satisfies ProductsSchema,
   });
 
   const previewDbImages = form.watch("images");
-  console.log(previewDbImages);
 
   useEffect(() => {
     startTransition(async () => {
       const slugParam = (await params).slug;
-      const response = await getProductBySlug(slugParam);
+      const response = await getProduct({ slug: slugParam });
       if (response?.data) {
         form.reset(response.data);
         if (response.data.tags && response.data.slug && response.data.images) {
           setRenderTag(response.data.tags as string[]);
           setSlug(response.data.slug as string);
           setImages(
-            ProductHelper.formatDBImages(response.data.images as string[])
+            ProductHelper.formatDBImages(response.data.images as string[]),
           );
         }
       }
-      console.log(response);
     });
   }, [form, params]);
 
@@ -85,7 +90,7 @@ const Page = ({ params }: PageProps) => {
         if (value.brandId && value.categoryId) {
           const newSku = ProductHelper.generateSKU(
             value.categoryId,
-            value.brandId
+            value.brandId,
           );
           form.setValue("sku", newSku);
         }
@@ -101,7 +106,7 @@ const Page = ({ params }: PageProps) => {
         if (value.name && value.description) {
           const newTags = ProductHelper.generateTags(
             value.name,
-            value.description
+            value.description,
           );
           const slug = ProductHelper.generateSlug(value.name);
           setSlug(slug);
@@ -115,17 +120,40 @@ const Page = ({ params }: PageProps) => {
     return unsubscribe;
   }, [form, setRenderTag]);
 
-  const onSubmit = async (data: ProductsSchema) => {
-    console.log(data);
-  };
+  const onSubmit: SubmitHandler<ProductsSchema> = async (data) => {
+    try {
+      let productData = { ...data };
 
+      const imagesToUpload = images;
+      const imagePaths = await uploadImagesAction(imagesToUpload);
+
+      if (imagePaths.length > 0) {
+        productData.images = imagePaths;
+        const result = await updateProduct.mutateAsync(productData);
+
+        if (result) {
+          form.reset();
+          setImages([]);
+          setRenderTag([]);
+          setSlug("");
+
+          redirect("/dashboard/inventory/");
+        } else {
+          await deleteImagesAction(imagePaths);
+        }
+      }
+    } catch (error) {
+      console.error("Error creating product: ", error);
+      throw error;
+    }
+  };
   return (
     <section className="min-h-full">
       <form
         onSubmit={form.handleSubmit(
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          onSubmit
+          onSubmit,
         )}
       >
         <section className="h-full p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4  [&>*:first-child]:mb-8">
@@ -190,11 +218,10 @@ const Page = ({ params }: PageProps) => {
             <FieldLabel htmlFor="price">Price</FieldLabel>
             <Input
               id="price"
-              type="number"
+              type="text"
               aria-invalid={!!form.formState.errors.price}
               {...form.register("price", {
                 required: true,
-                valueAsNumber: true,
               })}
             />
             <FieldDescription>Enter the product price.</FieldDescription>

@@ -1,18 +1,30 @@
-import { Brand, Category, Product } from "../types";
+import { Brand, Category } from "../types";
 
 export const brandTemplate: Brand = {
   id: "",
   name: "",
   logo: "",
+  website: "",
+  tenantId: "",
+  _count: { products: 0 },
   createdAt: new Date(),
   updatedAt: new Date(),
 };
 
-export const productTemplate: Product = {
+export const categoriesTemplate: Partial<Category> = {
+  id: "",
+  name: "",
+  imageUrl: "",
+  tenantId: "",
+
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+/* export const productTemplate: Product = {
   id: "",
   name: "",
   description: "",
-  price: 100,
+  price: "100",
   stock: 10,
   isActive: true,
   categoryId: "",
@@ -20,14 +32,12 @@ export const productTemplate: Product = {
   images: [],
   createdAt: new Date(),
   updatedAt: new Date(),
-  category: { name: "" },
-  brand: { name: "" },
-};
-
-export const categoriesTemplate: Category = {
-  name: "",
-  imageUrl: "",
-};
+  _count: { discounts: 0 },
+  discounts: [],
+  category: categoriesTemplate,
+  brand: brandTemplate,
+  views: 0,
+}; */
 
 export function createSkeleton<T>(sampleObject: T): T {
   if (sampleObject === null || sampleObject === undefined) {

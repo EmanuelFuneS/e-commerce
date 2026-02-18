@@ -22,8 +22,6 @@ const PaginationGrid = ({
   changePage,
   totalPages,
 }: PaginationGrid) => {
-  console.log("pages", totalPages, page);
-
   const pages = new Array(totalPages).fill("");
   return (
     <div>

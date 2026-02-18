@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -19,6 +19,8 @@
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@ai-sdk/groq": "^3.0.4",
+    "@ai-sdk/react": "^3.0.30",
     "@auth0/nextjs-auth0": "^4.8.0",
     "@hookform/resolvers": "^5.1.1",
     "@prisma/client": "^5.22.0",
@@ -26,6 +28,7 @@
     "@tanstack/react-query-devtools": "^5.91.2",
     "@workspace/database": "workspace:*",
     "@workspace/ui": "workspace:*",
+    "ai": "^6.0.28",
     "cloudinary": "^2.7.0",
     "embla-carousel-autoplay": "^8.6.0",
     "eslint-config-next": "^16.0.7",
