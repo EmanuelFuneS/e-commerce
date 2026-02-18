@@ -1,9 +1,9 @@
 "use client";
+import { getProducts } from "@/src/actions/product.actions";
 import { Label } from "@workspace/ui/components";
 import Link from "next/link";
 import { useCallback, useEffect, useState, useTransition } from "react";
 import PaginationGrid from "../../../components/pagination-grid";
-import { getProducts } from "../../../lib/actions";
 import { ApiResponse } from "../../../lib/types/common";
 import { Product } from "../../../lib/types/products";
 
@@ -14,7 +14,7 @@ const Page = () => {
 
   useEffect(() => {
     startTransition(async () => {
-      const response = await getProducts(page);
+      const response = await getProducts(undefined, { page, pageSize: 9 });
       setProducts(response as unknown as ApiResponse<Product[]>);
     });
   }, [page]);

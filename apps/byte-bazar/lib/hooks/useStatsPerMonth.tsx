@@ -1,4 +1,4 @@
-import { useQueries } from "@tanstack/react-query";
+/* import { useQueries } from "@tanstack/react-query";
 import {
   getMonthlyStatsBrands,
   getMonthlyStatsCategories,
@@ -47,3 +47,4 @@ const useStatsPerMonth = () => {
 };
 
 export default useStatsPerMonth;
+ */

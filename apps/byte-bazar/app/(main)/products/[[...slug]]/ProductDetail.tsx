@@ -2,8 +2,8 @@ import { Label } from "@workspace/ui/components";
 
 import RelatedItems from "../../../../components/preview-grid/RelatedItems";
 import ProductGallery from "../../../../components/product-gallery";
-import { SearchByProductName } from "../../../../lib/actions";
 import { Product } from "../../../../lib/types";
+import { getProducts } from "../../../../src/actions/product.actions";
 
 interface Params {
   params: { slug: string[] };
@@ -14,7 +14,7 @@ export default async function ProductDetail({ params }: Params) {
   const decodeName = decodeURIComponent(slug[1] || "");
   const decodeCategory = decodeURIComponent(slug[0] || "");
 
-  const productResponse = await SearchByProductName(decodeName);
+  const productResponse = await getProducts({ name: decodeName });
   const product: Product = productResponse!.data as unknown as Product;
 
   return (

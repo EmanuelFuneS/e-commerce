@@ -1,7 +1,6 @@
 import {
   Decimal,
   DiscountType,
-  OrderItem,
   Prisma,
   prisma,
   StockMovementType,
@@ -237,7 +236,7 @@ export class ProductRepository {
     });
   }
 
-  async decreaseStockBatch(
+  /* async decreaseStockBatch(
     data: OrderItem[],
     adminId: string,
     orderId: string,
@@ -274,7 +273,7 @@ export class ProductRepository {
       );
       return updates;
     });
-  }
+  } */
 
   async applyDiscount(
     productId: string,

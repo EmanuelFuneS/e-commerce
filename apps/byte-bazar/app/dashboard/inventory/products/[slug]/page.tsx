@@ -1,4 +1,5 @@
 "use client";
+import { getProduct } from "@/src/actions/product.actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { redirect } from "next/navigation";
 import { startTransition, useEffect, useState } from "react";
@@ -16,7 +17,6 @@ import {
   Textarea,
 } from "../../../../../../../packages/ui/src/components";
 import InputImages from "../../../../../components/Input-images";
-import { getProductBySlug } from "../../../../../lib/actions";
 import useProductUpdate from "../../../../../lib/hooks/useProductUpdate";
 import {
   ProductsSchema,
@@ -70,7 +70,7 @@ const Page = ({ params }: PageProps) => {
   useEffect(() => {
     startTransition(async () => {
       const slugParam = (await params).slug;
-      const response = await getProductBySlug(slugParam);
+      const response = await getProduct({ slug: slugParam });
       if (response?.data) {
         form.reset(response.data);
         if (response.data.tags && response.data.slug && response.data.images) {

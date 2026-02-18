@@ -26,7 +26,7 @@ export async function getCountOrders() {
   return await analyticsService().getCountOrders();
 }
 
-export async function getMonthlyStatsProducts() {
+/* export async function getMonthlyStatsProducts() {
   return await analyticsService().getMonthlyStatsProducts();
 }
 
@@ -44,4 +44,4 @@ export async function getMonthlyStatsUsers() {
 
 export async function getMonthlyStatsOrders() {
   return await analyticsService().getMonthlyStatsOrders();
-}
+} */

@@ -20,6 +20,7 @@ export type ActionResponse<T = Record<string, unknown>> = ApiResponse<T>;
 export type OptionalParams<T> = T | undefined;
 
 export interface ProductFilters {
+  name?: string;
   category?: string;
   brand?: string;
   minPrice?: number;

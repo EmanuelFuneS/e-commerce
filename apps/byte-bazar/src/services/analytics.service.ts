@@ -32,7 +32,7 @@ export class AnalyticsService {
     return await this.repository.countTable(this.tableOrders);
   }
 
-  async getMonthlyStatsProducts() {
+  /* async getMonthlyStatsProducts() {
     return await this.repository.getMonthlyStatsTable(this.tableProducts);
   }
 
@@ -50,5 +50,5 @@ export class AnalyticsService {
 
   async getMonthlyStatsOrders() {
     return await this.repository.getMonthlyStatsTable(this.tableOrders);
-  }
+  } */
 }

@@ -14,22 +14,28 @@ export interface FilterType {
 
 export const getCachedFilterData = unstable_cache(
   async () /* : Promise<FilterData> */ => {
-    return safeDbOperation(async () => {
-      const [categories, brands] = await prisma.$transaction([
-        prisma.category.findMany({
-          select: { id: true, name: true },
-          orderBy: { name: "asc" },
-        }),
-        prisma.brand.findMany({
-          select: { id: true, name: true },
-          orderBy: { name: "asc" },
-        }),
-      ]);
+    return safeDbOperation(
+      async () => {
+        const [categories, brands] = await prisma.$transaction([
+          prisma.category.findMany({
+            select: { id: true, name: true },
+            orderBy: { name: "asc" },
+          }),
+          prisma.brand.findMany({
+            select: { id: true, name: true },
+            orderBy: { name: "asc" },
+          }),
+        ]);
 
-      return {
-        categories,
-        brands,
-      };
-    });
-  }
+        return {
+          categories,
+          brands,
+        };
+      },
+      {
+        categories: [],
+        brands: [],
+      },
+    );
+  },
 );

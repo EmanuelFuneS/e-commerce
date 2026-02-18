@@ -59,7 +59,7 @@ export class OrderRepository {
       },
     });
 
-    await productRepo.decreaseStockBatch(data.items, clientId, order.id);
+    /* await productRepo.decreaseStockBatch(data.items, clientId, order.id); */
     return order;
   }
 
