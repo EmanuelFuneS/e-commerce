@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 
 import ChangePasswordPage from "./pages/change-password";
 import Layout from "./pages/layout";
@@ -20,6 +20,7 @@ const App = () => {
           <Route path="/recovery-password" element={<RecoveryPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
         </Route>
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );

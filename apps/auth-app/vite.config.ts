@@ -11,7 +11,7 @@ export default defineConfig({
       "@workspace/ui": path.resolve(__dirname, "../../packages/ui/src"),
     },
   },
-  base: "/",
+  base: "/auth/",
   server: {
     host: "0.0.0.0",
     port: 3005,
