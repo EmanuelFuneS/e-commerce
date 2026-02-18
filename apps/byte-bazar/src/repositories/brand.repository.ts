@@ -15,7 +15,10 @@ export type BrandWithRelations = Prisma.BrandGetPayload<
 
 export class BrandRepository {
   private tenantID = process.env.TENANT_ID;
-  async find(where?: Prisma.BrandWhereInput): Promise<Brand[]> {
+  async find(
+    where?: Prisma.BrandWhereInput,
+    pagination?: Prisma.BrandFindManyArgs,
+  ): Promise<Brand[]> {
     return await prisma.brand.findMany({
       where: {
         ...where,
@@ -26,6 +29,7 @@ export class BrandRepository {
           select: { products: true },
         },
       },
+      ...pagination,
     });
   }
   async create(data: BrandSchema): Promise<Brand> {

@@ -26,7 +26,6 @@ export const getProducts = async (
   ids: string[] = [],
 ) => {
   return safeDbOperation(async () => {
-    console.log("parameter", filters, pagination);
     try {
       const service = await productService();
       return await service.getProducts(filters, pagination, ids);

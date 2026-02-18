@@ -8,9 +8,8 @@ import { getProducts } from "../../src/actions/product.actions";
 
 export const dynamic = "force-dynamic";
 export default async function Page() {
-  const products = await getProducts(undefined, { page: 1, pageSize: 6 });
-  const brands = await getBrands();
-
+  const { products } = await getProducts(undefined, { page: 1, pageSize: 6 });
+  const brands = await getBrands(undefined, { page: 1, pageSize: 6 });
   return (
     <div className="">
       <div className="mb-20">

@@ -5,10 +5,23 @@ import { BrandService } from "../services/brand.service";
 
 const brandService = () => new BrandService();
 
-export const getBrands = async () => {
+export interface BrandFilters {
+  name?: string;
+  tenantId?: string;
+}
+
+export const getBrands = async (
+  filters: BrandFilters = {},
+  pagination?:
+    | {
+        page?: number;
+        pageSize?: number;
+      }
+    | undefined,
+) => {
   return safeDbOperation(async () => {
     const service = brandService();
-    return await service.getBrands();
+    return await service.getBrands(filters, pagination);
   }, []);
 };
 

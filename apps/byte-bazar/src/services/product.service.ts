@@ -78,10 +78,8 @@ export class ProductService {
     },
     ids: string[] = [],
   ): Promise<ProductResponse> {
-    //MANEJAR TENANT_ID
-    // Construir el orderBy dinámicamente
     let orderBy: Record<string, string> = { name: "asc" }; // Default
-    // Construir el where clause dinámicamente
+
     const whereClause: Record<string, unknown> = { isActive: true };
     if (filters) {
       // Filtro por categoría
@@ -89,12 +87,10 @@ export class ProductService {
         whereClause.categoryId = filters.category;
       }
 
-      // Filtro por marca
       if (filters.brand) {
         whereClause.brandId = filters.brand;
       }
 
-      // Filtro por precio
       if (filters.minPrice !== undefined || filters.maxPrice !== undefined) {
         whereClause.price = {};
         const priceFilter = whereClause.price as Record<string, number>;
