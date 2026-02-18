@@ -83,7 +83,7 @@ const ProductGallery = ({ product }: ProductGalleryProps) => {
           </Label>
         </div>
         <div className="my-4 flex items-center gap-2">
-          {cart.includes(product.id) ? (
+          {cart.find((item) => item.id === product.id) ? (
             <Button
               variant={"outline"}
               onClick={() => removeToCart(product.id)}
@@ -91,11 +91,11 @@ const ProductGallery = ({ product }: ProductGalleryProps) => {
               Remove To Cart
             </Button>
           ) : (
-            <Button variant={"outline"} onClick={() => addToCart(product.id)}>
+            <Button variant={"outline"} onClick={() => addToCart(product)}>
               Add To Cart
             </Button>
           )}
-          <Button variant={"outline"} onClick={() => addToCart(product.id)}>
+          <Button variant={"outline"} onClick={() => addToCart(product)}>
             <Link href={"/cart"}>Buy Now</Link>
           </Button>
         </div>

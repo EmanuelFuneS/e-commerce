@@ -1,7 +1,9 @@
 "use client";
-import { Product } from "@prisma/client";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import {
   Button,
   Card,
@@ -9,58 +11,126 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
+  Field,
   Input,
   Label,
   Separator,
 } from "../../../../packages/ui/src/components";
-import { useStoreCart } from "../../lib/store";
+import {
+  CartProducts,
+  cartProductsSchema,
+} from "../../lib/schemas/products/cartProduct.schema";
+import { useBuilderStore, useStoreCart } from "../../lib/store";
+import { Product } from "../../lib/types/products";
 
 const ListCart = () => {
-  const { cart, cartProducts } = useStoreCart();
-  const [cartItems, setCartItems] = useState<Product[]>([]);
-  const [subTotal, setSubTotal] = useState(0);
+  const { cart, clearCart } = useStoreCart();
+  const { builderState, transferToCart } = useBuilderStore();
+
+  const { control, register, setValue, handleSubmit, reset, watch } =
+    useForm<CartProducts>({
+      resolver: zodResolver(cartProductsSchema),
+      defaultValues: {
+        items: [],
+        subtotal: "0",
+      },
+    });
+
+  const items = useWatch({
+    control,
+    name: "items",
+  });
+
+  const subtotal = useMemo(() => {
+    if (!items?.length) return 0;
+    const subtotal = items.reduce(
+      (acc, item) => acc + Number(item.price) * item.quantity,
+      0,
+    );
+    setValue("subtotal", subtotal.toString());
+    return subtotal;
+  }, [items]);
 
   useEffect(() => {
-    const fetch = async () => {
-      const items = await cartProducts();
-      console.log("items", items);
-      setSubTotal(items.reduce((acc, item) => acc + Number(item.price), 0));
+    if (builderState.length) return transferToCart();
+  }, [builderState]);
 
-      setCartItems(items);
-    };
-    fetch();
+  useEffect(() => {
+    if (cart.length) {
+      const formData = cart.map((item: Product) => ({
+        productId: item.id,
+        price: item.price,
+        quantity: 1,
+      }));
+      reset({ items: formData });
+    }
   }, [cart]);
 
-  /* const cartItems = use(cartProducts()); */
+  const onSubmit = (data: CartProducts) => {
+    console.log(data);
+  };
+
   return (
     <div className="p-5 space-y-5">
       <section>
         <Card className="">
           <CardHeader className="flex flex-row justify-between">
+            <CardTitle>Image</CardTitle>
             <CardTitle>Product </CardTitle>
-            <CardTitle>Price </CardTitle>
+            <CardTitle className="ml-35">Price </CardTitle>
             <CardTitle>Quantity</CardTitle>
           </CardHeader>
           <CardContent className="mt-10 space-y-10 space-x-5">
-            {cartItems.map((item, idx) => {
-              return (
-                <div
-                  key={idx}
-                  className="w-full h-10 flex justify-between border-b-2 pb-10 mt-4 gap-6"
-                >
-                  <Label>{item.name}</Label>
-                  <Label>{item.price.toString()}</Label>
-                  <Label className="mx-7">0</Label>
-                </div>
-              );
-            })}
+            <form id="cart-form" onSubmit={handleSubmit(onSubmit)}>
+              {cart.map((item, idx) => {
+                const photo = item.images[0];
+                return (
+                  <div
+                    key={idx}
+                    className="w-full h-10 flex items-center justify-between border-b-2 pb-10 mt-8 gap-6"
+                  >
+                    <Image
+                      src={photo || ""}
+                      alt={item.name}
+                      width={60}
+                      height={60}
+                    />
+
+                    <Label className="w-60">{item.name}</Label>
+                    <Label className="w-20 text-start">
+                      {(
+                        Number(watch(`items.${idx}.price`)) *
+                        watch(`items.${idx}.quantity`)
+                      ).toFixed(2)}
+                    </Label>
+
+                    <Field className="w-20">
+                      <Input
+                        className="w-15"
+                        type="number"
+                        defaultValue={1}
+                        min={1}
+                        max={item.stock}
+                        {...register(`items.${idx}.quantity`, {
+                          required: true,
+                        })}
+                      />
+                    </Field>
+                  </div>
+                );
+              })}
+            </form>
           </CardContent>
           <CardFooter className="mt-10 flex justify-between">
             <Button>
               <Link href={"/products"}>Return To Shop</Link>
             </Button>
-            <Button>
-              <Link href={""}>Update Cart</Link>
+            <Button
+              onClick={() => {
+                clearCart();
+              }}
+            >
+              Clear
             </Button>
           </CardFooter>
         </Card>
@@ -83,7 +153,7 @@ const ListCart = () => {
           <CardContent className="space-y-5">
             <div className="flex justify-between">
               <Label>Subtotal:</Label>
-              <Label>{subTotal}</Label>
+              <Label>{subtotal.toFixed(2)}</Label>
             </div>
             <Separator />
             <div className="flex justify-between">
@@ -93,7 +163,7 @@ const ListCart = () => {
             <Separator />
             <div className="flex justify-between">
               <Label>Total:</Label>
-              <Label>{subTotal + 20}</Label>
+              <Label>{(Number(subtotal) + 20).toFixed(2)}</Label>
             </div>
           </CardContent>
           <CardFooter>

@@ -24,7 +24,6 @@ import {
 } from "@workspace/ui/lib";
 import NextImage from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import useCategories from "../../../lib/hooks/useCategories";
 import useFavoritesProducts from "../../../lib/hooks/useFavoritesProducts";
 import { useStoreCart } from "../../../lib/store";
@@ -38,19 +37,7 @@ import ThemeToggle from "../../theme-toggle";
 const NavBar = ({ isAuth }: { isAuth: boolean }) => {
   const { data: categories, isLoading } = useCategories();
   const { favorites } = useFavoritesProducts();
-  const { cart, cartProducts } = useStoreCart();
-  const [cartItems, setCartItems] = useState<Product[]>([]);
-
-  useEffect(() => {
-    const fetch = async () => {
-      const items = await cartProducts();
-      setCartItems(items);
-    };
-
-    fetch();
-  }, [cart]);
-
-  console.log("Cart Items", cartItems);
+  const { cart } = useStoreCart();
 
   return (
     <>
@@ -140,8 +127,8 @@ const NavBar = ({ isAuth }: { isAuth: boolean }) => {
                 <ul className="grid w-50">
                   <li>
                     <ScrollArea className="h-[280]">
-                      {cartItems.length > 0 &&
-                        cartItems.map((el: Product, idx: number) => (
+                      {cart.length > 0 &&
+                        cart.map((el: Product, idx: number) => (
                           <NavigationMenuLink key={idx} asChild>
                             <ListProductCard item={el} />
                           </NavigationMenuLink>

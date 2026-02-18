@@ -1,6 +1,6 @@
-import { Brand, prisma, Prisma } from "@workspace/database";
+import { prisma, Prisma } from "@workspace/database";
 import { BrandSchema } from "../../lib/schemas/brand/brand.schema";
-
+import { Brand } from "../../lib/types";
 const brandWithRelations = Prisma.validator<Prisma.BrandDefaultArgs>()({
   include: {
     _count: {
