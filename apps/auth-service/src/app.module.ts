@@ -22,6 +22,9 @@ import { UsersModule } from './users/users.module';
     RedisModule.forRoot({
       type: 'single',
       url: process.env.REDIS_URL,
+      options: {
+        tls: {},
+      },
     }),
     MailModule,
   ],

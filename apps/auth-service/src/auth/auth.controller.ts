@@ -54,7 +54,7 @@ export class AuthController {
   @SetAuthCookie()
   async register(
     @Body() body: RegisterDto,
-    @Res({ passthrough: true }) response: Response,
+    @Res({ passthrough: true }) _response: Response,
   ) {
     const result = await this.authService.register(body);
 
@@ -67,7 +67,7 @@ export class AuthController {
   @SetAuthCookie()
   async login(
     @Body() body: LoginDto,
-    @Res({ passthrough: true }) response: Response,
+    @Res({ passthrough: true }) _response: Response,
   ) {
     const result = await this.authService.login(body);
 

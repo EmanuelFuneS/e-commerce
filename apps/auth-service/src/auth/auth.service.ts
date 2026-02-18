@@ -243,7 +243,7 @@ export class AuthService {
         message: 'password reset successfully',
       };
     } catch (error) {
-      throw new BadRequestException('Error resetting password');
+      throw new BadRequestException('Error resetting password', error);
     }
   }
 }
