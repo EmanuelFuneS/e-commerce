@@ -39,7 +39,8 @@
 
         "TENANT_ID_APP",
         "AUTH_SERVICE_URL",
-        "AUTH_APP_URL"
+        "AUTH_APP_URL",
+        "AUTHORIZED_ROLES"
       ]
     },
     "lint": {
