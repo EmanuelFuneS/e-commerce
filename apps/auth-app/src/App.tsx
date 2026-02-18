@@ -1,4 +1,10 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router";
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router";
 
 import ChangePasswordPage from "./pages/change-password";
 import Layout from "./pages/layout";
@@ -9,6 +15,12 @@ import ResetPasswordPage from "./pages/reset-password";
 import SuccessVerification from "./pages/success-verification";
 
 const App = () => {
+  const location = useLocation();
+
+  // trailingSlash
+  if (location.pathname.match(/\/[^/]+$/)) {
+    return <Navigate to={`${location.pathname}/`} replace />;
+  }
   return (
     <BrowserRouter basename="/auth">
       <Routes>
@@ -20,7 +32,7 @@ const App = () => {
           <Route path="/recovery-password" element={<RecoveryPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
         </Route>
-        <Route path="*" element={<Navigate to="/auth" replace />} />
+        <Route path="*" element={<Navigate to="/auth/" replace />} />
       </Routes>
     </BrowserRouter>
   );
