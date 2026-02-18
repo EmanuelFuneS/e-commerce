@@ -82,7 +82,13 @@ export class ProductService {
 
     const whereClause: Record<string, unknown> = { isActive: true };
     if (filters) {
-      // Filtro por categoría
+      if (filters.name) {
+        whereClause.name = {
+          contains: filters.name,
+          mode: "insensitive",
+        };
+      }
+
       if (filters.category) {
         whereClause.categoryId = filters.category;
       }

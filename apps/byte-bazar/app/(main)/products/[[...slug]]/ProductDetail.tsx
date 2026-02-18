@@ -15,7 +15,7 @@ export default async function ProductDetail({ params }: Params) {
   const decodeCategory = decodeURIComponent(slug[0] || "");
 
   const productResponse = await getProducts({ name: decodeName });
-  const product: Product = productResponse!.data as unknown as Product;
+  const product: Product = productResponse!.products[0] as unknown as Product;
 
   return (
     <section className="w-full h-full pb-10">
