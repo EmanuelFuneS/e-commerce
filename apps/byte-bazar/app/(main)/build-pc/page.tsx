@@ -10,6 +10,8 @@ import BuildPcForm from "../../../components/forms/build-pc-form";
 import { Category } from "../../../lib/types";
 import { getProducts } from "../../../src/actions/product.actions";
 
+export const dynamic = "force-dynamic";
+
 export default async function BuildPcPage() {
   const queryClient = new QueryClient();
   const categories = await getCategories();
