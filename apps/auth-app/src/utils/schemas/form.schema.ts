@@ -1,17 +1,16 @@
 import zod from "zod";
 
-export const registerSchema = zod.object({
-  email: zod.string().email().nonempty(),
-  name: zod.string().nonempty(),
-  password: zod.string().min(6, "Must be at least 6 characters long"),
-  confirmPassword: zod
-    .string()
-    .min(6, "Must be at least 6 characters long")
-    .refine((data) => data.password === data.confirmPassword, {
-      message: "Passwords do not match",
-      path: ["confirmPassword"],
-    }),
-});
+export const registerSchema = zod
+  .object({
+    email: zod.string().email().nonempty(),
+    name: zod.string().nonempty(),
+    password: zod.string().min(6, "Must be at least 6 characters long"),
+    confirmPassword: zod.string().min(6, "Must be at least 6 characters long"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 export const loginSchema = zod.object({
   email: zod.string().email().nonempty(),

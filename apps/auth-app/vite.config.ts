@@ -17,7 +17,7 @@ export default defineConfig({
     port: 3005,
     strictPort: true,
     cors: {
-      origin: "http://localhost:3000",
+      origin: "*",
       methods: ["GET", "POST"],
       allowedHeaders: ["*", "Content-Type", "Authorization"],
     },
