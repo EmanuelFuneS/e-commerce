@@ -19,7 +19,7 @@
       "env": [
         "NODE_ENV",
         "PRISMA_LOGS",
-
+        "APP_BASE_URL",
         "REDIS_URL",
 
         "API_PORT",
