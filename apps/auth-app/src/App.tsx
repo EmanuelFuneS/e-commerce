@@ -15,26 +15,32 @@ import ResetPasswordPage from "./pages/reset-password";
 import SuccessVerification from "./pages/success-verification";
 
 const App = () => {
+  return (
+    <BrowserRouter basename="/auth">
+      <AppRoutes />
+    </BrowserRouter>
+  );
+};
+
+const AppRoutes = () => {
   const location = useLocation();
 
   // trailingSlash
   if (location.pathname.match(/\/[^/]+$/)) {
     return <Navigate to={`${location.pathname}/`} replace />;
   }
+
   return (
-    <BrowserRouter basename="/auth">
-      <Routes>
-        <Route element={<Layout />}>
-          <Route path="/" element={<RegisterPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/success/:id" element={<SuccessVerification />} />
-          <Route path="/change-password" element={<ChangePasswordPage />} />
-          <Route path="/recovery-password" element={<RecoveryPasswordPage />} />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
-        </Route>
-        <Route path="*" element={<Navigate to="/auth/" replace />} />
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route element={<Layout />}>
+        <Route path="/" element={<RegisterPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/success/:id" element={<SuccessVerification />} />
+        <Route path="/change-password" element={<ChangePasswordPage />} />
+        <Route path="/recovery-password" element={<RecoveryPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
+      </Route>
+    </Routes>
   );
 };
 
