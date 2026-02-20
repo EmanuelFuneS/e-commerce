@@ -217,9 +217,9 @@ const BuildPcForm = () => {
       <Card className="h-20 border rounded-md mx-4">
         <CardContent className="flex justify-between">
           <Label>SubTotal: {totalPrice.toFixed(2)}</Label>
-          <Button onClick={handleResetForm}>Clean</Button>
+          <Button onClick={handleResetForm}>Clear All</Button>
           <Button type="submit" form="builderPcForm">
-            Comprar
+            Buy
           </Button>
         </CardContent>
       </Card>
