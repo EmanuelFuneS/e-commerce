@@ -37,6 +37,15 @@ export class AuthCookieInterceptor implements NestInterceptor {
             maxAge: 3600000,
             path: '/',
           });
+
+          res.setHeader('X-Auth-Token', data.access_token);
+          res.setHeader('X-Auth-UserId', data.user.id);
+          res.setHeader('X-Auth-Roles', data.user.roles[0]);
+
+          res.setHeader(
+            'Access-Control-Expose-Headers',
+            'X-Auth-Token, X-Auth-UserId, X-Auth-Roles',
+          );
         }
         return data;
       }),

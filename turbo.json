@@ -38,6 +38,7 @@
         "DIRECT_URL",
 
         "TENANT_ID_APP",
+        "BYTE_BAZAR_URL",
         "AUTH_SERVICE_URL",
         "AUTH_APP_URL",
         "AUTHORIZED_ROLES"
