@@ -12,10 +12,15 @@ const Navbar = () => {
 
   useEffect(() => {}, [slug]);
 
+  const redirectToHome = () => {
+    window.location.href = import.meta.env.VITE_NEXT_PUBLIC_APP_URL;
+  };
+
   return (
     <header className="w-full bg-card border-b-2 h-10 flex justify-between px-5 text-gray-800 dark:text-muted-foreground">
       <Label>AuthService</Label>
       <div className="flex items-center space-x-2">
+        <Label onClick={redirectToHome}>Home</Label>
         <Label className="text-xs ">
           {slug === null ? (
             <>

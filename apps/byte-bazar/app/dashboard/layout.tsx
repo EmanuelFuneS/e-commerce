@@ -1,4 +1,4 @@
-"use client";
+import { redirect } from "next/navigation";
 import { Separator } from "../../../../packages/ui/src/components";
 import {
   SidebarInset,
@@ -7,12 +7,15 @@ import {
 } from "../../../../packages/ui/src/components/sidebar";
 import NavigationBreadCrumb from "../../components/navigation-breadcrumb";
 import AdminSidebar from "../../components/side-bars/admin-sidebar";
+import { isLogged } from "../../lib/auth";
 
-export default /* withPageAuthRequired( */ function DashboardLayout({
+export default /* withPageAuthRequired( */ async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const isAuth: boolean = await isLogged();
+  if (!isAuth) redirect("/auth/login");
   return (
     <SidebarProvider>
       <AdminSidebar />

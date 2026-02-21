@@ -1,4 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
+import { redirect } from "next/navigation";
 import { toast } from "sonner";
 
 const useLogout = () => {
@@ -21,6 +22,7 @@ const useLogout = () => {
           description: "!text-green-700 !text-sm !font-medium",
         },
       });
+      redirect("/");
     },
     onError: (error) => {
       toast.error("Failed Logout", {
