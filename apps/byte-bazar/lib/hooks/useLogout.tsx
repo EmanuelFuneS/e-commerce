@@ -15,7 +15,6 @@ const useLogout = () => {
       return data;
     },
     onSuccess: () => {
-      console.log("User Logout successfully");
       toast.success("User Logout successfully", {
         description: "User Logout successfully",
         classNames: {
@@ -24,7 +23,6 @@ const useLogout = () => {
       });
     },
     onError: (error) => {
-      console.log("Failed Logout", error);
       toast.error("Failed Logout", {
         description:
           error instanceof Error ? error.message : "An error occurred",
