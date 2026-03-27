@@ -1,5 +1,6 @@
 {
   "tailwindCSS.experimental.configFile": "packages/ui/src/styles/globals.css",
   "cSpell.words": ["cloudinary", "sonner", "videogames", "Videogames"],
-  "remote.autoForwardPortsFallback": 0
+  "remote.autoForwardPortsFallback": 0,
+  "terminal.integrated.cwd": "${fileDirname}"
 }
