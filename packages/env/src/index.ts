@@ -8,7 +8,7 @@ const schemaEnv = z.object({
   PRISMA_LOGS: z.string(),
   APP_BASE_URL: z.string(),
   REDIS_URL: z.string(),
-
+  JWT_SECRET: z.string(),
   API_PORT: z.string(),
   SMTP_HOST: z.string(),
   SMTP_PORT: z.string(),
