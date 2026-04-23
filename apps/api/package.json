@@ -16,8 +16,9 @@
   "license": "ISC",
   "packageManager": "pnpm@10.24.0",
   "dependencies": {
-    "@workspace/repository": "workspace:*",
+    "@fastify/jwt": "^10.0.0",
     "@workspace/env": "workspace:*",
+    "@workspace/repository": "workspace:*",
     "fastify": "^5.8.5"
   },
   "devDependencies": {

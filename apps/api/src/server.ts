@@ -1,4 +1,7 @@
 import Fastify from "fastify";
+import { productRoutes } from "./routes";
+import fastifyJwt from "@fastify/jwt";
+import globalEnv from "@workspace/env";
 
 const app = Fastify({
   logger: {
@@ -16,6 +19,12 @@ const app = Fastify({
 app.get("/", async () => {
   return { status: "ok" };
 });
+
+app.register(fastifyJwt, {
+  secret: globalEnv.JWT_SECRET, //change secret in nest auth app
+});
+
+app.register(productRoutes, { prefix: "/products" });
 
 const start = async () => {
   try {
