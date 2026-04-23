@@ -15,13 +15,8 @@ export class ProductService {
   private authorizedRoles = process.env.AUTHORIZED_ROLES!.split(",");
   private repository: ProductRepository;
 
-  constructor(
-    private readonly adminId: string,
-    private readonly role: string,
-  ) {
+  constructor() {
     this.repository = new ProductRepository();
-    this.adminId = adminId;
-    this.role = role;
   }
 
   private calculateFinalPrice(product: ProductWithRelationsSerialized) {
@@ -171,44 +166,44 @@ export class ProductService {
     };
   }
 
-  async createProduct(data: ProductsSchema) {
+  async createProduct(data: ProductsSchema, user: {role: string, adminId: string}) {
     if (Number(data.price) <= 0) {
       throw new Error("Price must be greater than 0");
     }
-    if (!this.authorizedRoles.includes(this.role)) {
+    if (!this.authorizedRoles.includes(user.role)) {
       throw new Error("Unauthorized Role");
     }
 
-    return await this.repository.create(data, this.adminId);
+    return await this.repository.create(data, user.adminId);
   }
 
-  async updateProduct(data: ProductsSchema) {
+  async updateProduct(data: ProductsSchema, user: {role: string, adminId: string}) {
     const id = data.id;
     if (!id) throw new Error("ID is required");
     const product = await this.repository.findById({ id });
 
     if (product) {
-      if (!this.authorizedRoles.includes(this.role)) {
+      if (!this.authorizedRoles.includes(user.role)) {
         throw new Error("Unauthorized Role");
       }
       return await this.repository.update(
         { id: product.id },
         data,
-        this.adminId,
+        user.adminId,
       );
     }
     throw new Error("Product not found");
   }
 
-  async getStockMovements() {
-    if (!this.authorizedRoles.includes(this.role)) {
+  async getStockMovements(user: {role: string, adminId: string}) {
+    if (!this.authorizedRoles.includes(user.role)) {
       throw new Error("Unauthorized Role");
     }
-    return await this.repository.findStockMovements(this.adminId);
+    return await this.repository.findStockMovements(user.adminId);
   }
 
-  async deleteProduct(id: string) {
-    if (!this.authorizedRoles.includes(this.role)) {
+  async deleteProduct(id: string, user: {role: string, adminId: string}) {
+    if (!this.authorizedRoles.includes(user.role)) {
       throw new Error("Unauthorized Role");
     }
 
