@@ -17,7 +17,6 @@ import {
   Cog,
   Heart,
   InboxArchive,
-  Logout,
   Menu,
   Search,
   User,
@@ -31,6 +30,7 @@ import { Product } from "../../../lib/types";
 import { ProductHelper } from "../../../lib/utils";
 import ListProductCard from "../../items-cards/list-product-card";
 import ProfileAuth from "../../profile/profile-auth";
+import ProfileLogout from "../../profile/profile-logout";
 import ProfilePicture from "../../profile/profile-picture";
 import ThemeToggle from "../../theme-toggle";
 
@@ -191,13 +191,7 @@ const NavBar = ({ isAuth }: { isAuth: boolean }) => {
                         asChild
                         className={navigationMenuTriggerStyle()}
                       >
-                        <Link
-                          href={"/auth/logout"}
-                          className="flex-row items-center gap-2"
-                        >
-                          <Logout />
-                          Logout
-                        </Link>
+                        <ProfileLogout />
                       </NavigationMenuLink>
                     </li>
                   </ul>

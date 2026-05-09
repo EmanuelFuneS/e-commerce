@@ -71,6 +71,8 @@ const BuildPcForm = () => {
     filter: { category: sortedCategories[step]?.id },
   });
 
+  console.log(products);
+
   const customPcSchema = ZodHelper.createPcSchema(categoriesNames);
 
   type CustomPcSchema = z.infer<typeof customPcSchema>;
@@ -215,9 +217,9 @@ const BuildPcForm = () => {
       <Card className="h-20 border rounded-md mx-4">
         <CardContent className="flex justify-between">
           <Label>SubTotal: {totalPrice.toFixed(2)}</Label>
-          <Button onClick={handleResetForm}>Clean</Button>
+          <Button onClick={handleResetForm}>Clear All</Button>
           <Button type="submit" form="builderPcForm">
-            Comprar
+            Buy
           </Button>
         </CardContent>
       </Card>
@@ -251,8 +253,8 @@ const BuildPcForm = () => {
           onSubmit={form.handleSubmit(onSubmit)}
         >
           <div className="border p-4  mb-4 rounded-md grid grid-cols-2 gap-3">
-            {!isLoading && products && products.data ? (
-              (products.data as unknown as Product[]).map(
+            {!isLoading && products && products.products ? (
+              (products.products as unknown as Product[]).map(
                 (product: Product) => {
                   return (
                     <ProductCard

@@ -14,8 +14,6 @@ const ProductGallery = ({ product }: ProductGalleryProps) => {
   const [selectedImage, setSelectedImage] = useState(product.images![0]);
   const { cart, addToCart, removeToCart } = useStoreCart();
 
-  console.log("cart", cart);
-
   const handleChangeImage = (imageUrl: string) => {
     setSelectedImage(imageUrl);
   };

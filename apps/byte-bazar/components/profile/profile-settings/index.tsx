@@ -46,7 +46,7 @@ const ProfileSettings = ({ data }: ProfileSettingsProps) => {
       <Label className="text-xl">Security </Label>
       <div className="bg-card rounded-md p-4 space-y-4">
         <Button variant="destructive" className="ml-auto">
-          <Link href="/auth/change-password">Change Password</Link>
+          <Link href="/auth/change-password/">Change Password</Link>
         </Button>
       </div>
     </div>

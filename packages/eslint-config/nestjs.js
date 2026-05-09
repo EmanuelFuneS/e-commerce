@@ -24,5 +24,12 @@ export const nestJsConfig = [
   {
     ignores: ["dist/**", "node_modules/**", "eslint.config.mjs"],
   },
+  {
+    languageOptions: {
+      parserOptions: {
+        project: ["tsconfig.json", "tsconfig.spec.json"],
+      },
+    },
+  },
   prettier,
 ];

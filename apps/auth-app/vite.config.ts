@@ -4,6 +4,7 @@ import { defineConfig } from "vite";
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: "/auth/",
   plugins: [react()],
   resolve: {
     alias: {
@@ -11,13 +12,12 @@ export default defineConfig({
       "@workspace/ui": path.resolve(__dirname, "../../packages/ui/src"),
     },
   },
-  base: "/auth",
   server: {
     host: "0.0.0.0",
     port: 3005,
     strictPort: true,
     cors: {
-      origin: "http://localhost:3000",
+      origin: "*",
       methods: ["GET", "POST"],
       allowedHeaders: ["*", "Content-Type", "Authorization"],
     },

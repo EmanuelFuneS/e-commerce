@@ -46,6 +46,7 @@ export class MailService {
     } catch (error) {
       throw new InternalServerErrorException(
         `Error sending email to ${params}`,
+        error,
       );
     }
   }

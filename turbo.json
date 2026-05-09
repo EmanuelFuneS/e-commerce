@@ -19,7 +19,7 @@
       "env": [
         "NODE_ENV",
         "PRISMA_LOGS",
-
+        "APP_BASE_URL",
         "REDIS_URL",
 
         "API_PORT",
@@ -38,8 +38,10 @@
         "DIRECT_URL",
 
         "TENANT_ID_APP",
+        "BYTE_BAZAR_URL",
         "AUTH_SERVICE_URL",
-        "AUTH_APP_URL"
+        "AUTH_APP_URL",
+        "AUTHORIZED_ROLES"
       ]
     },
     "lint": {

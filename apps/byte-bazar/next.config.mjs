@@ -1,9 +1,7 @@
 /** @type {import('next').NextConfig} */
-
 const authApp = process.env.AUTH_APP_URL || "http://localhost:3005/auth/";
 const authService =
   process.env.AUTH_SERVICE_URL || "http://localhost:3010/auth/";
-
 const nextConfig = {
   transpilePackages: ["@workspace/ui"],
   serverExternalPackages: [

@@ -11,7 +11,7 @@ interface RelatedItemsProps {
 }
 
 const RelatedItems = ({ categoryName }: RelatedItemsProps) => {
-  const { categories } = useCategoriesStore(); // Sin await - es síncrono
+  const { categories } = useCategoriesStore();
   const [relatedProducts, setRelatedProducts] = useState<Product[] | []>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -23,7 +23,7 @@ const RelatedItems = ({ categoryName }: RelatedItemsProps) => {
 
       try {
         const matchedCategory = categories.find(
-          (cat) => cat.name === categoryName
+          (cat) => cat.name === categoryName,
         );
 
         if (matchedCategory) {
@@ -31,9 +31,8 @@ const RelatedItems = ({ categoryName }: RelatedItemsProps) => {
             { category: matchedCategory.id, sort: "relevance" },
             {
               pageSize: 6,
-            }
+            },
           );
-          console.log("result", result);
 
           if (result?.products) {
             setRelatedProducts(result.products as Product[]);

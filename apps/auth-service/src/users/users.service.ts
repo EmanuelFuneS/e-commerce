@@ -139,7 +139,7 @@ export class UsersService {
         },
       })) as User;
 
-      const { password, ...userWithoutPassword } = user;
+      const { password: _, ...userWithoutPassword } = user;
 
       const roles = user.userRoles.map((ur: UserRole) => ur.role.name);
       return {

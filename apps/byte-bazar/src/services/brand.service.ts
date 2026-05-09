@@ -1,4 +1,5 @@
 import { BrandSchema } from "../../lib/schemas/brand/brand.schema";
+import { BrandFilters } from "../actions/brand.actions";
 import { BrandRepository } from "../repositories/brand.repository";
 
 export class BrandService {
@@ -7,8 +8,37 @@ export class BrandService {
     this.brandRepository = new BrandRepository();
   }
 
-  async getBrands() {
-    return await this.brandRepository.find();
+  async getBrands(
+    filters?: BrandFilters,
+    pagination?: { page?: number; pageSize?: number },
+  ) {
+    const whereClause: Record<string, unknown> = {};
+    if (filters) {
+      if (filters.name) {
+        whereClause.name = filters.name;
+      }
+      if (filters.tenantId) {
+        whereClause.tenantID = filters.tenantId;
+      }
+    }
+    const { page, pageSize } = pagination ?? {};
+    let paginationObj = {};
+
+    if (page && pageSize) {
+      const hasPagination =
+        Number.isInteger(page) &&
+        Number.isInteger(pageSize) &&
+        page! > 0 &&
+        pageSize! > 0;
+      if (hasPagination) {
+        paginationObj = {
+          skip: page! * pageSize!,
+          take: pageSize!,
+        };
+      }
+    }
+
+    return await this.brandRepository.find(whereClause, paginationObj);
   }
 
   async getBrandById(id: string) {
