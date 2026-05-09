@@ -1,10 +1,14 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function POST() {
-  (await cookies()).delete("token");
-  (await cookies()).delete("userId");
-  (await cookies()).delete("roles");
+  const response = NextResponse.json(
+    { message: "Session closed" },
+    { status: 200 },
+  );
 
-  return NextResponse.json({ message: "Session closed" }, { status: 200 });
+  response.cookies.delete("token");
+  response.cookies.delete("userId");
+  response.cookies.delete("roles");
+
+  return response;
 }

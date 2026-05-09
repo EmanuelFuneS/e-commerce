@@ -1,98 +1,231 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Auth Service
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Microservicio de autenticación y autorización construido con **NestJS v11**.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Descripción
 
-## Description
+Servicio backend dedicado a la gestión completa de autenticación: usuarios, sesiones JWT, verificación de email, recuperación de contraseña, roles y permisos. Utiliza Redis para manejo de sesiones y se integra con `@workspace/database` (Prisma + PostgreSQL).
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Stack Tecnológico
 
-## Project setup
+- **Framework**: NestJS v11
+- **Auth**: JWT (@nestjs/jwt) + Passport
+- **Sesiones**: Redis (ioredis)
+- **Email**: Nodemailer (@nestjs-modules/mailer)
+- **Templates**: Pug
+- **DB**: Prisma + PostgreSQL via `@workspace/database`
+- **Docs**: Swagger (@nestjs/swagger)
+- **Testing**: Jest + Supertest
 
-```bash
-$ pnpm install
+## Dependencias del Workspace
+
+```
+@workspace/database        -> Prisma y modelos BD
+@workspace/eslint-config   -> Config ESLint
+@workspace/typescript-config -> Config TypeScript
 ```
 
-## Compile and run the project
+## Puerto
+
+- **Desarrollo**: `3010`
+- **Docker**: `3010:3010`
+
+## Scripts Disponibles
 
 ```bash
-# development
-$ pnpm run start
+# Build
+pnpm build
 
-# watch mode
-$ pnpm run start:dev
+# Desarrollo (watch)
+pnpm start:dev
 
-# production mode
-$ pnpm run start:prod
+# Producción
+pnpm start:prod
+
+# Debug
+pnpm start:debug
+
+# Lint con fix
+pnpm lint
+
+# Tests
+pnpm test
+pnpm test:watch
+pnpm test:cov
+pnpm test:debug
+pnpm test:e2e
+
+# Docker (desde la raíz)
+pnpm docker:up
+pnpm docker:down
+pnpm docker:rebuild
 ```
 
-## Run tests
+## Endpoints (prefijo: `/auth`)
 
-```bash
-# unit tests
-$ pnpm run test
+| Método | Ruta | Descripción | Auth |
+|--------|------|-------------|------|
+| `POST` | `/auth/register` | Registro de usuario | No |
+| `POST` | `/auth/login` | Inicio de sesión | No |
+| `POST` | `/auth/refresh` | Refresh token | No |
+| `POST` | `/auth/logout` | Cerrar sesión | Sí |
+| `POST` | `/auth/change-password` | Cambiar contraseña | Sí |
+| `POST` | `/auth/verify-email` | Verificar email | No |
+| `POST` | `/auth/recovery-password` | Solicitar recuperación | No |
+| `POST` | `/auth/reset-password` | Resetear contraseña | No |
 
-# e2e tests
-$ pnpm run test:e2e
+## Características
 
-# test coverage
-$ pnpm run test:cov
+### Autenticación
+- **JWT** - Access tokens (60s) + Refresh tokens
+- **Cookies HTTP-only** - Almacenamiento seguro de tokens
+- **Passport JWT Strategy** - Validación de tokens
+
+### Usuarios
+- Registro con email y contraseña (bcrypt)
+- Verificación de email por token
+- Recuperación y reseteo de contraseña
+- Bloqueo por intentos fallidos
+- Último login registrado
+
+### Sesiones (Redis)
+- Refresh tokens almacenados en Redis
+- Revocación de tokens
+- Manejo de múltiples sesiones por usuario
+
+### Email
+- Envío de emails con Nodemailer/Mailtrap
+- Templates con Pug
+- Verificación de cuenta
+- Recuperación de contraseña
+
+### Roles & Permisos (RBAC)
+- `Role` - Roles de usuario
+- `RolePermission` - Permisos granularizados (action + subject)
+- `UserRole` - Asignación usuario-rol
+
+### Multi-tenancy
+- Campo `tenantId` en usuarios y tokens
+- Default: `BYTE_BAZAR`
+
+## Cookies Seteadas
+
+Después de login/register, el interceptor setea cookies HTTP-only:
+
+| Cookie | Descripción |
+|--------|-------------|
+| `token` | JWT access token |
+| `userId` | ID del usuario |
+| `roles` | Roles del usuario (JSON) |
+
+## Módulos Principales
+
+```
+AuthModule    -> Autenticación, JWT, Guards
+UsersModule   -> Gestión de usuarios
+MailModule    -> Envío de emails
+PrismaModule  -> Conexión BD
 ```
 
-## Deployment
+## Estructura
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+```
+apps/auth-service/src/
+├── auth/
+│   ├── Decorator/
+│   │   ├── public.decorator.ts       # Marca rutas públicas
+│   │   └── set-auth-cookie.decorator.ts
+│   ├── Interceptors/
+│   │   └── auth.cookie.interceptor.ts # Setea cookies
+│   ├── auth.controller.ts
+│   ├── auth.service.ts
+│   ├── auth.module.ts
+│   ├── auth.guard.ts
+│   ├── jwt-auth.guard.ts
+│   ├── jwt.strategy.ts
+│   ├── constants.ts
+│   └── types.ts
+├── users/
+│   ├── users.controller.ts
+│   ├── users.service.ts
+│   ├── users.module.ts
+│   └── types.ts
+├── mail/
+│   ├── mail.controller.ts
+│   ├── mail.service.ts
+│   └── mail.module.ts
+├── prisma/
+│   ├── prisma.service.ts
+│   └── prisma.module.ts
+├── template/              # Templates Pug para emails
+├── app.controller.ts
+├── app.service.ts
+├── app.module.ts
+└── main.ts                # Entry point (Swagger, CORS, cookies)
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Docker
 
-## Resources
+```yaml
+services:
+  auth-service:
+    ports:
+      - "3010:3010"
+    depends_on:
+      - redis
+    environment:
+      - PORT=3010
+      - REDIS_URL=redis://redis:6379
 
-Check out a few resources that may come in handy when working with NestJS:
+  redis:
+    image: redis:7.0-alpine
+    ports:
+      - "6379:6379"
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## Variables de Entorno
 
-## Support
+```env
+PORT=3010
+REDIS_URL=redis://localhost:6379
+JWT_SECRET=your-jwt-secret
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+# Database (via @workspace/env)
+DATABASE_URL=postgresql://...
 
-## Stay in touch
+# SMTP / Mailtrap
+SMTP_HOST=smtp.mailtrap.io
+SMTP_PORT=2525
+USERNAME=mailtrap-user
+PASSWORD=mailtrap-pass
+MAILTRAP=true
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Swagger/OpenAPI
 
-## License
+La documentación está disponible en:
+```
+http://localhost:3010/api
+```
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## Guards & Decorators
+
+```typescript
+// Ruta pública (sin auth requerido)
+@Public()
+@Get('public-route')
+publicRoute() {}
+
+// Ruta protegida (default)
+@Get('protected')
+protectedRoute(@Req() req: AuthRequest) {
+  const userId = req.user.userId;
+}
+```
+
+## Integración
+
+Este servicio es consumido por:
+- `auth-app` - Frontend de autenticación
+- `byte-bazar` - Tienda principal (vía rewrites)
+- `api` - API Gateway

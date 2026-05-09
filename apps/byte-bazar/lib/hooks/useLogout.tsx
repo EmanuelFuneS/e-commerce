@@ -1,8 +1,12 @@
+"use client";
+
 import { useMutation } from "@tanstack/react-query";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 const useLogout = () => {
+  const router = useRouter();
+
   return useMutation({
     mutationKey: ["logout"],
     mutationFn: async () => {
@@ -22,7 +26,8 @@ const useLogout = () => {
           description: "!text-green-700 !text-sm !font-medium",
         },
       });
-      redirect("/");
+      router.push("/");
+      router.refresh();
     },
     onError: (error) => {
       toast.error("Failed Logout", {
