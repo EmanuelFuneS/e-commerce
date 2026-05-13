@@ -1,4 +1,4 @@
-import { BrandSchema, BrandFilters  } from "@workspace/repository";
+import { BrandSchema, BrandFilters } from "@workspace/repository";
 import { BrandRepository } from "@workspace/repository";
 
 export class BrandService {
@@ -48,9 +48,12 @@ export class BrandService {
     return await this.brandRepository.create(data);
   }
 
-  async updateBrand(data: BrandSchema) {
+  async updateBrand(data: Partial<BrandSchema> & { id: string }) {
     const { id, ...brand } = data;
-    if (!id) throw new Error("ID is required");
     return await this.brandRepository.update(id, brand);
+  }
+
+  async deleteBrand(id: string) {
+    return await this.brandRepository.delete({ id });
   }
 }

@@ -1,5 +1,5 @@
 import Fastify from "fastify";
-import { productRoutes } from "./routes";
+import { productRoutes, brandRoutes } from "./routes";
 import fastifyJwt from "@fastify/jwt";
 import globalEnv from "@workspace/env";
 
@@ -25,6 +25,7 @@ app.register(fastifyJwt, {
 });
 
 app.register(productRoutes, { prefix: "/products" });
+app.register(brandRoutes, { prefix: "/brands" });
 
 const start = async () => {
   try {
