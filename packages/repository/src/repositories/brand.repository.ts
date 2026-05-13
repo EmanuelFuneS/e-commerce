@@ -37,7 +37,7 @@ export class BrandRepository {
       data: { ...data, tenantID: this.tenantID },
     });
   }
-  async update(id: string, data: BrandSchema): Promise<Brand> {
+  async update(id: string, data: Partial<BrandSchema>): Promise<Brand> {
     console.log("DATA", data);
     return await prisma.brand.update({
       where: { id, tenantID: this.tenantID },
