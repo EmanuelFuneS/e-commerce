@@ -1,6 +1,6 @@
 import { UserRepository } from "@workspace/repository";
 
-export class UserService {
+export class ClientService {
   private readonly userRepository: UserRepository;
   constructor() {
     this.userRepository = new UserRepository();

@@ -1,5 +1,6 @@
 import type { FastifyRequest, FastifyReply } from "fastify";
 import { BrandService } from "../services";
+import { Brand } from "@workspace/repository";
 
 export default {
   getBrands: async (req: FastifyRequest, reply: FastifyReply) => {
@@ -31,7 +32,7 @@ export default {
   },
 
   createBrand: async (
-    req: FastifyRequest<{ Body: { name: string; logo: string; website: string } }>,
+    req: FastifyRequest<{ Body: Brand }>,
     reply: FastifyReply,
   ) => {
     const service = new BrandService();
