@@ -13,7 +13,7 @@ export class OrderRepository {
   };
   private readonly tenantID = process.env.TENANT_ID;
 
-  async getOrders() {
+  async findMany() {
     return prisma.order.findMany({
       where: {
         tenantID: this.tenantID,
@@ -25,7 +25,7 @@ export class OrderRepository {
     });
   }
 
-  async getOrderByClient(userId: string) {
+  async findByClient(userId: string) {
     return prisma.order.findMany({
       where: {
         userId,
