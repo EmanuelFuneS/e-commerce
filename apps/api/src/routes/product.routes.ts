@@ -12,7 +12,20 @@ export const productRoutes = async (app: FastifyInstance) => {
     },
     controllers.getProduct,
   );
+
+  // increment view param 
+  //apply discount
+
   app.register(async (protectedApp) => {
     protectedApp.addHook("preHandler", authHook);
+
+    protectedApp.post("/", controllers.createProduct);
+    protectedApp.put("/", controllers.updateProduct);
+    protectedApp.delete("/:id", controllers.deleteProduct);
+
+    //get stockmovements
+    //incrementstock post /:id
+
+    //disablediscount
   });
 };

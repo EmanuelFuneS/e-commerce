@@ -1,3 +1,5 @@
+export const productParamsSchema = {};
+
 export const productSchema = {
   params: {
     type: "object",
@@ -15,3 +17,6 @@ export const productSchema = {
     },
   },
 };
+
+export const productCreateBodySchema = {};
+export const productUpdateBodySchema = {};

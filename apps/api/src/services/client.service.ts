@@ -6,8 +6,8 @@ export class ClientService {
     this.userRepository = new UserRepository();
   }
 
-  async getClient() {
-    return await this.userRepository.getClient();
+  async getClients() {
+    return await this.userRepository.getClients();
   }
 
   async getClientById(id: string) {
