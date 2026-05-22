@@ -25,7 +25,7 @@ export class UserRepository {
     orders: true,
     paymentMethods: true,
   };
-  async getClient() {
+  async getClients() {
     return await prisma.user.findMany({
       where: {
         userRoles: {
