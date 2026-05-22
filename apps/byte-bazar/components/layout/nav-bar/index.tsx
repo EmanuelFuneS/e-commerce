@@ -1,5 +1,5 @@
 "use client";
-
+import { useState } from "react";
 import { Category } from "@prisma/client";
 //import { useUser } from "@auth0/nextjs-auth0";
 import { Button, Input, ScrollArea, Skeleton } from "@workspace/ui/components";
@@ -34,10 +34,86 @@ import ProfileLogout from "../../profile/profile-logout";
 import ProfilePicture from "../../profile/profile-picture";
 import ThemeToggle from "../../theme-toggle";
 
+import {
+  CalculatorIcon,
+  CalendarIcon,
+  CreditCardIcon,
+  SettingsIcon,
+  SmileIcon,
+  UserIcon,
+} from "lucide-react";
+
+import {
+  Command,
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+  CommandShortcut,
+} from "@workspace/ui/components";
+
+interface CommandSearchProps {
+  open: boolean;
+  setOpen: any;
+}
+
+export function CommandSearchWithGroups({ open, setOpen }: CommandSearchProps) {
+  return (
+    <div className={`flex flex-col gap-4 ${open === true ? "" : "hidden"}`}>
+      <CommandDialog open={open} onOpenChange={setOpen}>
+        <Command>
+          <CommandInput placeholder="Type a command or search..." />
+          <CommandList>
+            <CommandEmpty>No results found.</CommandEmpty>
+            <CommandGroup heading="Suggestions">
+              {/* items searched */}
+              <CommandItem>
+                <CalendarIcon />
+                <span>Calendar</span>
+              </CommandItem>
+              <CommandItem>
+                <SmileIcon />
+                <span>Search Emoji</span>
+              </CommandItem>
+              <CommandItem>
+                <CalculatorIcon />
+                <span>Calculator</span>
+              </CommandItem>
+            </CommandGroup>
+            <CommandSeparator />
+            <CommandGroup heading="Settings">
+              <CommandItem>
+                <UserIcon />
+                <span>Profile</span>
+                <CommandShortcut>⌘P</CommandShortcut>
+              </CommandItem>
+              <CommandItem>
+                <CreditCardIcon />
+                <span>Billing</span>
+                <CommandShortcut>⌘B</CommandShortcut>
+              </CommandItem>
+              <CommandItem>
+                <SettingsIcon />
+                <span>Settings</span>
+                <CommandShortcut>⌘S</CommandShortcut>
+              </CommandItem>
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </CommandDialog>
+    </div>
+  );
+}
+
 const NavBar = ({ isAuth }: { isAuth: boolean }) => {
   const { data: categories, isLoading } = useCategories();
   const { favorites } = useFavoritesProducts();
   const { cart } = useStoreCart();
+
+  const [open, setOpen] = useState(false);
 
   return (
     <>
@@ -77,13 +153,18 @@ const NavBar = ({ isAuth }: { isAuth: boolean }) => {
               <NavigationMenuLink href="/">Home</NavigationMenuLink>
             </NavigationMenuItem> */}
             <NavigationMenuItem>
-              <NavigationMenuLink>
-                <div className="flex w-full max-w-sm items-center gap-1">
+              <NavigationMenuLink className="cursor-pointer">
+                <div
+                  className="flex w-full max-w-sm items-center gap-1"
+                  onClick={() => setOpen(true)}
+                >
                   <Input type="text" placeholder="Search" />
                   <Button type="submit" variant="outline">
                     <Search />
                   </Button>
                 </div>
+
+                <CommandSearchWithGroups open={open} setOpen={setOpen} />
               </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
@@ -255,12 +336,7 @@ const NavBar = ({ isAuth }: { isAuth: boolean }) => {
             </NavigationMenuItem>
             <NavigationMenuItem>
               <NavigationMenuLink>
-                <div className="flex w-full max-w-sm items-center gap-1">
-                  <Input type="text" placeholder="Search" />
-                  <Button type="submit" variant="outline">
-                    <Search />
-                  </Button>
-                </div>
+                {/* <CommandSearchWithGroups /> */}
               </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>

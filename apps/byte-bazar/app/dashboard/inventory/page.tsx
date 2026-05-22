@@ -1,8 +1,8 @@
 import { getProducts } from "@/src/actions/product.actions";
 import { Card, Label } from "@workspace/ui/components";
 import Link from "next/link";
-import SearchItems from "../../../components/search-items";
-import ProductTable from "../../../components/tables/products-table";
+import SearchItems from "../_components/search-items";
+import ProductTable from "../_components/products-table";
 
 export const dynamic = "force-dynamic";
 const Page = async () => {

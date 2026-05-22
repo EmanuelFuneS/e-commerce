@@ -1,6 +1,6 @@
 import { Card, Label } from "../../../../../packages/ui/src/components";
-import SearchItems from "../../../components/search-items";
-import OrderTable from "../../../components/tables/order-table";
+import SearchItems from "../_components/search-items";
+import OrderTable from "../_components/tables/order-table";
 import { ordersExample } from "../../../lib/types";
 
 const page = () => {

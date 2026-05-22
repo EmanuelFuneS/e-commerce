@@ -6,7 +6,7 @@ import {
   dehydrate,
 } from "@tanstack/react-query";
 import { Suspense } from "react";
-import BuildPcForm from "../../../components/forms/build-pc-form";
+import BuildPcForm from "../_components/build-pc-form";
 import { Category } from "../../../lib/types";
 import { getProducts } from "../../../src/actions/product.actions";
 

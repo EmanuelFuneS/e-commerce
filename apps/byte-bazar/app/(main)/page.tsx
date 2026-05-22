@@ -1,6 +1,6 @@
-import BannerGrid from "@/components/banners/banner-grid";
-import CategoryShowcase from "@/components/category-showcase";
-import PreviewGrid from "@/components/preview-grid";
+import BannerGrid from "@/app/(main)/_components/banner-grid";
+import CategoryShowcase from "@/app/(main)/_components/category-showcase";
+import PreviewGrid from "@/app/(main)/_components/preview-grid";
 
 import { getBrands } from "@/src/actions/brand.actions";
 import { Brand, Product } from "lib/types";

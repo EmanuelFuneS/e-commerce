@@ -35,4 +35,6 @@ npm-debug.log*
 .DS_Store
 *.pem
 
-Todo.txt
+# Local docs
+docs/architecture/*.md
+docs/*
