@@ -1,9 +1,9 @@
 import { Button, Label } from "@workspace/ui/components/";
 import Link from "next/link";
-import { Brand } from "../../lib/types/brands";
-import { Product } from "../../lib/types/products";
-import BrandCard from "../items-cards/brand-card";
-import ProductCard from "../items-cards/product-card";
+import { Brand } from "../../../../lib/types/brands";
+import { Product } from "../../../../lib/types/products";
+import BrandCard from "../../../../components/items-cards/brand-card";
+import ProductCard from "../../../../components/items-cards/product-card";
 
 interface PreviewGridProps {
   dataType: "brands" | "products";

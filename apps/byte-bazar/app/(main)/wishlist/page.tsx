@@ -3,7 +3,7 @@ import { getProducts } from "@/src/actions/product.actions";
 import { Label } from "@workspace/ui/components";
 import Link from "next/link";
 import { useCallback, useEffect, useState, useTransition } from "react";
-import PaginationGrid from "../../../components/pagination-grid";
+import PaginationGrid from "../_components/pagination-grid";
 import { ApiResponse } from "../../../lib/types/common";
 import { Product } from "../../../lib/types/products";
 

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { useMemo } from "react";
 import {
   Button,
   Card,
@@ -14,42 +14,43 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../../../../packages/ui/src/components";
-import { Order, OrderStatus } from "../../../lib/types";
+} from "@workspace/ui/components";
+import { Brand } from "../../../../../lib/types";
 
-interface OrderTableProps {
-  orders: Order[];
-  rol: "admin" | "customer";
+interface BrandTableProps {
+  brands: Brand[];
+  setOpen: (open: boolean) => void;
+  setId: (id: string) => void;
 }
 
-const OrderTable = ({ orders, rol }: OrderTableProps) => {
+const BrandTable = ({ brands, setOpen, setId }: BrandTableProps) => {
+  const sortedBrands = useMemo(() => {
+    return brands.sort((a, b) => b._count.products - a._count.products);
+  }, [brands]);
+
   return (
     <Card className="p-2 h-fit">
       <Table className="">
         <TableCaption>A list of products</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-25">Order Number</TableHead>
-            <TableHead className="w-25">Create At</TableHead>
-            <TableHead>Items</TableHead>
-            <TableHead className="">Sub Total</TableHead>
-            <TableHead>Payment Method</TableHead>
-            <TableHead>status</TableHead>
-            <TableHead>Actions</TableHead>
+            <TableHead>Name</TableHead>
+            <TableHead>Logo</TableHead>
+            <TableHead>Website</TableHead>
+            <TableHead>Products</TableHead>
+            <TableHead>Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {orders.map((el, idx) => {
+          {sortedBrands.map((el, idx) => {
             return (
               <TableRow key={idx}>
-                <TableCell className="font-medium">{el.orderNumber}</TableCell>
+                <TableCell className="font-medium">{el.name}</TableCell>
                 <TableCell className="font-medium">
-                  {el.createdAt.toLocaleDateString()}
+                  {el.logo ? "Ready" : "Not Found"}
                 </TableCell>
-                <TableCell className="">{el.orderItems.length}</TableCell>
-                <TableCell>{el.subtotal}</TableCell>
-                <TableCell className="">{el.paymentMethod}</TableCell>
-                <TableCell>{OrderStatus[el.status]}</TableCell>
+                <TableCell>{el.website ? "Yes" : "No"}</TableCell>
+                <TableCell>{el._count.products}</TableCell>
                 <TableCell>
                   <div>
                     <DropdownMenu>
@@ -58,12 +59,14 @@ const OrderTable = ({ orders, rol }: OrderTableProps) => {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent className="w-12">
                         <DropdownMenuGroup>
-                          <DropdownMenuItem>Details</DropdownMenuItem>
-                          {rol === "admin" && (
-                            <DropdownMenuItem>
-                              <Link href={""}>Edit</Link>
-                            </DropdownMenuItem>
-                          )}
+                          <DropdownMenuItem
+                            onClick={() => {
+                              setId(el.id);
+                              setOpen(true);
+                            }}
+                          >
+                            Edit
+                          </DropdownMenuItem>
                           {/* <DropdownMenuItem>Disable</DropdownMenuItem> */}
                         </DropdownMenuGroup>
                       </DropdownMenuContent>
@@ -85,4 +88,4 @@ const OrderTable = ({ orders, rol }: OrderTableProps) => {
   );
 };
 
-export default OrderTable;
+export default BrandTable;

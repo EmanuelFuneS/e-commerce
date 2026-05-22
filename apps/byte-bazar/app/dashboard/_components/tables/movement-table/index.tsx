@@ -1,11 +1,5 @@
 import {
-  Button,
   Card,
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
   Table,
   TableBody,
   TableCaption,
@@ -13,40 +7,54 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@workspace/ui/components";
-import Link from "next/link";
-import { Product } from "../../../lib/types";
+} from "../../../../../../../packages/ui/src/components";
+import {
+  StockMovement,
+  StockMovementType,
+  StockMovementTypeLabels,
+} from "../../../../../lib/types";
 
-interface ProductTableProps {
-  data: Product[];
+interface MovementTableProps {
+  movements: StockMovement[];
 }
 
-const ProductTable = ({ data }: ProductTableProps) => {
+const MovementTable = ({ movements }: MovementTableProps) => {
+  console.log("movements", movements);
+
   return (
     <Card className="p-2 h-fit">
       <Table className="">
         <TableCaption>A list of products</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-25">Name</TableHead>
-            <TableHead>Price</TableHead>
-            <TableHead>Stock</TableHead>
-            <TableHead>isActive</TableHead>
-            <TableHead className="">Images</TableHead>
-            <TableHead>Actions</TableHead>
+            <TableHead className="w-25">ID</TableHead>
+            <TableHead className="w-25">Type</TableHead>
+            <TableHead>Create At</TableHead>
+            <TableHead>Quantity</TableHead>
+            <TableHead className="">Reason</TableHead>
+            <TableHead>Product</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.map((el, idx) => {
+          {movements.map((el, idx) => {
             return (
               <TableRow key={idx}>
-                <TableCell className="font-medium">{el.name}</TableCell>
-                <TableCell className="">{el.price}</TableCell>
-                <TableCell>{el.stock}</TableCell>
-                <TableCell>{el.isActive}</TableCell>
-                <TableCell className="">{el.images?.length}</TableCell>
+                <TableCell className="font-medium">{el.id}</TableCell>
+                <TableCell className="font-medium">
+                  {StockMovementTypeLabels[StockMovementType[el.type]]}
+                </TableCell>
+                <TableCell className="">
+                  {new Intl.DateTimeFormat("en-GB", {
+                    year: "numeric",
+                    month: "long",
+                    day: "2-digit",
+                  }).format(el.createAt)}
+                </TableCell>
+                <TableCell>{el.quantity}</TableCell>
+                <TableCell>{el.reason}</TableCell>
+                <TableCell className="">{el.product.name}</TableCell>
                 <TableCell>
-                  <div>
+                  {/* <div>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="outline">...</Button>
@@ -63,7 +71,7 @@ const ProductTable = ({ data }: ProductTableProps) => {
                         </DropdownMenuGroup>
                       </DropdownMenuContent>
                     </DropdownMenu>
-                  </div>
+                  </div> */}
                 </TableCell>
               </TableRow>
             );
@@ -80,4 +88,4 @@ const ProductTable = ({ data }: ProductTableProps) => {
   );
 };
 
-export default ProductTable;
+export default MovementTable;

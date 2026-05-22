@@ -1,7 +1,7 @@
 "use client";
 import { Card, Label } from "../../../../../../packages/ui/src/components";
-import SearchItems from "../../../../components/search-items";
-import MovementTable from "../../../../components/tables/movement-table";
+import SearchItems from "../../_components/search-items";
+import MovementTable from "../../_components/tables/movement-table";
 import useStockMovements from "../../../../lib/hooks/useStockMovements";
 
 const Page = () => {

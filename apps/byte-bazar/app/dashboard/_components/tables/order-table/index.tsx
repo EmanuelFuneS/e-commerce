@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import Link from "next/link";
 import {
   Button,
   Card,
@@ -14,43 +14,42 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../../../../packages/ui/src/components";
-import { Brand } from "../../../lib/types";
+} from "../../../../../../../packages/ui/src/components";
+import { Order, OrderStatus } from "../../../../../lib/types";
 
-interface BrandTableProps {
-  brands: Brand[];
-  setOpen: (open: boolean) => void;
-  setId: (id: string) => void;
+interface OrderTableProps {
+  orders: Order[];
+  rol: "admin" | "customer";
 }
 
-const BrandTable = ({ brands, setOpen, setId }: BrandTableProps) => {
-  const sortedBrands = useMemo(() => {
-    return brands.sort((a, b) => b._count.products - a._count.products);
-  }, [brands]);
-
+const OrderTable = ({ orders, rol }: OrderTableProps) => {
   return (
     <Card className="p-2 h-fit">
       <Table className="">
         <TableCaption>A list of products</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Logo</TableHead>
-            <TableHead>Website</TableHead>
-            <TableHead>Products</TableHead>
-            <TableHead>Action</TableHead>
+            <TableHead className="w-25">Order Number</TableHead>
+            <TableHead className="w-25">Create At</TableHead>
+            <TableHead>Items</TableHead>
+            <TableHead className="">Sub Total</TableHead>
+            <TableHead>Payment Method</TableHead>
+            <TableHead>status</TableHead>
+            <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {sortedBrands.map((el, idx) => {
+          {orders.map((el, idx) => {
             return (
               <TableRow key={idx}>
-                <TableCell className="font-medium">{el.name}</TableCell>
+                <TableCell className="font-medium">{el.orderNumber}</TableCell>
                 <TableCell className="font-medium">
-                  {el.logo ? "Ready" : "Not Found"}
+                  {el.createdAt.toLocaleDateString()}
                 </TableCell>
-                <TableCell>{el.website ? "Yes" : "No"}</TableCell>
-                <TableCell>{el._count.products}</TableCell>
+                <TableCell className="">{el.orderItems.length}</TableCell>
+                <TableCell>{el.subtotal}</TableCell>
+                <TableCell className="">{el.paymentMethod}</TableCell>
+                <TableCell>{OrderStatus[el.status]}</TableCell>
                 <TableCell>
                   <div>
                     <DropdownMenu>
@@ -59,14 +58,12 @@ const BrandTable = ({ brands, setOpen, setId }: BrandTableProps) => {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent className="w-12">
                         <DropdownMenuGroup>
-                          <DropdownMenuItem
-                            onClick={() => {
-                              setId(el.id);
-                              setOpen(true);
-                            }}
-                          >
-                            Edit
-                          </DropdownMenuItem>
+                          <DropdownMenuItem>Details</DropdownMenuItem>
+                          {rol === "admin" && (
+                            <DropdownMenuItem>
+                              <Link href={""}>Edit</Link>
+                            </DropdownMenuItem>
+                          )}
                           {/* <DropdownMenuItem>Disable</DropdownMenuItem> */}
                         </DropdownMenuGroup>
                       </DropdownMenuContent>
@@ -88,4 +85,4 @@ const BrandTable = ({ brands, setOpen, setId }: BrandTableProps) => {
   );
 };
 
-export default BrandTable;
+export default OrderTable;

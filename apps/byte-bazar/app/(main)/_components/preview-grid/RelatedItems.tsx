@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import PreviewGrid from ".";
-import { useCategoriesStore } from "../../lib/store";
-import { Product, ProductResponse } from "../../lib/types";
-import { getProducts } from "../../src/actions/product.actions";
+import { useCategoriesStore } from "../../../../lib/store";
+import { Product, ProductResponse } from "../../../../lib/types";
+import { getProducts } from "../../../../src/actions/product.actions";
 
 interface RelatedItemsProps {
   categoryName: string | undefined;

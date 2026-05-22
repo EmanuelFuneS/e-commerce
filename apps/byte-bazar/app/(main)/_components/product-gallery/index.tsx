@@ -3,8 +3,8 @@ import { Button, Card, Label } from "@workspace/ui/components";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { useStoreCart } from "../../lib/store";
-import { Product } from "../../lib/types";
+import { useStoreCart } from "../../../../lib/store";
+import { Product } from "../../../../lib/types";
 
 interface ProductGalleryProps {
   product: Product;

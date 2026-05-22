@@ -16,10 +16,10 @@ import {
   NativeSelectOption,
   RadioGroup,
   RadioGroupItem,
-} from "../../../../packages/ui/src/components";
+} from "../../../../../../packages/ui/src/components";
 
-import { FilterType } from "../../lib/services/filterService";
-import { useBrandsStore, useCategoriesStore } from "../../lib/store";
+import { FilterType } from "../../../../lib/services/filterService";
+import { useBrandsStore, useCategoriesStore } from "../../../../lib/store";
 
 const sortOptions = [
   { value: "", label: "Default" },

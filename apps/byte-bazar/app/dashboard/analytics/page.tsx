@@ -1,4 +1,4 @@
-import AnalyticsCharts from "../../../components/analytics-chats";
+import AnalyticsCharts from "../_components/analytics-chats";
 
 const Page = () => {
   return <AnalyticsCharts />;

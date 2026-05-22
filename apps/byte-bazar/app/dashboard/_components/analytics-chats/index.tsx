@@ -6,11 +6,11 @@ import {
   CardHeader,
   CardTitle,
   Label,
-} from "../../../../packages/ui/src/components";
-import useAnalytics from "../../lib/hooks/useAnalytics";
-import { ChartAreaIcons } from "../charts/area-chart";
-import { ChartAreaInteractive } from "../charts/area-chart-interactive";
-import { ChartBarMultiple } from "../charts/bar-chart";
+} from "../../../../../../packages/ui/src/components";
+import useAnalytics from "../../../../lib/hooks/useAnalytics";
+import { ChartAreaIcons } from "../../../../components/charts/area-chart";
+import { ChartAreaInteractive } from "../../../../components/charts/area-chart-interactive";
+import { ChartBarMultiple } from "../../../../components/charts/bar-chart";
 
 const AnalyticsCharts = () => {
   const { data, isAllReady } = useAnalytics();

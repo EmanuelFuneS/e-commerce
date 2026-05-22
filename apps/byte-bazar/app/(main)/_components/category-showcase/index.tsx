@@ -3,9 +3,9 @@ import { Card, Label, Skeleton } from "@workspace/ui/components/";
 
 import Image from "next/image";
 import Link from "next/link";
-import useCategories from "../../lib/hooks/useCategories";
-import { Category } from "../../lib/types/categories";
-import BannerCarousel from "../banners/banner-carousel";
+import useCategories from "../../../../lib/hooks/useCategories";
+import { Category } from "../../../../lib/types/categories";
+import BannerCarousel from "../../../../components/banners/banner-carousel";
 
 const CategoryShowcase = () => {
   const { data: categories, isLoading } = useCategories();

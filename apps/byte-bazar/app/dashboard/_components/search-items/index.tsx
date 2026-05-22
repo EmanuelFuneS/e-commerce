@@ -1,5 +1,5 @@
 import { Search } from "lucide-react";
-import { Button, Input } from "../../../../packages/ui/src/components";
+import { Button, Input } from "../../../../../../packages/ui/src/components";
 
 const SearchItems = () => {
   return (

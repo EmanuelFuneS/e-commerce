@@ -12,13 +12,13 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
-import { Trash } from "../../../../../packages/ui/src/lib";
-import useProducts from "../../../lib/hooks/useProducts";
-import { useBuilderStore, useCategoriesStore } from "../../../lib/store";
-import { Product } from "../../../lib/types";
-import { ProductHelper } from "../../../lib/utils/productHelper";
-import ZodHelper from "../../../lib/utils/zodHelper";
-import ProductCard from "../../items-cards/product-card";
+import { Trash } from "../../../../../../packages/ui/src/lib";
+import useProducts from "../../../../lib/hooks/useProducts";
+import { useBuilderStore, useCategoriesStore } from "../../../../lib/store";
+import { Product } from "../../../../lib/types";
+import { ProductHelper } from "../../../../lib/utils/productHelper";
+import ZodHelper from "../../../../lib/utils/zodHelper";
+import ProductCard from "../../../../components/items-cards/product-card";
 
 const customPCOrder: Record<string, number> = {
   cpu: 1,

@@ -15,13 +15,13 @@ import {
   Input,
   Label,
   Separator,
-} from "../../../../packages/ui/src/components";
+} from "../../../../../../packages/ui/src/components";
 import {
   CartProducts,
   cartProductsSchema,
-} from "../../lib/schemas/products/cartProduct.schema";
-import { useBuilderStore, useStoreCart } from "../../lib/store";
-import { Product } from "../../lib/types/products";
+} from "../../../../lib/schemas/products/cartProduct.schema";
+import { useBuilderStore, useStoreCart } from "../../../../lib/store";
+import { Product } from "../../../../lib/types/products";
 
 const ListCart = () => {
   const { cart, clearCart } = useStoreCart();
