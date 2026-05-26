@@ -1,5 +1,6 @@
 import { getBrands } from "src/actions/brand.actions";
 import { getCategories } from "src/actions/category.actions";
+import { getProducts } from "src/actions/product.actions";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { Brand, Category, Product } from "../types";
@@ -168,6 +169,36 @@ export const useBuilderStore = create<PCBuilderState>()(
     },
   ),
 );
+
+export const useProductsStore = create<{
+  products: Product[];
+  initializeProducts: () => Promise<void>;
+  isInitialized: boolean;
+  isLoading: boolean;
+}>()((set, get) => ({
+  products: [],
+  isInitialized: false,
+  isLoading: false,
+  initializeProducts: async () => {
+    const { isInitialized } = get();
+    if (isInitialized) return;
+    set({ isLoading: true });
+    try {
+      const response = await getProducts({}, undefined);
+      if (response?.products) {
+        set({
+          products: response.products,
+          isInitialized: true,
+          isLoading: false,
+        });
+        return;
+      }
+    } catch {
+      // fall through
+    }
+    set({ isLoading: false });
+  },
+}));
 
 interface CartState {
   cart: Product[];
