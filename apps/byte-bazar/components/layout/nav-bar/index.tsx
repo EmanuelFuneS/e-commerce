@@ -1,5 +1,5 @@
 "use client";
-
+import { useState } from "react";
 import { Category } from "@prisma/client";
 //import { useUser } from "@auth0/nextjs-auth0";
 import { Button, Input, ScrollArea, Skeleton } from "@workspace/ui/components";
@@ -33,11 +33,14 @@ import ProfileAuth from "../../profile/profile-auth";
 import ProfileLogout from "../../profile/profile-logout";
 import ProfilePicture from "../../profile/profile-picture";
 import ThemeToggle from "../../theme-toggle";
+import { CommandSearchWithGroups } from "../../search-bar/command-search";
 
 const NavBar = ({ isAuth }: { isAuth: boolean }) => {
   const { data: categories, isLoading } = useCategories();
   const { favorites } = useFavoritesProducts();
   const { cart } = useStoreCart();
+
+  const [open, setOpen] = useState(false);
 
   return (
     <>
@@ -77,13 +80,18 @@ const NavBar = ({ isAuth }: { isAuth: boolean }) => {
               <NavigationMenuLink href="/">Home</NavigationMenuLink>
             </NavigationMenuItem> */}
             <NavigationMenuItem>
-              <NavigationMenuLink>
-                <div className="flex w-full max-w-sm items-center gap-1">
+              <NavigationMenuLink className="cursor-pointer">
+                <div
+                  className="flex w-full max-w-sm items-center gap-1"
+                  onClick={() => setOpen(true)}
+                >
                   <Input type="text" placeholder="Search" />
                   <Button type="submit" variant="outline">
                     <Search />
                   </Button>
                 </div>
+
+                <CommandSearchWithGroups open={open} setOpen={setOpen} />
               </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
@@ -255,12 +263,7 @@ const NavBar = ({ isAuth }: { isAuth: boolean }) => {
             </NavigationMenuItem>
             <NavigationMenuItem>
               <NavigationMenuLink>
-                <div className="flex w-full max-w-sm items-center gap-1">
-                  <Input type="text" placeholder="Search" />
-                  <Button type="submit" variant="outline">
-                    <Search />
-                  </Button>
-                </div>
+                {/* <CommandSearchWithGroups /> */}
               </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>

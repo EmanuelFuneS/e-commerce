@@ -5,7 +5,7 @@ import {
   TabsTrigger,
 } from "@workspace/ui/components";
 import { ordersExample } from "../../../lib/types";
-import OrderTable from "../../tables/order-table";
+import OrderTable from "../../../app/dashboard/_components/tables/order-table";
 
 interface ProfileOrdersProps {
   data?: any;

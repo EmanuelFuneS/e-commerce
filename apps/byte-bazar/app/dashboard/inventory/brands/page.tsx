@@ -13,8 +13,8 @@ import {
   Label,
 } from "../../../../../../packages/ui/src/components";
 import BrandForm from "../../../../components/forms/brand-form";
-import SearchItems from "../../../../components/search-items";
-import BrandTable from "../../../../components/tables/brand-table";
+import SearchItems from "../../_components/search-items";
+import BrandTable from "../../_components/tables/brand-table";
 import useBrands from "../../../../lib/hooks/useBrands";
 import { Brand } from "../../../../lib/types";
 

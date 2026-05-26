@@ -1,7 +1,7 @@
 import { Label } from "@workspace/ui/components";
 
-import RelatedItems from "../../../../components/preview-grid/RelatedItems";
-import ProductGallery from "../../../../components/product-gallery";
+import RelatedItems from "../../_components/preview-grid/RelatedItems";
+import ProductGallery from "../../_components/product-gallery";
 import { Product } from "../../../../lib/types";
 import { getProducts } from "../../../../src/actions/product.actions";
 

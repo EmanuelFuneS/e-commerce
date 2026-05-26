@@ -1,5 +1,5 @@
 "use client";
-import PaginationGrid from "@/components/pagination-grid";
+import PaginationGrid from "@/app/(main)/_components/pagination-grid";
 import { ProductFilters } from "@/lib/types/common";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -9,7 +9,7 @@ import {
   useState,
   useTransition,
 } from "react";
-import Filter from "../../../../components/filter";
+import Filter from "../../_components/filter";
 import { FilterType } from "../../../../lib/services/filterService";
 import { Product, ProductResponse } from "../../../../lib/types";
 import { getProducts } from "../../../../src/actions/product.actions";
