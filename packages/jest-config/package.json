@@ -1,0 +1,17 @@
+{
+  "name": "@workspace/jest-config",
+  "version": "1.0.0",
+  "description": "Shared Jest configuration for the monorepo",
+  "private": true,
+  "exports": {
+    "./presets/node": {
+      "require": "./presets/node.js",
+      "types": "./presets/node.d.ts"
+    }
+  },
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.24.0"
+}
