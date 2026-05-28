@@ -1,5 +1,12 @@
 import Fastify from "fastify";
-import { productRoutes, brandRoutes } from "./routes";
+import {
+  productRoutes,
+  brandRoutes,
+  categoryRoutes,
+  clientRoutes,
+  ordersRoutes,
+  analyticsRoutes,
+} from "./routes";
 import fastifyJwt from "@fastify/jwt";
 import globalEnv from "@workspace/env";
 
@@ -21,11 +28,15 @@ app.get("/", async () => {
 });
 
 app.register(fastifyJwt, {
-  secret: globalEnv.JWT_SECRET, //change secret in nest auth app
+  secret: globalEnv.JWT_SECRET,
 });
 
 app.register(productRoutes, { prefix: "/products" });
 app.register(brandRoutes, { prefix: "/brands" });
+app.register(categoryRoutes, { prefix: "/categories" });
+app.register(clientRoutes, { prefix: "/clients" });
+app.register(ordersRoutes, { prefix: "/orders" });
+app.register(analyticsRoutes, { prefix: "/analytics" });
 
 const start = async () => {
   try {
