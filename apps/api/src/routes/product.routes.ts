@@ -13,9 +13,6 @@ export const productRoutes = async (app: FastifyInstance) => {
     controllers.getProduct,
   );
 
-  // increment view param 
-  //apply discount
-
   app.register(async (protectedApp) => {
     protectedApp.addHook("preHandler", authHook);
 
@@ -23,9 +20,10 @@ export const productRoutes = async (app: FastifyInstance) => {
     protectedApp.put("/", controllers.updateProduct);
     protectedApp.delete("/:id", controllers.deleteProduct);
 
-    //get stockmovements
-    //incrementstock post /:id
-
-    //disablediscount
+    protectedApp.get("/stock-movements", controllers.getStockMovements);
+    protectedApp.post("/:id/increment-stock", controllers.incrementStock);
+    protectedApp.post("/:id/increment-views", controllers.incrementViews);
+    protectedApp.post("/:id/apply-discount", controllers.applyDiscount);
+    protectedApp.post("/:id/disable-discount", controllers.disableDiscount);
   });
 };

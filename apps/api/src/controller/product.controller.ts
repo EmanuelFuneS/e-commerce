@@ -1,7 +1,6 @@
 import type { FastifyRequest, FastifyReply } from "fastify";
 import { ProductService } from "../services";
-import { Product } from "@workspace/repository";
-import { error } from "node:console";
+import { Product, DiscountType } from "@workspace/repository";
 
 function serviceInitializer() {
   return new ProductService();
@@ -49,18 +48,67 @@ export default {
     });
     return reply.send({ success: true, data: update });
   },
-  deleteProduct: async (req: FastifyRequest<{ Params: { id: string } }>) => {
+  deleteProduct: async (
+    req: FastifyRequest<{ Params: { id: string } }>,
+    reply: FastifyReply,
+  ) => {
     const service = serviceInitializer();
     await service.deleteProduct(req.params.id, {
       adminId: req.user.id,
       role: req.user.role,
     });
+    return reply.send({ success: true, message: "Product deleted" });
   },
 
-  getStockMovements: async () => {},
-  incrementViews: async () => {},
-  incrementStock: async () => {},
+  getStockMovements: async (
+    req: FastifyRequest,
+    reply: FastifyReply,
+  ) => {
+    const service = serviceInitializer();
+    const movements = await service.getStockMovements({
+      adminId: req.user.id,
+      role: req.user.role,
+    });
+    return reply.send({ success: true, data: movements });
+  },
 
-  applyDiscount: async () => {},
-  disableDiscount: async () => {},
+  incrementViews: async (
+    req: FastifyRequest<{ Params: { id: string } }>,
+    reply: FastifyReply,
+  ) => {
+    const service = serviceInitializer();
+    await service.incrementViews({ id: req.params.id });
+    return reply.send({ success: true, message: "Views incremented" });
+  },
+
+  incrementStock: async (
+    req: FastifyRequest<{ Params: { id: string }; Body: { quantity: number } }>,
+    reply: FastifyReply,
+  ) => {
+    const service = serviceInitializer();
+    await service.incrementStock(
+      { id: req.params.id },
+      req.body.quantity,
+      req.user.id,
+    );
+    return reply.send({ success: true, message: "Stock incremented" });
+  },
+
+  applyDiscount: async (
+    req: FastifyRequest<{ Params: { id: string }; Body: { discountType: DiscountType } }>,
+    reply: FastifyReply,
+  ) => {
+    const service = serviceInitializer();
+    const discount = await service.applyDiscount(req.params.id, req.body.discountType);
+    return reply.status(201).send({ success: true, data: discount });
+  },
+
+  disableDiscount: async (
+    req: FastifyRequest<{ Params: { id: string } }>,
+    reply: FastifyReply,
+  ) => {
+    const service = serviceInitializer();
+    await service.disableDiscount(req.params.id);
+    return reply.send({ success: true, message: "Discount disabled" });
+  },
 };
