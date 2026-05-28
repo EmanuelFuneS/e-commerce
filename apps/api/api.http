@@ -1,0 +1,181 @@
+### Health check
+GET http://localhost:3000/
+
+### Swagger UI
+GET http://localhost:3000/docs
+
+### OpenAPI JSON
+GET http://localhost:3000/docs/json
+
+### ==========================================
+### PUBLIC ENDPOINTS
+### ==========================================
+
+### List products
+GET http://localhost:3000/products
+
+### List products with filters
+GET http://localhost:3000/products?name=test&minPrice=10&maxPrice=500&sort=price-asc
+
+### Get product by ID (replace :id with actual ID)
+GET http://localhost:3000/products/clx...
+
+### List brands
+GET http://localhost:3000/brands
+
+### Get brand by ID
+GET http://localhost:3000/brands/clx...
+
+### List categories
+GET http://localhost:3000/categories
+
+### List clients
+GET http://localhost:3000/clients
+
+### Get client by ID
+GET http://localhost:3000/clients/clx...
+
+### List orders
+GET http://localhost:3000/orders
+
+### Get orders by client ID
+GET http://localhost:3000/orders/client/clx...
+
+### ==========================================
+### PROTECTED ENDPOINTS (requires JWT token)
+### ==========================================
+
+### Login / Get token from auth-service first
+### Then set @token variable below
+
+### Create product
+POST http://localhost:3000/products
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "New Product",
+  "description": "Product description",
+  "price": "199.99",
+  "stock": 10,
+  "sku": "SKU-001",
+  "categoryId": "clx...",
+  "brandId": "clx...",
+  "images": [],
+  "tags": ["new", "product"]
+}
+
+### Update product
+PUT http://localhost:3000/products
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "id": "clx...",
+  "name": "Updated Product",
+  "price": "149.99"
+}
+
+### Delete product
+DELETE http://localhost:3000/products/clx...
+Authorization: Bearer {{token}}
+
+### Create brand
+POST http://localhost:3000/brands
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "NewBrand",
+  "logo": "https://example.com/logo.png",
+  "website": "https://example.com"
+}
+
+### Update brand
+PUT http://localhost:3000/brands/clx...
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Updated Brand"
+}
+
+### Delete brand
+DELETE http://localhost:3000/brands/clx...
+Authorization: Bearer {{token}}
+
+### Create category
+POST http://localhost:3000/categories
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "New Category"
+}
+
+### Update category
+PUT http://localhost:3000/categories/clx...
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Updated Category"
+}
+
+### Delete category
+DELETE http://localhost:3000/categories/clx...
+Authorization: Bearer {{token}}
+
+### Create order
+POST http://localhost:3000/orders
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "items": [
+    {
+      "productId": "clx...",
+      "quantity": 2,
+      "unitPrice": 99.99
+    }
+  ]
+}
+
+### Cancel order
+PATCH http://localhost:3000/orders/clx.../cancel
+Authorization: Bearer {{token}}
+
+### Increment product stock
+POST http://localhost:3000/products/clx.../increment-stock
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "quantity": 5
+}
+
+### Increment product views
+POST http://localhost:3000/products/clx.../increment-views
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Apply discount to product
+POST http://localhost:3000/products/clx.../apply-discount
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "discountType": "PERCENTAGE"
+}
+
+### Disable product discount
+POST http://localhost:3000/products/clx.../disable-discount
+Authorization: Bearer {{token}}
+
+### Analytics counts
+GET http://localhost:3000/analytics/counts
+Authorization: Bearer {{token}}
+
+### Stock movements
+GET http://localhost:3000/products/stock-movements
+Authorization: Bearer {{token}}
