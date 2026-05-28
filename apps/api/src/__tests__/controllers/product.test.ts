@@ -1,3 +1,4 @@
+/// <reference types="jest" />
 import controllers from "../../controller/product.controller";
 import { ProductService } from "../../services";
 

@@ -1,3 +1,4 @@
+/// <reference types="jest" />
 import { CategoryService } from "../../services";
 import { CategoryRepository } from "@workspace/repository";
 
