@@ -7,6 +7,9 @@ export const categoryRoutes = async (app: FastifyInstance) => {
 
   app.register(async (protectedApp) => {
     protectedApp.addHook("preHandler", authHook);
-    //add protected routes create, update, delete
+
+    protectedApp.post("/", controllers.createCategory);
+    protectedApp.put("/:id", controllers.updateCategory);
+    protectedApp.delete("/:id", controllers.deleteCategory);
   });
 };
