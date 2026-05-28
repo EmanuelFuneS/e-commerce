@@ -1,4 +1,6 @@
 import Fastify from "fastify";
+import swagger from "@fastify/swagger";
+import swaggerUi from "@fastify/swagger-ui";
 import {
   productRoutes,
   brandRoutes,
@@ -20,6 +22,36 @@ const app = Fastify({
         ignore: "pid,hostname",
       },
     },
+  },
+});
+
+app.register(swagger, {
+  openapi: {
+    info: {
+      title: "E-Commerce API",
+      description: "REST API for e-commerce platform",
+      version: "1.0.0",
+    },
+    servers: [
+      { url: "http://localhost:3000", description: "Development server" },
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
+  },
+});
+
+app.register(swaggerUi, {
+  routePrefix: "/docs",
+  uiConfig: {
+    docExpansion: "list",
+    deepLinking: true,
   },
 });
 
