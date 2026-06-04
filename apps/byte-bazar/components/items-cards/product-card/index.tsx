@@ -27,7 +27,7 @@ const ProductCard = ({ data, onSelect, onSelected }: ProductCardProps) => {
 
   return (
     <Card
-      className={`rounded-lg shadow-lg hover:scale-105 transform transition-transform duration-300 ${onSelected && "bg-slate-400"} `}
+      className={`w-full max-w-sm md:max-w-none rounded-lg shadow-lg hover:scale-105 transform transition-transform duration-300 ${onSelected && "bg-slate-400"} `}
       onClick={() => onSelect && onSelect(data)}
     >
       <CardHeader className="w-full flex justify-end">

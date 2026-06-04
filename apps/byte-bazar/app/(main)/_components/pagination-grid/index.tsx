@@ -25,7 +25,7 @@ const PaginationGrid = ({
   const pages = new Array(totalPages).fill("");
   return (
     <div>
-      <div className="px-4 grid grid-rows-3 grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 w-full">
+      <div className="px-2 md:px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 w-full justify-items-center">
         {data &&
           data.map((e: Product, i: number) => <ProductCard key={i} data={e} />)}
       </div>

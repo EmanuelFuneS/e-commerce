@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Category } from "@prisma/client";
 //import { useUser } from "@auth0/nextjs-auth0";
-import { Button, Input, ScrollArea, Skeleton } from "@workspace/ui/components";
+import { Badge, Button, Input, ScrollArea, Separator, Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, Skeleton } from "@workspace/ui/components";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -215,59 +215,114 @@ const NavBar = ({ isAuth }: { isAuth: boolean }) => {
           </NavigationMenuList>
         </NavigationMenu>
       </nav>
-      <nav className="block md:hidden m-4 px-4">
-        <NavigationMenu>
-          <NavigationMenuList>
-            <NavigationMenuItem>
-              <NavigationMenuTrigger>
+      <nav className="block md:hidden">
+        <div className="flex items-center justify-between px-4 h-14 border-b">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" aria-label="Menu">
                 <Menu />
-              </NavigationMenuTrigger>
-              <NavigationMenuContent className="relative z-50">
-                <ul className="grid w-75 gap-4">
-                  <li>
-                    <NavigationMenuLink asChild>
-                      <Link href="#">
-                        <div className="font-medium">Products</div>
-                        <div className="text-muted-foreground">
-                          Browse all components in the library.
-                        </div>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-70 sm:w-[320px] p-0 flex flex-col">
+              <SheetHeader className="p-4 border-b">
+                <SheetTitle className="text-left">Byte Bazar</SheetTitle>
+              </SheetHeader>
+              <div className="flex-1 overflow-auto p-4 space-y-1">
+                <SheetTrigger asChild>
+                  <Link href="/products" className="flex items-center py-2 text-sm font-medium hover:text-primary transition-colors">
+                    Products
+                  </Link>
+                </SheetTrigger>
+                <SheetTrigger asChild>
+                  <Link href="/build-pc" className="flex items-center py-2 text-sm font-medium hover:text-primary transition-colors">
+                    Build PC
+                  </Link>
+                </SheetTrigger>
+                <SheetTrigger asChild>
+                  <Link href="/promotions" className="flex items-center py-2 text-sm font-medium hover:text-primary transition-colors">
+                    Promotions
+                  </Link>
+                </SheetTrigger>
+                <Separator className="my-3" />
+                {isAuth ? (
+                  <>
+                    <SheetTrigger asChild>
+                      <Link href="/settings/account" className="flex items-center gap-2 py-2 text-sm hover:text-primary transition-colors">
+                        <User size={16} />
+                        Manage My Account
                       </Link>
-                    </NavigationMenuLink>
-                    <NavigationMenuLink asChild>
-                      <Link href="#">
-                        <div className="font-medium">Promotions</div>
-                        <div className="text-muted-foreground">
-                          Learn how to use the library.
-                        </div>
+                    </SheetTrigger>
+                    <SheetTrigger asChild>
+                      <Link href="/settings/orders" className="flex items-center gap-2 py-2 text-sm hover:text-primary transition-colors">
+                        <InboxArchive size={16} />
+                        My Orders
                       </Link>
-                    </NavigationMenuLink>
-                    <NavigationMenuLink asChild>
-                      <Link href="#">
-                        <div className="font-medium">User settings</div>
-                        <div className="text-muted-foreground">
-                          Read our latest blog posts.
-                        </div>
+                    </SheetTrigger>
+                    <SheetTrigger asChild>
+                      <Link href="/settings" className="flex items-center gap-2 py-2 text-sm hover:text-primary transition-colors">
+                        <Cog size={16} />
+                        Settings
                       </Link>
-                    </NavigationMenuLink>
-                  </li>
-                  <li className="flex w-full justify-around">
-                    <NavigationMenuItem>
-                      <ThemeToggle />
-                    </NavigationMenuItem>
-                    <NavigationMenuItem>
-                      <ProfilePicture />
-                    </NavigationMenuItem>
-                  </li>
-                </ul>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <NavigationMenuLink>
-                {/* <CommandSearchWithGroups /> */}
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-          </NavigationMenuList>
-        </NavigationMenu>
+                    </SheetTrigger>
+                    <Separator className="my-3" />
+                    <div className="pt-2">
+                      <ProfileLogout />
+                    </div>
+                  </>
+                ) : (
+                  <div className="pt-2">
+                    <Button variant="default" asChild className="w-full">
+                      <Link href="/auth/login">Login</Link>
+                    </Button>
+                  </div>
+                )}
+              </div>
+              <div className="p-4 border-t">
+                <ThemeToggle />
+              </div>
+            </SheetContent>
+          </Sheet>
+
+          <Link href="/" className="font-bold text-lg">
+            Byte Bazar
+          </Link>
+
+          <div className="flex items-center gap-1">
+            <Button variant="ghost" size="icon" onClick={() => setOpen(true)} aria-label="Search">
+              <Search size={20} />
+            </Button>
+            <Link href="/wishlist" className="relative">
+              <Button variant="ghost" size="icon" aria-label="Wishlist">
+                <Heart size={20} />
+                {favorites?.length > 0 && (
+                  <Badge variant="destructive" className="absolute -top-1.5 -right-1.5 h-5 w-5 flex items-center justify-center p-0 text-[10px]">
+                    {favorites.length}
+                  </Badge>
+                )}
+              </Button>
+            </Link>
+            <Link href="/cart" className="relative">
+              <Button variant="ghost" size="icon" aria-label="Cart">
+                <Cart size={20} />
+                {cart.length > 0 && (
+                  <Badge variant="destructive" className="absolute -top-1.5 -right-1.5 h-5 w-5 flex items-center justify-center p-0 text-[10px]">
+                    {cart.length}
+                  </Badge>
+                )}
+              </Button>
+            </Link>
+            {isAuth ? (
+              <ProfilePicture size={8} />
+            ) : (
+              <Button variant="ghost" size="icon" asChild>
+                <Link href="/auth/login" aria-label="Login">
+                  <User size={20} />
+                </Link>
+              </Button>
+            )}
+          </div>
+        </div>
+        <CommandSearchWithGroups open={open} setOpen={setOpen} />
       </nav>
     </>
   );
