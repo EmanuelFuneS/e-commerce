@@ -120,7 +120,7 @@ export default function ProductFilter({
       </div>
     );
   return (
-    <div className="min-w-6xl ">
+    <div className="w-auto lg:min-w-6xl ">
       <section className="flex flex-col md:flex-row justify-between">
         <aside>
           <Suspense fallback={<div>Loading filters...</div>}>

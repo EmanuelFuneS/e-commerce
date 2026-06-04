@@ -25,7 +25,7 @@ const CategoryShowcase = () => {
               : new Array(7)
                   .fill("")
                   .map((_, index) => (
-                    <Skeleton className="h-10 w-full" key={index} />
+                    <Skeleton className="h-10 min-w-10 max-w-auto" key={index} />
                   ))}
           </ul>
         </Card>
